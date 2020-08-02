@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "698968063342",
+    "firebase_url": "https://niira-35de7.firebaseio.com",
+    "project_id": "niira-35de7",
+    "storage_bucket": "niira-35de7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:698968063342:android:abcd916f95b13fe7ce957f",
+        "android_client_info": {
+          "package_name": "com.kawaiifreaks.niira"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "698968063342-ebtkl4v1em5b3gckfdmphdjov2pic5hj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDl_0C80MMeqZsUJjca2EJRB3rwX6sfwz8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "698968063342-ebtkl4v1em5b3gckfdmphdjov2pic5hj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
