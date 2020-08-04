@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:niira/loading.dart';
 import 'package:niira/screens/sign_in.dart';
 
 class CreateAccountScreen extends StatefulWidget {
@@ -10,15 +11,25 @@ class CreateAccountScreen extends StatefulWidget {
 
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final _formKey = GlobalKey<FormState>();
-  bool waitingForAuthResult;
-  String userName;
-  String email;
-  String password;
+
+  bool _waitingForAuthResult;
+  bool _autoValidateForm;
+  String _userName;
+  String _email;
+  String _password;
 
   @override
   void initState() {
+    _waitingForAuthResult = false;
+    _autoValidateForm = false;
+    _clearForm();
     super.initState();
-    waitingForAuthResult = false;
+  }
+
+  _clearForm() {
+    _userName = '';
+    _password = '';
+    _email = '';
   }
 
   @override
@@ -33,116 +44,143 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         ),
         // backgroundColor: Color.fromRGBO(247, 152, 0, 1),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          child: Center(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                          labelText: 'Username',
-                          prefixIcon: Icon(Icons.person)),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter username';
-                        }
-                        return null;
-                      },
-                      onChanged: (val) {
-                        setState(() {
-                          userName = val;
-                        });
-                      },
+      body: _waitingForAuthResult
+          ? Loading()
+          : SingleChildScrollView(
+              child: Container(
+                child: Center(
+                  child: Form(
+                    autovalidate: _autoValidateForm,
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+                          child: TextFormField(
+                            key: Key("username_field"),
+                            decoration: InputDecoration(
+                                labelText: 'Username',
+                                prefixIcon: Icon(Icons.person)),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter username';
+                              }
+                              return null;
+                            },
+                            onChanged: (val) {
+                              setState(() {
+                                _userName = val;
+                              });
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+                          child: TextFormField(
+                            key: Key("email_field"),
+                            decoration: InputDecoration(
+                                labelText: 'Email',
+                                prefixIcon: Icon(Icons.email)),
+                            validator: (value) {
+                              Pattern pattern =
+                                  r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                              RegExp regex = new RegExp(pattern);
+                              if (value.isEmpty) {
+                                return 'Please enter email address';
+                              }
+                              if (!regex.hasMatch(value))
+                                return 'Please enter valid email';
+                              else
+                                return null;
+                            },
+                            onChanged: (val) {
+                              setState(() {
+                                _email = val;
+                              });
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+                          child: TextFormField(
+                            key: Key("password_field"),
+                            obscureText: true,
+                            decoration: InputDecoration(
+                                labelText: 'Password',
+                                prefixIcon: Icon(Icons.visibility)),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter password';
+                              }
+                              return null;
+                            },
+                            onChanged: (val) {
+                              setState(() {
+                                _password = val;
+                              });
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(30, 20, 30, 100),
+                          child: TextFormField(
+                            key: Key("re_password_field"),
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              labelText: 'Re-enter password',
+                              prefixIcon: Icon(Icons.visibility),
+                            ),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please re-enter password';
+                              } else if (value != _password) {
+                                print("password: $_password, value: $value");
+                                return 'Passwords do not match, please try again';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        RaisedButton(
+                          key: Key("create_account_submit_btn"),
+                          color: Theme.of(context).primaryColor,
+                          onPressed: () {
+                            if (_formKey.currentState.validate()) {
+                              // print("validated form");
+                              setState(() {
+                                _waitingForAuthResult = true;
+                              });
+                            } else {
+                              _autoValidateForm = true;
+                            }
+                          },
+                          child: Text('Submit'),
+                        ),
+                        Text('Already have an account?'),
+                        InkWell(
+                            key: Key('navigate_to_sign_in_link'),
+                            child: Text(
+                              'sign in here',
+                              style: TextStyle(
+                                  color: Color.fromRGBO(247, 152, 0, 1),
+                                  decoration: TextDecoration.underline),
+                            ),
+                            onTap: () {
+                              print("tapped");
+                              _formKey.currentState.reset();
+                              _clearForm();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SignInScreen()),
+                              );
+                            }),
+                      ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                          labelText: 'Email', prefixIcon: Icon(Icons.email)),
-                      validator: (value) {
-                        Pattern pattern =
-                            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                        RegExp regex = new RegExp(pattern);
-                        if (value.isEmpty) {
-                          return 'Please enter email address';
-                        }
-                        if (!regex.hasMatch(value))
-                          return 'Enter Valid Email';
-                        else
-                          return null;
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
-                    child: TextFormField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                          labelText: 'Password',
-                          prefixIcon: Icon(Icons.visibility)),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter password';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(30, 20, 30, 100),
-                    child: TextFormField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: 'Re-enter password',
-                        prefixIcon: Icon(Icons.visibility),
-                      ),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please re-enter password';
-                        } else if (value != password) {
-                          return 'retry, passwords do not match';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  RaisedButton(
-                    color: Theme.of(context).primaryColor,
-                    onPressed: () {
-                      if (_formKey.currentState.validate()) {
-                        // replace snackbar with loading icon
-                        Scaffold.of(context).showSnackBar(
-                            SnackBar(content: Text('Processing Data')));
-                      }
-                    },
-                    child: Text('Submit'),
-                  ),
-                  Text('Already have an account?'),
-                  InkWell(
-                      child: Text(
-                        'sign in here',
-                        style: TextStyle(
-                            color: Color.fromRGBO(247, 152, 0, 1),
-                            decoration: TextDecoration.underline),
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SignInScreen()),
-                        );
-                      }),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }
