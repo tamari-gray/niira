@@ -26,7 +26,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     super.initState();
   }
 
-  _clearForm() {
+  void _clearForm() {
     _userName = '';
     _password = '';
     _email = '';
@@ -39,7 +39,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
-          "Create account",
+          'Create account',
           style: TextStyle(color: Colors.white),
         ),
         // backgroundColor: Color.fromRGBO(247, 152, 0, 1),
@@ -57,7 +57,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
                           child: TextFormField(
-                            key: Key("username_field"),
+                            key: Key('username_field'),
                             decoration: InputDecoration(
                                 labelText: 'Username',
                                 prefixIcon: Icon(Icons.person)),
@@ -77,21 +77,22 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
                           child: TextFormField(
-                            key: Key("email_field"),
+                            key: Key('email_field'),
                             decoration: InputDecoration(
                                 labelText: 'Email',
                                 prefixIcon: Icon(Icons.email)),
                             validator: (value) {
-                              Pattern pattern =
+                              final pattern =
                                   r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                              RegExp regex = new RegExp(pattern);
+                              final regex = RegExp(pattern);
                               if (value.isEmpty) {
                                 return 'Please enter email address';
                               }
-                              if (!regex.hasMatch(value))
+                              if (!regex.hasMatch(value)) {
                                 return 'Please enter valid email';
-                              else
+                              } else {
                                 return null;
+                              }
                             },
                             onChanged: (val) {
                               setState(() {
@@ -103,7 +104,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
                           child: TextFormField(
-                            key: Key("password_field"),
+                            key: Key('password_field'),
                             obscureText: true,
                             decoration: InputDecoration(
                                 labelText: 'Password',
@@ -124,7 +125,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(30, 20, 30, 100),
                           child: TextFormField(
-                            key: Key("re_password_field"),
+                            key: Key('re_password_field'),
                             obscureText: true,
                             decoration: InputDecoration(
                               labelText: 'Re-enter password',
@@ -141,7 +142,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                           ),
                         ),
                         RaisedButton(
-                          key: Key("create_account_submit_btn"),
+                          key: Key('create_account_submit_btn'),
                           color: Theme.of(context).primaryColor,
                           onPressed: () {
                             if (_formKey.currentState.validate()) {
@@ -166,9 +167,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                             onTap: () {
                               _formKey.currentState.reset();
                               _clearForm();
-                              Navigator.push(
+                              Navigator.push<dynamic>(
                                 context,
-                                MaterialPageRoute(
+                                MaterialPageRoute<dynamic>(
                                     builder: (context) => SignInScreen()),
                               );
                             }),

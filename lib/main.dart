@@ -99,7 +99,7 @@ class WelcomeScreen extends StatelessWidget {
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
-                      Text('or'),
+                      Text('or', style: TextStyle(color: Colors.white)),
                       OutlineButton(
                         key: navigateToSignInBtn,
                         textColor: Color.fromRGBO(247, 152, 0, 1),

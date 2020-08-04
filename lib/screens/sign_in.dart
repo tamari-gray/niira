@@ -24,7 +24,7 @@ class _SignInScreenState extends State<SignInScreen> {
     _clearForm();
   }
 
-  _clearForm() {
+  void _clearForm() {
     setState(() {
       _email = '';
       _password = '';
@@ -38,7 +38,7 @@ class _SignInScreenState extends State<SignInScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
-          "Sign in",
+          'Sign in',
           style: TextStyle(color: Colors.white),
         ),
         // backgroundColor: Color.fromRGBO(247, 152, 0, 1),
@@ -56,21 +56,22 @@ class _SignInScreenState extends State<SignInScreen> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
                           child: TextFormField(
-                            key: Key("email_field"),
+                            key: Key('email_field'),
                             decoration: InputDecoration(
                                 labelText: 'Email',
                                 prefixIcon: Icon(Icons.email)),
                             validator: (value) {
-                              Pattern pattern =
+                              final pattern =
                                   r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                              RegExp regex = new RegExp(pattern);
+                              final regex = RegExp(pattern);
                               if (value.isEmpty) {
                                 return 'Please enter email address';
                               }
-                              if (!regex.hasMatch(value))
+                              if (!regex.hasMatch(value)) {
                                 return 'Please enter valid email';
-                              else
+                              } else {
                                 return null;
+                              }
                             },
                             onChanged: (val) {
                               setState(() {
@@ -82,7 +83,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(30, 20, 30, 100),
                           child: TextFormField(
-                            key: Key("password_field"),
+                            key: Key('password_field'),
                             obscureText: true,
                             decoration: InputDecoration(
                                 labelText: 'Password',
@@ -101,7 +102,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                         ),
                         RaisedButton(
-                          key: Key("sign_in_submit_btn"),
+                          key: Key('sign_in_submit_btn'),
                           color: Theme.of(context).primaryColor,
                           onPressed: () {
                             if (_formKey.currentState.validate()) {
@@ -116,7 +117,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                         Text("Don't have an account yet?"),
                         InkWell(
-                            key: Key("navigate_to_create_account_link"),
+                            key: Key('navigate_to_create_account_link'),
                             child: Text(
                               'Create account here',
                               style: TextStyle(
@@ -126,9 +127,9 @@ class _SignInScreenState extends State<SignInScreen> {
                             onTap: () {
                               _formKey.currentState.reset();
                               _clearForm();
-                              Navigator.push(
+                              Navigator.push<dynamic>(
                                 context,
-                                MaterialPageRoute(
+                                MaterialPageRoute<dynamic>(
                                     builder: (context) =>
                                         CreateAccountScreen()),
                               );
