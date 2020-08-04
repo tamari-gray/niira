@@ -25,6 +25,8 @@ dependencies:
   flutter:
     sdk: flutter
 
+  flutter_spinkit:
+
 dev_dependencies:
   mockito: ^4.1.1
   flutter_test:

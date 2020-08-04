@@ -1,12 +1,144 @@
 import 'package:flutter/material.dart';
+import 'package:niira/loading.dart';
+import 'package:niira/screens/create_account.dart';
 
-class SignInScreen extends StatelessWidget {
+class SignInScreen extends StatefulWidget {
   const SignInScreen({Key key}) : super(key: key);
 
   @override
+  _SignInScreenState createState() => _SignInScreenState();
+}
+
+class _SignInScreenState extends State<SignInScreen> {
+  final _formKey = GlobalKey<FormState>();
+  bool _waitingForAuthResult;
+  bool _autoValidateForm;
+  String _email;
+  String _password;
+
+  @override
+  void initState() {
+    super.initState();
+    _waitingForAuthResult = false;
+    _autoValidateForm = false;
+    _clearForm();
+  }
+
+  _clearForm() {
+    setState(() {
+      _email = '';
+      _password = '';
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text("create account"),
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text(
+          "Sign in",
+          style: TextStyle(color: Colors.white),
+        ),
+        // backgroundColor: Color.fromRGBO(247, 152, 0, 1),
+      ),
+      body: _waitingForAuthResult
+          ? Loading()
+          : SingleChildScrollView(
+              child: Container(
+                child: Center(
+                  child: Form(
+                    autovalidate: _autoValidateForm,
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+                          child: TextFormField(
+                            key: Key("email_field"),
+                            decoration: InputDecoration(
+                                labelText: 'Email',
+                                prefixIcon: Icon(Icons.email)),
+                            validator: (value) {
+                              Pattern pattern =
+                                  r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                              RegExp regex = new RegExp(pattern);
+                              if (value.isEmpty) {
+                                return 'Please enter email address';
+                              }
+                              if (!regex.hasMatch(value))
+                                return 'Please enter valid email';
+                              else
+                                return null;
+                            },
+                            onChanged: (val) {
+                              setState(() {
+                                _email = val;
+                              });
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(30, 20, 30, 100),
+                          child: TextFormField(
+                            key: Key("password_field"),
+                            obscureText: true,
+                            decoration: InputDecoration(
+                                labelText: 'Password',
+                                prefixIcon: Icon(Icons.visibility)),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter password';
+                              }
+                              return null;
+                            },
+                            onChanged: (val) {
+                              setState(() {
+                                _password = val;
+                              });
+                            },
+                          ),
+                        ),
+                        RaisedButton(
+                          key: Key("sign_in_submit_btn"),
+                          color: Theme.of(context).primaryColor,
+                          onPressed: () {
+                            if (_formKey.currentState.validate()) {
+                              setState(() {
+                                _waitingForAuthResult = true;
+                              });
+                            } else {
+                              _autoValidateForm = true;
+                            }
+                          },
+                          child: Text('Submit'),
+                        ),
+                        Text("Don't have an account yet?"),
+                        InkWell(
+                            key: Key("navigate_to_create_account_link"),
+                            child: Text(
+                              'Create account here',
+                              style: TextStyle(
+                                  color: Color.fromRGBO(247, 152, 0, 1),
+                                  decoration: TextDecoration.underline),
+                            ),
+                            onTap: () {
+                              _formKey.currentState.reset();
+                              _clearForm();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        CreateAccountScreen()),
+                              );
+                            }),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
     );
   }
 }
