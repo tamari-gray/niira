@@ -47,3 +47,6 @@ app.*.map.json
 
 # firebase credentials for ios 
 ios/Runner/GoogleService-Info.plist
+
+# google firebase credentials
+android/google-services.json
