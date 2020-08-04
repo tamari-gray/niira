@@ -1,4 +1,4 @@
-package com.example.niira
+package com.kawaiifreaks.niira
 
 import io.flutter.embedding.android.FlutterActivity
 
