@@ -13,9 +13,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Colors.lightBlue[800],
-        accentColor: Colors.cyan[600],
+        brightness: Brightness.light,
+        primaryColor: Color.fromRGBO(247, 152, 0, 1),
+        accentColor: Color.fromRGBO(130, 250, 184, 1),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: WelcomeScreen(),
@@ -99,9 +99,10 @@ class WelcomeScreen extends StatelessWidget {
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
-                      Text("or"),
+                      Text("or", style: TextStyle(color: Colors.white)),
                       OutlineButton(
                         key: navigateToSignInBtn,
+                        textColor: Color.fromRGBO(247, 152, 0, 1),
                         onPressed: () {
                           Navigator.push(
                             context,
