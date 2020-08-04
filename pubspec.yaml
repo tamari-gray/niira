@@ -13,6 +13,8 @@ dependencies:
   flutter:
     sdk: flutter
 
+  provider:
+  firebase_auth:
   flutter_spinkit:
 
 dev_dependencies:
