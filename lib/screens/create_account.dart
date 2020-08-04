@@ -134,7 +134,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               if (value.isEmpty) {
                                 return 'Please re-enter password';
                               } else if (value != _password) {
-                                print("password: $_password, value: $value");
                                 return 'Passwords do not match, please try again';
                               }
                               return null;
@@ -146,7 +145,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                           color: Theme.of(context).primaryColor,
                           onPressed: () {
                             if (_formKey.currentState.validate()) {
-                              // print("validated form");
                               setState(() {
                                 _waitingForAuthResult = true;
                               });
@@ -166,7 +164,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                   decoration: TextDecoration.underline),
                             ),
                             onTap: () {
-                              print("tapped");
                               _formKey.currentState.reset();
                               _clearForm();
                               Navigator.push(
