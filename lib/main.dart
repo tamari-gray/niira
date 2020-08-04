@@ -88,31 +88,31 @@ class WelcomeScreen extends StatelessWidget {
                         key: navigateToCreateAccountBtn,
                         color: Color.fromRGBO(247, 152, 0, 1),
                         onPressed: () {
-                          Navigator.push(
+                          Navigator.push<dynamic>(
                             context,
-                            MaterialPageRoute(
+                            MaterialPageRoute<dynamic>(
                                 builder: (context) => CreateAccountScreen()),
                           );
                         },
                         child: Text(
-                          "Create account",
+                          'Create account',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
-                      Text("or", style: TextStyle(color: Colors.white)),
+                      Text('or', style: TextStyle(color: Colors.white)),
                       OutlineButton(
                         key: navigateToSignInBtn,
                         textColor: Color.fromRGBO(247, 152, 0, 1),
                         onPressed: () {
-                          Navigator.push(
+                          Navigator.push<dynamic>(
                             context,
-                            MaterialPageRoute(
+                            MaterialPageRoute<dynamic>(
                                 builder: (context) => SignInScreen()),
                           );
                         },
                         color: Color.fromRGBO(247, 152, 0, 1),
                         child: Text(
-                          "Sign in",
+                          'Sign in',
                           style: TextStyle(color: Colors.white),
                         ),
                       )

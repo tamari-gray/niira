@@ -10,7 +10,7 @@ class Loading extends StatelessWidget {
       color: Colors.white,
       child: Center(
         child: SpinKitPulse(
-          key: Key("loading_indicator"),
+          key: Key('loading_indicator'),
           color: Theme.of(context).primaryColor,
           size: 100.0,
         ),
