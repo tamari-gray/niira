@@ -122,7 +122,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             child: Text(
                               'Create account here',
                               style: TextStyle(
-                                  color: Theme.of(context).colorScheme.variant,
+                                  color: CustomColorScheme.variant,
                                   decoration: TextDecoration.underline),
                             ),
                             onTap: () {
