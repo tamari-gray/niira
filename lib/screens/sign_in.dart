@@ -3,6 +3,7 @@ import 'package:niira/loading.dart';
 import 'package:niira/screens/create_account.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:provider/provider.dart';
+import 'package:niira/extensions/custom_colors_extension.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key key}) : super(key: key);
@@ -134,7 +135,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             child: Text(
                               'Create account here',
                               style: TextStyle(
-                                  color: Color.fromRGBO(247, 152, 0, 1),
+                                  color: CustomColorScheme.variant,
                                   decoration: TextDecoration.underline),
                             ),
                             onTap: () {

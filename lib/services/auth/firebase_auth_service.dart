@@ -19,6 +19,10 @@ class FirebaseAuthService implements AuthService {
   }
 
   @override
+  Stream<UserData> get streamOfAuthState => _firebaseAuth.onAuthStateChanged
+      .map((firebaseUser) => firebaseUser.toData());
+
+  @override
   Future<UserData> signInWithEmail(String email, String password) async {
     try {
       final result = await _firebaseAuth.signInWithEmailAndPassword(
