@@ -19,6 +19,8 @@ class MockFirebaseAuthService extends AuthService {
     // return 'yeet';
   }
 
+  Stream<UserData> get streamOfAuthState {}
+
   @override
   Future<UserData> signInWithEmail(String email, String password) async {
     final errors = ['user not found', 'wronf password'];
