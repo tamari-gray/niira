@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/screens/create_account.dart';
+import 'package:niira/services/auth/auth_service.dart';
+import 'package:provider/provider.dart';
 import 'package:niira/extensions/custom_colors_extension.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -105,13 +107,24 @@ class _SignInScreenState extends State<SignInScreen> {
                         RaisedButton(
                           key: Key('sign_in_submit_btn'),
                           color: Theme.of(context).primaryColor,
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState.validate()) {
                               setState(() {
                                 _waitingForAuthResult = true;
                               });
                             } else {
                               _autoValidateForm = true;
+                            }
+
+                            final authResult = await context
+                                .read<AuthService>()
+                                .signInWithEmail(_email, _password);
+
+                            // stop loading animation
+                            if (authResult == null) {
+                              setState(() {
+                                _waitingForAuthResult = false;
+                              });
                             }
                           },
                           child: Text('Submit'),

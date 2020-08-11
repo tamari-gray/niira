@@ -1,17 +1,99 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:niira/models/user_data.dart';
 import 'package:niira/screens/sign_in.dart';
+import 'package:niira/services/auth/auth_service.dart';
+import 'package:niira/services/auth/navigation_service.dart';
+import 'package:provider/provider.dart';
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
+class MockFirebaseAuthService extends AuthService {
+  final NavigationService _nav;
+  MockFirebaseAuthService(this._nav);
+  @override
+  Future<String> getCurrentUserId() {
+    // return 'yeet';
+  }
+
+  Stream<UserData> get streamOfAuthState {}
+
+  @override
+  Future<UserData> signInWithEmail(String email, String password) async {
+    final errors = ['user not found', 'wronf password'];
+    // Timer(Duration(seconds: 1), () {
+    _nav.displayError(errors[0]);
+    // });
+    return UserData(
+        uid: null,
+        providerId: null,
+        displayName: null,
+        photoUrl: null,
+        email: null,
+        phoneNumber: null,
+        createdOn: null,
+        lastSignedInOn: null,
+        isAnonymous: null,
+        isEmailVerified: null,
+        providers: null);
+  }
+
+  @override
+  Future<void> signOut() {
+    return null;
+  }
+}
+
 void main() {
+  group('auth tests', () {
+    testWidgets('auth error: shows dialog with error message',
+        (WidgetTester tester) async {
+      final navService = NavigationService();
+      await tester.pumpWidget(MultiProvider(
+          providers: [
+            Provider<AuthService>(
+                create: (_) => MockFirebaseAuthService(navService)),
+          ],
+          child: MaterialApp(
+            navigatorKey: navService.navigatorKey,
+            home: SignInScreen(),
+          )));
+
+      final emailField = find.byKey(Key('email_field'));
+      expect(emailField, findsOneWidget);
+      await tester.enterText(emailField, 'UserDoeasntExist@gmail.com');
+
+      final passwordFeild = find.byKey(Key('password_field'));
+      expect(passwordFeild, findsOneWidget);
+      await tester.enterText(passwordFeild, 'password-test');
+
+      await tester.tap(find.byKey(Key('sign_in_submit_btn')));
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.byKey(Key('loading_indicator')), findsOneWidget);
+      await tester.pump();
+
+      expect(find.byKey(Key('error_dialog')), findsOneWidget);
+      expect(find.text('user not found'), findsOneWidget);
+    });
+  });
   group('validation tests', () {
     testWidgets('show error messages on empty text feilds',
         (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(
-        home: SignInScreen(),
-      ));
+      final navService = NavigationService();
+      await tester.pumpWidget(MultiProvider(
+          providers: [
+            Provider<AuthService>(
+                create: (_) => MockFirebaseAuthService(navService)),
+          ],
+          child: MaterialApp(
+            navigatorKey: navService.navigatorKey,
+            home: SignInScreen(),
+          )));
 
       // press submit with empty form
       await tester.tap(find.byKey(Key('sign_in_submit_btn')));
@@ -23,9 +105,16 @@ void main() {
     });
     testWidgets('show error messages on invalid email ',
         (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(
-        home: SignInScreen(),
-      ));
+      final navService = NavigationService();
+      await tester.pumpWidget(MultiProvider(
+          providers: [
+            Provider<AuthService>(
+                create: (_) => MockFirebaseAuthService(navService)),
+          ],
+          child: MaterialApp(
+            navigatorKey: navService.navigatorKey,
+            home: SignInScreen(),
+          )));
 
       // input invalid text into fields
       final emailField = find.byKey(Key('email_field'));
@@ -40,9 +129,16 @@ void main() {
     });
     testWidgets('show loading animation on successfull validation + submit',
         (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(
-        home: SignInScreen(),
-      ));
+      final navService = NavigationService();
+      await tester.pumpWidget(MultiProvider(
+          providers: [
+            Provider<AuthService>(
+                create: (_) => MockFirebaseAuthService(navService)),
+          ],
+          child: MaterialApp(
+            navigatorKey: navService.navigatorKey,
+            home: SignInScreen(),
+          )));
 
       // submit valid credentials
       final emailField = find.byKey(Key('email_field'));
