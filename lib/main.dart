@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:niira/screens/welcome.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/firebase_auth_service.dart';
+import 'package:niira/services/auth/navigation_service.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -11,15 +12,17 @@ void main() {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+  final NavigationService nav = NavigationService();
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         Provider<AuthService>(
-            create: (_) => FirebaseAuthService(FirebaseAuth.instance)),
+            create: (_) => FirebaseAuthService(FirebaseAuth.instance, nav)),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
+        navigatorKey: nav.navigatorKey,
         theme: ThemeData(
           brightness: Brightness.light,
           primaryColor: Color.fromRGBO(247, 152, 0, 1),
