@@ -56,10 +56,11 @@ class FirebaseAuthService implements AuthService {
       _navService.displayError(customErrorMessage);
 
       return null;
-    } catch (e) {
+    } catch (e, trace) {
       // non platform specific errors
-      print('caught error: $e');
-      _navService.displayError(e);
+      print('caught unknown firebase auth error: $e');
+      print('stacktrace of error: $trace');
+      _navService.displayError('unkown error occured');
       return null;
     }
   }
