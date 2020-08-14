@@ -19,11 +19,15 @@ void main() {
       code: 'ERROR_USER_NOT_FOUND',
     );
 
+    // setup listener to throw auth error
     when(mockFirebaseAuth.signInWithEmailAndPassword(
             email: 'tamarigray@gmail.com', password: 'password123'))
         .thenThrow(authError);
+
+    // call function
     firebaseAuthService.signInWithEmail('tamarigray@gmail.com', 'password123');
 
+    // check that error message is displayed
     verify(mockNav.displayError('No user found with this email.')).called(1);
   });
 }
