@@ -11,13 +11,15 @@ import 'package:provider/provider.dart';
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
+class MockNavService extends Mock implements NavigationService {}
+
 class MockFirebaseAuthService extends AuthService {
   final bool _successfullAuth;
   final NavigationService _nav;
   MockFirebaseAuthService(this._nav, this._successfullAuth);
   @override
   Future<String> getCurrentUserId() {
-    // return 'yeet';
+    return Future.value('yeet');
   }
 
   Stream<UserData> get streamOfAuthState {}
@@ -39,9 +41,7 @@ class MockFirebaseAuthService extends AuthService {
           providers: null));
     } else {
       final errors = ['user not found', 'wronf password'];
-      // Timer(Duration(seconds: 1), () {
       _nav.displayError(errors[0]);
-      // });
       return Future.value(null);
     }
   }
@@ -80,14 +80,16 @@ void main() {
       await tester.pump();
 
       expect(find.byKey(Key('loading_indicator')), findsOneWidget);
-      await tester.pump();
+      await tester.pumpAndSettle();
 
-      expect(find.text('Lobby'), findsOneWidget);
+      // expect pop sign in
+      expect(emailField, findsNothing);
     });
     testWidgets('auth error: shows dialog with error message',
         (WidgetTester tester) async {
-      final navService = NavigationService();
-      await tester.pumpWidget(MultiProvider(
+      final navService = MockNavService();
+      await tester.pumpWidget(
+        MultiProvider(
           providers: [
             Provider<AuthService>(
                 create: (_) => MockFirebaseAuthService(navService, false)),
@@ -95,7 +97,9 @@ void main() {
           child: MaterialApp(
             navigatorKey: navService.navigatorKey,
             home: SignInScreen(),
-          )));
+          ),
+        ),
+      );
 
       final emailField = find.byKey(Key('email_field'));
       expect(emailField, findsOneWidget);
@@ -107,13 +111,8 @@ void main() {
 
       await tester.tap(find.byKey(Key('sign_in_submit_btn')));
       await tester.pump();
-      await tester.pump();
 
-      // expect(find.byKey(Key('loading_indicator')), findsOneWidget);
-      // await tester.pump();
-
-      expect(find.byKey(Key('error_dialog')), findsOneWidget);
-      expect(find.text('user not found'), findsOneWidget);
+      verify(navService.displayError(any)).called(1);
     });
   });
   group('validation tests', () {
