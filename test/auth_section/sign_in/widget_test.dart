@@ -12,8 +12,9 @@ import 'package:provider/provider.dart';
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
 class MockFirebaseAuthService extends AuthService {
+  final bool _successfullAuth;
   final NavigationService _nav;
-  MockFirebaseAuthService(this._nav);
+  MockFirebaseAuthService(this._nav, this._successfullAuth);
   @override
   Future<String> getCurrentUserId() {
     // return 'yeet';
@@ -23,22 +24,26 @@ class MockFirebaseAuthService extends AuthService {
 
   @override
   Future<UserData> signInWithEmail(String email, String password) async {
-    final errors = ['user not found', 'wronf password'];
-    // Timer(Duration(seconds: 1), () {
-    _nav.displayError(errors[0]);
-    // });
-    return UserData(
-        uid: null,
-        providerId: null,
-        displayName: null,
-        photoUrl: null,
-        email: null,
-        phoneNumber: null,
-        createdOn: null,
-        lastSignedInOn: null,
-        isAnonymous: null,
-        isEmailVerified: null,
-        providers: null);
+    if (_successfullAuth) {
+      return Future.value(UserData(
+          uid: null,
+          providerId: null,
+          displayName: null,
+          photoUrl: null,
+          email: null,
+          phoneNumber: null,
+          createdOn: null,
+          lastSignedInOn: null,
+          isAnonymous: null,
+          isEmailVerified: null,
+          providers: null));
+    } else {
+      final errors = ['user not found', 'wronf password'];
+      // Timer(Duration(seconds: 1), () {
+      _nav.displayError(errors[0]);
+      // });
+      return Future.value(null);
+    }
   }
 
   @override
@@ -49,13 +54,13 @@ class MockFirebaseAuthService extends AuthService {
 
 void main() {
   group('auth tests', () {
-    testWidgets('auth error: shows dialog with error message',
+    testWidgets('navigate to lobby on successfull login',
         (WidgetTester tester) async {
       final navService = NavigationService();
+      final authService = MockFirebaseAuthService(navService, true);
       await tester.pumpWidget(MultiProvider(
           providers: [
-            Provider<AuthService>(
-                create: (_) => MockFirebaseAuthService(navService)),
+            Provider<AuthService>(create: (_) => authService),
           ],
           child: MaterialApp(
             navigatorKey: navService.navigatorKey,
@@ -77,6 +82,36 @@ void main() {
       expect(find.byKey(Key('loading_indicator')), findsOneWidget);
       await tester.pump();
 
+      expect(find.text('Lobby'), findsOneWidget);
+    });
+    testWidgets('auth error: shows dialog with error message',
+        (WidgetTester tester) async {
+      final navService = NavigationService();
+      await tester.pumpWidget(MultiProvider(
+          providers: [
+            Provider<AuthService>(
+                create: (_) => MockFirebaseAuthService(navService, false)),
+          ],
+          child: MaterialApp(
+            navigatorKey: navService.navigatorKey,
+            home: SignInScreen(),
+          )));
+
+      final emailField = find.byKey(Key('email_field'));
+      expect(emailField, findsOneWidget);
+      await tester.enterText(emailField, 'UserDoeasntExist@gmail.com');
+
+      final passwordFeild = find.byKey(Key('password_field'));
+      expect(passwordFeild, findsOneWidget);
+      await tester.enterText(passwordFeild, 'password-test');
+
+      await tester.tap(find.byKey(Key('sign_in_submit_btn')));
+      await tester.pump();
+      await tester.pump();
+
+      // expect(find.byKey(Key('loading_indicator')), findsOneWidget);
+      // await tester.pump();
+
       expect(find.byKey(Key('error_dialog')), findsOneWidget);
       expect(find.text('user not found'), findsOneWidget);
     });
@@ -88,7 +123,7 @@ void main() {
       await tester.pumpWidget(MultiProvider(
           providers: [
             Provider<AuthService>(
-                create: (_) => MockFirebaseAuthService(navService)),
+                create: (_) => MockFirebaseAuthService(navService, false)),
           ],
           child: MaterialApp(
             navigatorKey: navService.navigatorKey,
@@ -109,7 +144,7 @@ void main() {
       await tester.pumpWidget(MultiProvider(
           providers: [
             Provider<AuthService>(
-                create: (_) => MockFirebaseAuthService(navService)),
+                create: (_) => MockFirebaseAuthService(navService, false)),
           ],
           child: MaterialApp(
             navigatorKey: navService.navigatorKey,
@@ -133,7 +168,7 @@ void main() {
       await tester.pumpWidget(MultiProvider(
           providers: [
             Provider<AuthService>(
-                create: (_) => MockFirebaseAuthService(navService)),
+                create: (_) => MockFirebaseAuthService(navService, true)),
           ],
           child: MaterialApp(
             navigatorKey: navService.navigatorKey,
