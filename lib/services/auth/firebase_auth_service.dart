@@ -15,7 +15,7 @@ class FirebaseAuthService implements AuthService {
   @override
   Future<String> getCurrentUserId() async {
     final user = await _firebaseAuth.currentUser();
-    return user.uid;
+    return user?.uid;
   }
 
   @override
@@ -56,10 +56,11 @@ class FirebaseAuthService implements AuthService {
       _navService.displayError(customErrorMessage);
 
       return null;
-    } catch (e) {
+    } catch (e, trace) {
       // non platform specific errors
-      print('caught error: $e');
-      _navService.displayError(e);
+      print('caught unknown firebase auth error: $e');
+      print('stacktrace of error: $trace');
+      _navService.displayError('unkown error occured');
       return null;
     }
   }

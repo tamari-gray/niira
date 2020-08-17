@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:niira/loading.dart';
+import 'package:niira/models/user_data.dart';
 import 'package:niira/screens/create_account.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:provider/provider.dart';
@@ -120,8 +121,10 @@ class _SignInScreenState extends State<SignInScreen> {
                                 .read<AuthService>()
                                 .signInWithEmail(_email, _password);
 
-                            // stop loading animation
-                            if (authResult == null) {
+                            // go to lobby if successfull login
+                            if (authResult is UserData) {
+                              Navigator.pop(context);
+                            } else if (authResult == null) {
                               setState(() {
                                 _waitingForAuthResult = false;
                               });
