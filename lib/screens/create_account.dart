@@ -167,10 +167,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                             onTap: () {
                               _formKey.currentState.reset();
                               _clearForm();
-                              Navigator.push<dynamic>(
+                              Navigator.pushReplacement<dynamic, dynamic>(
                                 context,
                                 MaterialPageRoute<dynamic>(
-                                    builder: (context) => SignInScreen()),
+                                  builder: (context) => SignInScreen(),
+                                ),
                               );
                             }),
                       ],
