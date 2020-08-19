@@ -86,45 +86,4 @@ void main() {
       expect(find.byKey(Key('loading_indicator')), findsOneWidget);
     });
   });
-  group('navigation tests', () {
-    NavigatorObserver mockObserver;
-
-    setUp(() {
-      mockObserver = MockNavigatorObserver();
-    });
-
-    testWidgets(
-        'clears form before navigating between create account/sign in screens',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(
-        home: CreateAccountScreen(),
-        navigatorObservers: [mockObserver],
-      ));
-
-      final emailField = find.byKey(Key('email_field'));
-      expect(emailField, findsOneWidget);
-
-      await tester.enterText(emailField, 'not_a_valid_email');
-
-      await tester.tap(find.byKey(Key('navigate_to_sign_in_link')));
-      await tester.pump();
-
-      expect(find.text('not_a_valid_email'), findsNothing);
-      await tester.pumpAndSettle();
-
-      verify(mockObserver.didPush(any, any));
-
-      expect(
-          find.byKey(Key('navigate_to_create_account_link')), findsOneWidget);
-
-      await tester.tap(find.byKey(Key('navigate_to_create_account_link')));
-      await tester.pumpAndSettle();
-
-      verify(mockObserver.didPush(any, any));
-
-      expect(find.byKey(Key('navigate_to_sign_in_link')), findsOneWidget);
-
-      expect(find.text('not_a_valid_email'), findsNothing);
-    });
-  });
 }
