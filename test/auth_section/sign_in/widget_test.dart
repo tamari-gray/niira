@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:niira/models/user_data.dart';
+import 'package:niira/screens/create_account.dart';
 import 'package:niira/screens/sign_in.dart';
+import 'package:niira/screens/welcome.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/navigation_service.dart';
 import 'package:provider/provider.dart';
@@ -179,18 +181,11 @@ void main() {
     });
   });
   group('navigation tests', () {
-    NavigatorObserver mockObserver;
-
-    setUp(() {
-      mockObserver = MockNavigatorObserver();
-    });
-
     testWidgets(
         'clears form before navigating between sign in/create account screens',
         (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
         home: SignInScreen(),
-        navigatorObservers: [mockObserver],
       ));
 
       expect(emailField(), findsOneWidget);
@@ -198,19 +193,12 @@ void main() {
       await tester.enterText(emailField(), 'not_a_valid_email');
 
       await tester.tap(find.byKey(Key('navigate_to_create_account_link')));
-      await tester.pump();
-
-      expect(find.text('not_a_valid_email'), findsNothing);
       await tester.pumpAndSettle();
-
-      verify(mockObserver.didPush(any, any));
 
       expect(find.byKey(Key('navigate_to_sign_in_link')), findsOneWidget);
 
       await tester.tap(find.byKey(Key('navigate_to_sign_in_link')));
       await tester.pumpAndSettle();
-
-      verify(mockObserver.didPush(any, any));
 
       expect(
           find.byKey(Key('navigate_to_create_account_link')), findsOneWidget);
