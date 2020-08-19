@@ -181,18 +181,11 @@ void main() {
     });
   });
   group('navigation tests', () {
-    NavigatorObserver _mockObserver;
-
-    setUp(() {
-      _mockObserver = MockNavigatorObserver();
-    });
-
     testWidgets(
         'clears form before navigating between sign in/create account screens',
         (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
         home: SignInScreen(),
-        navigatorObservers: [_mockObserver],
       ));
 
       expect(emailField(), findsOneWidget);
