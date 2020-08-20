@@ -5,7 +5,6 @@ import 'package:niira/screens/create_account.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/navigation_service.dart';
 import 'package:provider/provider.dart';
-
 import '../sign_in/widget_test.dart';
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
@@ -14,23 +13,23 @@ class MockNavService extends Mock implements NavigationService {}
 
 void main() {
   Widget makeTestableCreateAccountWidget(
-      NavigationService mockNav, MockFirebaseAuthService mockAuth) {
+      MockNavService mockNavService, FakeFirebaseAuthService mockAuth) {
     return MultiProvider(
         providers: [
           Provider<AuthService>(create: (_) => mockAuth),
         ],
         child: MaterialApp(
-          navigatorKey: mockNav.navigatorKey,
+          navigatorKey: mockNavService.navigatorKey,
           home: CreateAccountScreen(),
         ));
   }
 
   group('auth tests', () {
-    testWidgets('navigate to lobby on successfull login',
+    testWidgets('navigate to lobby on successfull create account',
         (WidgetTester tester) async {
       //set up for testing
       final _mockNavService = MockNavService();
-      final _mockAuthService = MockFirebaseAuthService(_mockNavService, true);
+      final _mockAuthService = FakeFirebaseAuthService(_mockNavService, true);
       await tester.pumpWidget(
           makeTestableCreateAccountWidget(_mockNavService, _mockAuthService));
 
@@ -67,11 +66,11 @@ void main() {
       //set up for testing
       final _mockNavService = MockNavService();
       // return firebase auth error
-      final _mockAuthService = MockFirebaseAuthService(_mockNavService, false);
+      final _mockAuthService = FakeFirebaseAuthService(_mockNavService, false);
       await tester.pumpWidget(
           makeTestableCreateAccountWidget(_mockNavService, _mockAuthService));
 
-      // submit valid credentials
+      // submit credentials of already created account
       final emailField = find.byKey(Key('email_field'));
       expect(emailField, findsOneWidget);
       await tester.enterText(emailField, 'tamarigray97@gmail.com');
@@ -101,7 +100,7 @@ void main() {
       //set up for testing
       final _mockNavService = MockNavService();
       // return firebase auth error
-      final _mockAuthService = MockFirebaseAuthService(_mockNavService, false);
+      final _mockAuthService = FakeFirebaseAuthService(_mockNavService, false);
       await tester.pumpWidget(
           makeTestableCreateAccountWidget(_mockNavService, _mockAuthService));
 
@@ -121,7 +120,7 @@ void main() {
       //set up for testing
       final _mockNavService = MockNavService();
       // return firebase auth error
-      final _mockAuthService = MockFirebaseAuthService(_mockNavService, false);
+      final _mockAuthService = FakeFirebaseAuthService(_mockNavService, false);
       await tester.pumpWidget(
           makeTestableCreateAccountWidget(_mockNavService, _mockAuthService));
 
@@ -154,7 +153,7 @@ void main() {
         (WidgetTester tester) async {
       //set up for testing
       final _mockNavService = MockNavService();
-      final _mockAuthService = MockFirebaseAuthService(_mockNavService, true);
+      final _mockAuthService = FakeFirebaseAuthService(_mockNavService, true);
       await tester.pumpWidget(
           makeTestableCreateAccountWidget(_mockNavService, _mockAuthService));
 

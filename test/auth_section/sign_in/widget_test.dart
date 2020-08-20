@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:niira/models/user_data.dart';
-import 'package:niira/screens/create_account.dart';
 import 'package:niira/screens/sign_in.dart';
-import 'package:niira/screens/welcome.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/navigation_service.dart';
 import 'package:provider/provider.dart';
@@ -15,17 +13,10 @@ class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
 class MockNavService extends Mock implements NavigationService {}
 
-class MockFirebaseAuthService extends AuthService {
+class FakeFirebaseAuthService extends Fake implements AuthService {
   final bool _successfullAuth;
   final NavigationService _nav;
-  MockFirebaseAuthService(this._nav, this._successfullAuth);
-  @override
-  Future<String> getCurrentUserId() {
-    return Future.value('yeet');
-  }
-
-  @override
-  Stream<UserData> get streamOfAuthState {}
+  FakeFirebaseAuthService(this._nav, this._successfullAuth);
 
   @override
   Future<UserData> createUserAccount(String email, String password) async {
@@ -70,11 +61,6 @@ class MockFirebaseAuthService extends AuthService {
       return Future.value(null);
     }
   }
-
-  @override
-  Future<void> signOut() {
-    return null;
-  }
 }
 
 void main() {
@@ -107,7 +93,7 @@ void main() {
   }
 
   Widget makeTestableSignInWidget(
-      NavigationService mockNav, MockFirebaseAuthService mockAuth) {
+      NavigationService mockNav, FakeFirebaseAuthService mockAuth) {
     return MultiProvider(
         providers: [
           Provider<AuthService>(create: (_) => mockAuth),
@@ -123,7 +109,7 @@ void main() {
         (WidgetTester tester) async {
       //set up for testing
       final _mockNavService = MockNavService();
-      final _mockAuthService = MockFirebaseAuthService(_mockNavService, true);
+      final _mockAuthService = FakeFirebaseAuthService(_mockNavService, true);
       await tester.pumpWidget(
           makeTestableSignInWidget(_mockNavService, _mockAuthService));
 
@@ -142,7 +128,7 @@ void main() {
       //set up for testing
       final _mockNavService = MockNavService();
       // return firebase auth error
-      final _mockAuthService = MockFirebaseAuthService(_mockNavService, false);
+      final _mockAuthService = FakeFirebaseAuthService(_mockNavService, false);
       await tester.pumpWidget(
           makeTestableSignInWidget(_mockNavService, _mockAuthService));
 
@@ -157,7 +143,7 @@ void main() {
         (WidgetTester tester) async {
       //set up for testing
       final _mockNavService = MockNavService();
-      final _mockAuthService = MockFirebaseAuthService(_mockNavService, true);
+      final _mockAuthService = FakeFirebaseAuthService(_mockNavService, true);
       await tester.pumpWidget(
           makeTestableSignInWidget(_mockNavService, _mockAuthService));
 
@@ -173,7 +159,7 @@ void main() {
         (WidgetTester tester) async {
       //set up for testing
       final _mockNavService = MockNavService();
-      final _mockAuthService = MockFirebaseAuthService(_mockNavService, true);
+      final _mockAuthService = FakeFirebaseAuthService(_mockNavService, true);
       await tester.pumpWidget(
           makeTestableSignInWidget(_mockNavService, _mockAuthService));
 
@@ -191,7 +177,7 @@ void main() {
         (WidgetTester tester) async {
       //set up for testing
       final _mockNavService = NavigationService();
-      final _mockAuthService = MockFirebaseAuthService(_mockNavService, true);
+      final _mockAuthService = FakeFirebaseAuthService(_mockNavService, true);
       await tester.pumpWidget(
           makeTestableSignInWidget(_mockNavService, _mockAuthService));
 
