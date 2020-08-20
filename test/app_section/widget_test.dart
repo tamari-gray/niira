@@ -6,10 +6,10 @@ import 'package:niira/main.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/services/auth/auth_service.dart';
 
-class FakeAuthService implements AuthService {
+class FakeAuthServiceAppSection implements AuthService {
   final StreamController<UserData> _controller;
 
-  FakeAuthService(this._controller);
+  FakeAuthServiceAppSection(this._controller);
 
   @override
   Future<String> getCurrentUserId() => Future.value('id');
@@ -45,7 +45,7 @@ void main() {
         (WidgetTester tester) async {
       // create a controller that the fake auth servive will hold
       final controller = StreamController<UserData>();
-      final fakeAuthService = FakeAuthService(controller);
+      final fakeAuthService = FakeAuthServiceAppSection(controller);
       controller.add(null);
 
       // create the widget under test

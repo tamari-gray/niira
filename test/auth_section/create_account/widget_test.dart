@@ -13,7 +13,7 @@ class MockNavService extends Mock implements NavigationService {}
 
 void main() {
   Widget makeTestableCreateAccountWidget(
-      MockNavService mockNavService, FakeFirebaseAuthService mockAuth) {
+      MockNavService mockNavService, FakeAuthService mockAuth) {
     return MultiProvider(
         providers: [
           Provider<AuthService>(create: (_) => mockAuth),
@@ -29,7 +29,7 @@ void main() {
         (WidgetTester tester) async {
       //set up for testing
       final _mockNavService = MockNavService();
-      final _mockAuthService = FakeFirebaseAuthService(_mockNavService, true);
+      final _mockAuthService = FakeAuthService(_mockNavService, true);
       await tester.pumpWidget(
           makeTestableCreateAccountWidget(_mockNavService, _mockAuthService));
 
@@ -66,7 +66,7 @@ void main() {
       //set up for testing
       final _mockNavService = MockNavService();
       // return firebase auth error
-      final _mockAuthService = FakeFirebaseAuthService(_mockNavService, false);
+      final _mockAuthService = FakeAuthService(_mockNavService, false);
       await tester.pumpWidget(
           makeTestableCreateAccountWidget(_mockNavService, _mockAuthService));
 
@@ -100,7 +100,7 @@ void main() {
       //set up for testing
       final _mockNavService = MockNavService();
       // return firebase auth error
-      final _mockAuthService = FakeFirebaseAuthService(_mockNavService, false);
+      final _mockAuthService = FakeAuthService(_mockNavService, false);
       await tester.pumpWidget(
           makeTestableCreateAccountWidget(_mockNavService, _mockAuthService));
 
@@ -120,7 +120,7 @@ void main() {
       //set up for testing
       final _mockNavService = MockNavService();
       // return firebase auth error
-      final _mockAuthService = FakeFirebaseAuthService(_mockNavService, false);
+      final _mockAuthService = FakeAuthService(_mockNavService, false);
       await tester.pumpWidget(
           makeTestableCreateAccountWidget(_mockNavService, _mockAuthService));
 
@@ -153,7 +153,7 @@ void main() {
         (WidgetTester tester) async {
       //set up for testing
       final _mockNavService = MockNavService();
-      final _mockAuthService = FakeFirebaseAuthService(_mockNavService, true);
+      final _mockAuthService = FakeAuthService(_mockNavService, true);
       await tester.pumpWidget(
           makeTestableCreateAccountWidget(_mockNavService, _mockAuthService));
 
