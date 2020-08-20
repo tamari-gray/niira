@@ -59,7 +59,10 @@ void main() {
     expect((signOutBtn), findsOneWidget);
     await tester.tap(signOutBtn);
     await tester.pump();
-    await tester.pump();
+
+    // confirm sign out
+    await tester.tap(find.byKey(Key('confirmSignOutBtn')));
+    await tester.pumpAndSettle();
 
     // observe loading icon
     // expect(find.byKey(Key('loading_indicator')), findsOneWidget);
