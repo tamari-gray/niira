@@ -26,9 +26,6 @@ class FakeAuthServiceLobby extends Fake implements AuthService {
   FakeAuthServiceLobby(this._controller);
 
   @override
-  Future<String> getCurrentUserId() => Future.value('id');
-
-  @override
   Future<void> signOut() {
     _controller.add(null);
     return Future.value(true);
@@ -63,10 +60,6 @@ void main() {
     // confirm sign out
     await tester.tap(find.byKey(Key('confirmSignOutBtn')));
     await tester.pumpAndSettle();
-
-    // observe loading icon
-    // expect(find.byKey(Key('loading_indicator')), findsOneWidget);
-    // await tester.pumpAndSettle();
 
     // check the lobby screen is no longer present
     expect(find.text('Lobby'), findsNothing);
