@@ -23,6 +23,38 @@ class FirebaseAuthService implements AuthService {
       .map((firebaseUser) => firebaseUser.toData());
 
   @override
+  Future<UserData> createUserAccount(String email, String password) async {
+    try {
+      final result = await _firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      return result.user.toData();
+    } on PlatformException catch (error) {
+      String customErrorMessage;
+      switch (error.code) {
+        case 'ERROR_WEAK_PASSWORD':
+          customErrorMessage = 'password is too weak.';
+          break;
+        case 'ERROR_INVALID_EMAIL':
+          customErrorMessage = 'Invalid email address';
+          break;
+        case 'ERROR_EMAIL_ALREADY_IN_USE':
+          customErrorMessage = 'Email already in use, please try';
+          break;
+        default:
+          customErrorMessage = 'An undefined Error happened.';
+      }
+      _navService.displayError(customErrorMessage);
+
+      return null;
+    } catch (e) {
+      // non platform specific errors
+      print('caught error: $e');
+      _navService.displayError(e);
+      return null;
+    }
+  }
+
+  @override
   Future<UserData> signInWithEmail(String email, String password) async {
     try {
       final result = await _firebaseAuth.signInWithEmailAndPassword(

@@ -28,6 +28,28 @@ class MockFirebaseAuthService extends AuthService {
   Stream<UserData> get streamOfAuthState {}
 
   @override
+  Future<UserData> createUserAccount(String email, String password) async {
+    if (_successfullAuth) {
+      return Future.value(UserData(
+          uid: null,
+          providerId: null,
+          displayName: null,
+          photoUrl: null,
+          email: null,
+          phoneNumber: null,
+          createdOn: null,
+          lastSignedInOn: null,
+          isAnonymous: null,
+          isEmailVerified: null,
+          providers: null));
+    } else {
+      final errors = ['email in use', 'wronf password'];
+      _nav.displayError(errors[0]);
+      return Future.value(null);
+    }
+  }
+
+  @override
   Future<UserData> signInWithEmail(String email, String password) async {
     if (_successfullAuth) {
       return Future.value(UserData(

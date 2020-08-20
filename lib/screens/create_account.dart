@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:niira/loading.dart';
+import 'package:niira/models/user_data.dart';
 import 'package:niira/screens/sign_in.dart';
+import 'package:niira/services/auth/auth_service.dart';
+import 'package:provider/provider.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({Key key}) : super(key: key);
@@ -144,13 +147,25 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         RaisedButton(
                           key: Key('create_account_submit_btn'),
                           color: Theme.of(context).primaryColor,
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState.validate()) {
                               setState(() {
                                 _waitingForAuthResult = true;
                               });
                             } else {
                               _autoValidateForm = true;
+                            }
+                            final authResult = await context
+                                .read<AuthService>()
+                                .createUserAccount(_email, _password);
+
+                            // go to lobby if successfull login
+                            if (authResult is UserData) {
+                              Navigator.pop(context);
+                            } else if (authResult == null) {
+                              setState(() {
+                                _waitingForAuthResult = false;
+                              });
                             }
                           },
                           child: Text('Submit'),

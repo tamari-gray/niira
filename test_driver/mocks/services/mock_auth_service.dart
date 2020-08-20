@@ -15,6 +15,9 @@ class MockAuthService implements AuthService {
   Stream<UserData> get streamOfAuthState => _controller.stream;
 
   @override
+  Future<UserData> createUserAccount(String email, String password) {}
+
+  @override
   Future<UserData> signInWithEmail(String email, String password) {
     final data = UserData(
         uid: 'uid',

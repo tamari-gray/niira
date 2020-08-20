@@ -15,6 +15,9 @@ class FakeAuthService implements AuthService {
   Future<String> getCurrentUserId() => Future.value('id');
 
   @override
+  Future<UserData> createUserAccount(String email, String password) {}
+
+  @override
   Future<UserData> signInWithEmail(String email, String password) =>
       Future.value(UserData(
           uid: 'uid',
