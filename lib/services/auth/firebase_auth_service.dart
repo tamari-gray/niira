@@ -13,13 +13,11 @@ class FirebaseAuthService implements AuthService {
   FirebaseAuthService(this._firebaseAuth, this._navService);
 
   @override
-  Future<String> getCurrentUserId() async {
-    final user = await _firebaseAuth.currentUser();
-    return user?.uid;
-  }
+  String get currentUserId => _firebaseAuth.currentUser?.uid;
 
   @override
-  Stream<UserData> get streamOfAuthState => _firebaseAuth.onAuthStateChanged
+  Stream<UserData> get streamOfAuthState => _firebaseAuth
+      .authStateChanges()
       .map((firebaseUser) => firebaseUser.toData());
 
   @override
@@ -27,6 +25,7 @@ class FirebaseAuthService implements AuthService {
     try {
       final result = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
+
       return result.user.toData();
     } on PlatformException catch (error) {
       String customErrorMessage;

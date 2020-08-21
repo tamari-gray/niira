@@ -1,8 +1,8 @@
-import 'package:firebase/firestore.dart';
 import 'package:niira/services/database/database_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreService implements DatabaseService {
-  final Firestore _firestore;
+  final FirebaseFirestore _firestore;
 
   FirestoreService(this._firestore);
 
@@ -10,9 +10,9 @@ class FirestoreService implements DatabaseService {
   Future<bool> usernameAlreadyExists(String username) async {
     final snapshot = await _firestore
         .collection('players')
-        .where('username', '==', username)
+        .where('username', isEqualTo: username)
         .get();
-    return !snapshot.empty;
+    return snapshot.docs.isNotEmpty;
   }
 
   @override

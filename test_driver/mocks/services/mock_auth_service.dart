@@ -9,7 +9,7 @@ class MockAuthService implements AuthService {
   MockAuthService(this._controller);
 
   @override
-  Future<String> getCurrentUserId() => Future.value('uid');
+  String get currentUserId => 'uid';
 
   @override
   Stream<UserData> get streamOfAuthState => _controller.stream;
@@ -21,9 +21,8 @@ class MockAuthService implements AuthService {
   Future<UserData> signInWithEmail(String email, String password) {
     final data = UserData(
         uid: 'uid',
-        providerId: 'provideId',
         displayName: 'name',
-        photoUrl: 'url',
+        photoURL: 'url',
         email: email,
         phoneNumber: '123',
         createdOn: DateTime.now(),

@@ -3,6 +3,7 @@ import 'package:niira/loading.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/screens/sign_in.dart';
 import 'package:niira/services/auth/auth_service.dart';
+import 'package:niira/services/database/database_service.dart';
 import 'package:provider/provider.dart';
 
 class CreateAccountScreen extends StatefulWidget {
@@ -155,9 +156,17 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                             } else {
                               _autoValidateForm = true;
                             }
+
+                            // create user account
                             final authResult = await context
                                 .read<AuthService>()
                                 .createUserAccount(_email, _password);
+
+                            // add username to db
+                            final userId = authResult.uid;
+                            await context
+                                .read<DatabaseService>()
+                                .addUsername(userId, _userName);
 
                             // go to lobby if successfull login
                             if (authResult is UserData) {

@@ -5,26 +5,34 @@ import 'package:niira/screens/welcome.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/firebase_auth_service.dart';
 import 'package:niira/services/auth/navigation_service.dart';
+import 'package:niira/services/database/database_service.dart';
+import 'package:niira/services/database/firestore_service.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() {
   final nav = NavigationService();
 
   final authService = FirebaseAuthService(FirebaseAuth.instance, nav);
-  runApp(MyApp(authService, nav.navigatorKey));
+  final firestoreInstance = FirebaseFirestore.instance;
+  final dbService = FirestoreService(firestoreInstance);
+
+  runApp(MyApp(authService, nav.navigatorKey, dbService));
 }
 
 class MyApp extends StatelessWidget {
   final AuthService _authService;
+  final DatabaseService _firestoreService;
   final GlobalKey<NavigatorState> _navigatorKey;
 
-  MyApp(this._authService, this._navigatorKey);
+  MyApp(this._authService, this._navigatorKey, this._firestoreService);
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         Provider<AuthService>.value(value: _authService),
+        Provider<DatabaseService>.value(value: _firestoreService),
       ],
       child: MaterialApp(
           title: 'Flutter Demo',

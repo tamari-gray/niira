@@ -2,28 +2,25 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:niira/main.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/services/auth/auth_service.dart';
+import 'package:niira/services/database/database_service.dart';
 
-class FakeAuthServiceAppSection implements AuthService {
+class FakeDatabaseService extends Fake implements DatabaseService {}
+
+class FakeAuthServiceAppSection extends Fake implements AuthService {
   final StreamController<UserData> _controller;
 
   FakeAuthServiceAppSection(this._controller);
 
   @override
-  Future<String> getCurrentUserId() => Future.value('id');
-
-  @override
-  Future<UserData> createUserAccount(String email, String password) {}
-
-  @override
   Future<UserData> signInWithEmail(String email, String password) =>
       Future.value(UserData(
           uid: 'uid',
-          providerId: 'google.com',
           displayName: 'name',
-          photoUrl: 'url',
+          photoURL: 'url',
           email: 'email@gmail.com',
           phoneNumber: '123',
           createdOn: DateTime.now(),
@@ -33,10 +30,10 @@ class FakeAuthServiceAppSection implements AuthService {
           providers: []));
 
   @override
-  Future<void> signOut() => Future.value();
+  Stream<UserData> get streamOfAuthState => _controller.stream;
 
   @override
-  Stream<UserData> get streamOfAuthState => _controller.stream;
+  String get currentUserId => 'uid';
 }
 
 void main() {
@@ -46,11 +43,12 @@ void main() {
       // create a controller that the fake auth servive will hold
       final controller = StreamController<UserData>();
       final fakeAuthService = FakeAuthServiceAppSection(controller);
+      final fakeDBService = FakeDatabaseService();
       controller.add(null);
 
       // create the widget under test
-      await tester
-          .pumpWidget(MyApp(fakeAuthService, GlobalKey<NavigatorState>()));
+      await tester.pumpWidget(
+          MyApp(fakeAuthService, GlobalKey<NavigatorState>(), fakeDBService));
 
       // check the welcome screen is present
       expect(find.byKey(Key('navigateToCreateAccount')), findsOneWidget);
