@@ -9,12 +9,13 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  firebase:
   flutter:
     sdk: flutter
 
   provider:
+  firebase_core:
   firebase_auth:
+  cloud_firestore:
   flutter_spinkit:
 
 dev_dependencies:
