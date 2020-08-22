@@ -162,16 +162,18 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                 .read<AuthService>()
                                 .createUserAccount(_email, _password);
 
-                            // add username to db
-                            final userId = authResult.uid;
-                            await context
-                                .read<DatabaseService>()
-                                .addUsername(userId, _userName);
-
-                            // go to lobby if successfull login
+                            // successfull login
                             if (authResult is UserData) {
+                              // add username to db
+                              final userId = authResult.uid;
+                              await context
+                                  .read<DatabaseService>()
+                                  .addUsername(userId, _userName);
+
+                              // go to lobby
                               Navigator.pop(context);
                             } else if (authResult == null) {
+                              // unsuccessfull create account
                               setState(() {
                                 _waitingForAuthResult = false;
                               });

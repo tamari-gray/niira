@@ -19,6 +19,6 @@ class FirestoreService implements DatabaseService {
   Future<void> addUsername(String userId, String username) {
     return _firestore
         .doc('players/$userId')
-        .set(<String, Object>{'username': username}, SetOptions(merge: true));
+        .set(<String, String>{'username': username}, SetOptions(merge: true));
   }
 }

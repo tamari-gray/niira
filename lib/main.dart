@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:niira/screens/lobby.dart';
 import 'package:niira/screens/welcome.dart';
@@ -10,9 +11,17 @@ import 'package:niira/services/database/firestore_service.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-void main() {
-  final nav = NavigationService();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // init firebase
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    // show user an error message
+  }
 
+  // init services
+  final nav = NavigationService();
   final authService = FirebaseAuthService(FirebaseAuth.instance, nav);
   final firestoreInstance = FirebaseFirestore.instance;
   final dbService = FirestoreService(firestoreInstance);

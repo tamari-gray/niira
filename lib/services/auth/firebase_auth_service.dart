@@ -25,9 +25,8 @@ class FirebaseAuthService implements AuthService {
     try {
       final result = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
-
       return result.user.toData();
-    } on PlatformException catch (error) {
+    } on FirebaseAuthException catch (error) {
       String customErrorMessage;
       switch (error.code) {
         case 'ERROR_WEAK_PASSWORD':
@@ -37,13 +36,12 @@ class FirebaseAuthService implements AuthService {
           customErrorMessage = 'Invalid email address';
           break;
         case 'ERROR_EMAIL_ALREADY_IN_USE':
-          customErrorMessage = 'Email already in use, please try';
+          customErrorMessage = 'Email already in use, please try again';
           break;
         default:
           customErrorMessage = 'An undefined Error happened.';
       }
       _navService.displayError(customErrorMessage);
-
       return null;
     } catch (e) {
       // non platform specific errors
@@ -59,7 +57,7 @@ class FirebaseAuthService implements AuthService {
       final result = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
       return result.user.toData();
-    } on PlatformException catch (error) {
+    } on FirebaseAuthException catch (error) {
       String customErrorMessage;
       switch (error.code) {
         case 'ERROR_INVALID_EMAIL':
