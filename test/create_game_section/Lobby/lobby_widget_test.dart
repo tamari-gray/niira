@@ -7,11 +7,12 @@ import 'package:niira/main.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/services/auth/auth_service.dart';
 
+import '../../app_section/widget_test.dart';
+
 final UserData mockUser = UserData(
     uid: 'uid',
-    providerId: 'google.com',
     displayName: 'name',
-    photoUrl: 'url',
+    photoURL: 'url',
     email: 'email@gmail.com',
     phoneNumber: '123',
     createdOn: DateTime.now(),
@@ -42,10 +43,12 @@ void main() {
     // create a controller that the fake auth servive will hold
     final controller = StreamController<UserData>();
     final fakeAuthService = FakeAuthServiceLobby(controller);
+    final fakeDBService = FakeDatabaseService();
 
     // create the widget under test
-    await tester
-        .pumpWidget(MyApp(fakeAuthService, GlobalKey<NavigatorState>()));
+    await tester.pumpWidget(
+      MyApp(fakeAuthService, GlobalKey<NavigatorState>(), fakeDBService),
+    );
 
     //sign in the user
     controller.add(mockUser);
