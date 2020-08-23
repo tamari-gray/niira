@@ -4,6 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:niira/screens/create_account.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/navigation_service.dart';
+import 'package:niira/services/database/database_service.dart';
 import 'package:provider/provider.dart';
 import '../sign_in/widget_test.dart';
 
@@ -11,12 +12,15 @@ class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
 class MockNavService extends Mock implements NavigationService {}
 
+class MockDBService extends Mock implements DatabaseService {}
+
 void main() {
-  Widget makeTestableCreateAccountWidget(
-      MockNavService mockNavService, FakeAuthService mockAuth) {
+  Widget makeTestableCreateAccountWidget(MockNavService mockNavService,
+      FakeAuthService mockAuth, MockDBService mockDBService) {
     return MultiProvider(
         providers: [
           Provider<AuthService>(create: (_) => mockAuth),
+          Provider<DatabaseService>(create: (_) => mockDBService)
         ],
         child: MaterialApp(
           navigatorKey: mockNavService.navigatorKey,
@@ -30,8 +34,9 @@ void main() {
       //set up for testing
       final _mockNavService = MockNavService();
       final _mockAuthService = FakeAuthService(_mockNavService, true);
-      await tester.pumpWidget(
-          makeTestableCreateAccountWidget(_mockNavService, _mockAuthService));
+      final _mockDBService = MockDBService();
+      await tester.pumpWidget(makeTestableCreateAccountWidget(
+          _mockNavService, _mockAuthService, _mockDBService));
 
       // submit valid credentials
       final emailField = find.byKey(Key('email_field'));
@@ -67,8 +72,13 @@ void main() {
       final _mockNavService = MockNavService();
       // return firebase auth error
       final _mockAuthService = FakeAuthService(_mockNavService, false);
-      await tester.pumpWidget(
-          makeTestableCreateAccountWidget(_mockNavService, _mockAuthService));
+      final _mockDBService = MockDBService();
+
+      await tester.pumpWidget(makeTestableCreateAccountWidget(
+        _mockNavService,
+        _mockAuthService,
+        _mockDBService,
+      ));
 
       // submit credentials of already created account
       final emailField = find.byKey(Key('email_field'));
@@ -101,8 +111,13 @@ void main() {
       final _mockNavService = MockNavService();
       // return firebase auth error
       final _mockAuthService = FakeAuthService(_mockNavService, false);
-      await tester.pumpWidget(
-          makeTestableCreateAccountWidget(_mockNavService, _mockAuthService));
+      final _mockDBService = MockDBService();
+
+      await tester.pumpWidget(makeTestableCreateAccountWidget(
+        _mockNavService,
+        _mockAuthService,
+        _mockDBService,
+      ));
 
       // press submit with empty form
       await tester.tap(find.byKey(Key('create_account_submit_btn')));
@@ -121,8 +136,13 @@ void main() {
       final _mockNavService = MockNavService();
       // return firebase auth error
       final _mockAuthService = FakeAuthService(_mockNavService, false);
-      await tester.pumpWidget(
-          makeTestableCreateAccountWidget(_mockNavService, _mockAuthService));
+      final _mockDBService = MockDBService();
+
+      await tester.pumpWidget(makeTestableCreateAccountWidget(
+        _mockNavService,
+        _mockAuthService,
+        _mockDBService,
+      ));
 
       // input invalid text into fields
       final emailField = find.byKey(Key('email_field'));
@@ -154,8 +174,13 @@ void main() {
       //set up for testing
       final _mockNavService = MockNavService();
       final _mockAuthService = FakeAuthService(_mockNavService, true);
-      await tester.pumpWidget(
-          makeTestableCreateAccountWidget(_mockNavService, _mockAuthService));
+      final _mockDBService = MockDBService();
+
+      await tester.pumpWidget(makeTestableCreateAccountWidget(
+        _mockNavService,
+        _mockAuthService,
+        _mockDBService,
+      ));
 
       // submit valid credentials
       final emailField = find.byKey(Key('email_field'));

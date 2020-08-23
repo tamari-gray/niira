@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/services/auth/auth_service.dart';
 
@@ -29,14 +28,17 @@ class FirebaseAuthService implements AuthService {
     } on FirebaseAuthException catch (error) {
       String customErrorMessage;
       switch (error.code) {
-        case 'ERROR_WEAK_PASSWORD':
+        case 'weak-password':
           customErrorMessage = 'password is too weak.';
           break;
-        case 'ERROR_INVALID_EMAIL':
+        case 'invalid-email':
           customErrorMessage = 'Invalid email address';
           break;
-        case 'ERROR_EMAIL_ALREADY_IN_USE':
+        case 'email-already-in-use':
           customErrorMessage = 'Email already in use, please try again';
+          break;
+        case 'operation-not-allowed:':
+          customErrorMessage = 'authentication error, operation not allowed';
           break;
         default:
           customErrorMessage = 'An undefined Error happened.';
@@ -60,24 +62,17 @@ class FirebaseAuthService implements AuthService {
     } on FirebaseAuthException catch (error) {
       String customErrorMessage;
       switch (error.code) {
-        case 'ERROR_INVALID_EMAIL':
+        case 'invalid-email':
           customErrorMessage = 'Invalid email address.';
           break;
-        case 'ERROR_WRONG_PASSWORD':
+        case 'wrong-password':
           customErrorMessage = 'Wrong password for this account.';
           break;
-        case 'ERROR_USER_NOT_FOUND':
+        case 'user-not-found':
           customErrorMessage = 'No user found with this email.';
           break;
-        case 'ERROR_USER_DISABLED':
+        case 'user-disabled':
           customErrorMessage = 'User with this email has been disabled.';
-          break;
-        case 'ERROR_TOO_MANY_REQUESTS':
-          customErrorMessage = 'Too many requests. Try again later.';
-          break;
-        case 'ERROR_OPERATION_NOT_ALLOWED':
-          customErrorMessage =
-              'Signing in with Email and Password is not enabled.';
           break;
         default:
           customErrorMessage = 'An undefined Error happened.';
