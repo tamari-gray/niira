@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
 import 'package:mockito/mockito.dart';
 import 'package:niira/services/auth/firebase_auth_service.dart';
 import 'package:niira/services/auth/navigation_service.dart';
