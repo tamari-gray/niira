@@ -23,9 +23,8 @@ class FakeAuthService extends Fake implements AuthService {
     if (_successfullAuth) {
       return Future.value(UserData(
           uid: null,
-          providerId: null,
           displayName: null,
-          photoUrl: null,
+          photoURL: null,
           email: null,
           phoneNumber: null,
           createdOn: null,
@@ -45,9 +44,8 @@ class FakeAuthService extends Fake implements AuthService {
     if (_successfullAuth) {
       return Future.value(UserData(
           uid: null,
-          providerId: null,
           displayName: null,
-          photoUrl: null,
+          photoURL: null,
           email: null,
           phoneNumber: null,
           createdOn: null,

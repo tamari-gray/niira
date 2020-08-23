@@ -4,9 +4,8 @@ import 'package:meta/meta.dart';
 
 class UserData {
   final String uid;
-  final String providerId;
   final String displayName;
-  final String photoUrl;
+  final String photoURL;
   final String email;
   final String phoneNumber;
   final DateTime createdOn;
@@ -17,9 +16,8 @@ class UserData {
 
   UserData({
     @required this.uid,
-    @required this.providerId,
     @required this.displayName,
-    @required this.photoUrl,
+    @required this.photoURL,
     @required this.email,
     @required this.phoneNumber,
     @required this.createdOn,

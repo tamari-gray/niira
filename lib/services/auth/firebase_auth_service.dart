@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/services/auth/auth_service.dart';
 
@@ -13,13 +12,11 @@ class FirebaseAuthService implements AuthService {
   FirebaseAuthService(this._firebaseAuth, this._navService);
 
   @override
-  Future<String> getCurrentUserId() async {
-    final user = await _firebaseAuth.currentUser();
-    return user?.uid;
-  }
+  String get currentUserId => _firebaseAuth.currentUser?.uid;
 
   @override
-  Stream<UserData> get streamOfAuthState => _firebaseAuth.onAuthStateChanged
+  Stream<UserData> get streamOfAuthState => _firebaseAuth
+      .authStateChanges()
       .map((firebaseUser) => firebaseUser.toData());
 
   @override
@@ -28,23 +25,25 @@ class FirebaseAuthService implements AuthService {
       final result = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
       return result.user.toData();
-    } on PlatformException catch (error) {
+    } on FirebaseAuthException catch (error) {
       String customErrorMessage;
       switch (error.code) {
-        case 'ERROR_WEAK_PASSWORD':
+        case 'weak-password':
           customErrorMessage = 'password is too weak.';
           break;
-        case 'ERROR_INVALID_EMAIL':
+        case 'invalid-email':
           customErrorMessage = 'Invalid email address';
           break;
-        case 'ERROR_EMAIL_ALREADY_IN_USE':
-          customErrorMessage = 'Email already in use, please try';
+        case 'email-already-in-use':
+          customErrorMessage = 'Email already in use, please try again';
+          break;
+        case 'operation-not-allowed:':
+          customErrorMessage = 'authentication error, operation not allowed';
           break;
         default:
           customErrorMessage = 'An undefined Error happened.';
       }
       _navService.displayError(customErrorMessage);
-
       return null;
     } catch (e) {
       // non platform specific errors
@@ -60,27 +59,20 @@ class FirebaseAuthService implements AuthService {
       final result = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
       return result.user.toData();
-    } on PlatformException catch (error) {
+    } on FirebaseAuthException catch (error) {
       String customErrorMessage;
       switch (error.code) {
-        case 'ERROR_INVALID_EMAIL':
+        case 'invalid-email':
           customErrorMessage = 'Invalid email address.';
           break;
-        case 'ERROR_WRONG_PASSWORD':
+        case 'wrong-password':
           customErrorMessage = 'Wrong password for this account.';
           break;
-        case 'ERROR_USER_NOT_FOUND':
+        case 'user-not-found':
           customErrorMessage = 'No user found with this email.';
           break;
-        case 'ERROR_USER_DISABLED':
+        case 'user-disabled':
           customErrorMessage = 'User with this email has been disabled.';
-          break;
-        case 'ERROR_TOO_MANY_REQUESTS':
-          customErrorMessage = 'Too many requests. Try again later.';
-          break;
-        case 'ERROR_OPERATION_NOT_ALLOWED':
-          customErrorMessage =
-              'Signing in with Email and Password is not enabled.';
           break;
         default:
           customErrorMessage = 'An undefined Error happened.';

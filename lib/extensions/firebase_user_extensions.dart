@@ -1,22 +1,21 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:niira/models/auth_provider_data.dart';
 import 'package:niira/models/user_data.dart';
 
 import 'user_info_extensions.dart';
 
-extension FirebaseUserExt on FirebaseUser {
+extension FirebaseUserExt on auth.User {
   UserData toData() => (this != null)
       ? UserData(
-          providerId: providerId,
           uid: uid,
           displayName: displayName,
-          photoUrl: photoUrl,
+          photoURL: photoURL,
           email: email,
           phoneNumber: phoneNumber,
           createdOn: metadata.creationTime.toUtc(),
           lastSignedInOn: metadata.lastSignInTime.toUtc(),
           isAnonymous: isAnonymous,
-          isEmailVerified: isEmailVerified,
+          isEmailVerified: emailVerified,
           providers: providerData
               .map<AuthProviderData>(
                   (userInfo) => userInfo.toAuthProviderData())

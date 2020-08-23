@@ -7,6 +7,7 @@ import 'package:niira/models/user_data.dart';
 import 'package:niira/services/auth/navigation_service.dart';
 
 import 'mocks/services/mock_auth_service.dart';
+import 'mocks/services/mock_firebase_service.dart';
 
 void main() {
   enableFlutterDriverExtension();
@@ -14,7 +15,8 @@ void main() {
   final navService = NavigationService();
   final controller = StreamController<UserData>();
   final mockAuthService = MockAuthService(controller);
+  final mockDBService = MockDBService();
   mockAuthService.signInWithEmail('email', 'password');
 
-  runApp(MyApp(mockAuthService, navService.navigatorKey));
+  runApp(MyApp(mockAuthService, navService.navigatorKey, mockDBService));
 }
