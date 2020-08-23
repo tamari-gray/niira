@@ -16,10 +16,10 @@ class MockDBService extends Mock implements DatabaseService {}
 
 void main() {
   Widget makeTestableCreateAccountWidget(MockNavService mockNavService,
-      FakeAuthService mockAuth, MockDBService mockDBService) {
+      FakeAuthService fakeAuth, MockDBService mockDBService) {
     return MultiProvider(
         providers: [
-          Provider<AuthService>(create: (_) => mockAuth),
+          Provider<AuthService>(create: (_) => fakeAuth),
           Provider<DatabaseService>(create: (_) => mockDBService)
         ],
         child: MaterialApp(
@@ -36,7 +36,10 @@ void main() {
       final _mockAuthService = FakeAuthService(_mockNavService, true);
       final _mockDBService = MockDBService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
-          _mockNavService, _mockAuthService, _mockDBService));
+        _mockNavService,
+        _mockAuthService,
+        _mockDBService,
+      ));
 
       // submit valid credentials
       final emailField = find.byKey(Key('email_field'));
