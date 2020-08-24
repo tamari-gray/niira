@@ -5,29 +5,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:niira/main.dart';
 import 'package:niira/models/user_data.dart';
-import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
+import '../../test_driver/mocks/services/mock_auth_service.dart';
 import '../../test_driver/mocks/mock_user_data.dart';
+import '../auth_section/create_account/widget_test.dart';
 
 class FakeDatabaseService extends Fake implements DatabaseService {}
-
-class FakeAuthServiceAppSection extends Fake implements AuthService {
-  final StreamController<UserData> _controller;
-
-  FakeAuthServiceAppSection(this._controller);
-
-  @override
-  Future<UserData> signInWithEmail(String email, String password) {
-    final mockUserData = MockUser().userData;
-    return Future.value(mockUserData);
-  }
-
-  @override
-  Stream<UserData> get streamOfAuthState => _controller.stream;
-
-  @override
-  String get currentUserId => 'uid';
-}
 
 void main() {
   group('MyApp ', () {
@@ -35,19 +18,31 @@ void main() {
         (WidgetTester tester) async {
       // create a controller that the fake auth servive will hold
       final controller = StreamController<UserData>();
-      final fakeAuthService = FakeAuthServiceAppSection(controller);
+      final mockUserData = MockUser().userData;
+      final mockNavService = MockNavService();
+      final mockAuthService = MockAuthService(
+        controller,
+        mockUserData,
+        mockNavService,
+        true,
+      );
       final fakeDBService = FakeDatabaseService();
       controller.add(null);
 
       // create the widget under test
       await tester.pumpWidget(
-          MyApp(fakeAuthService, GlobalKey<NavigatorState>(), fakeDBService));
+        MyApp(
+          mockAuthService,
+          GlobalKey<NavigatorState>(),
+          fakeDBService,
+        ),
+      );
 
       // check the welcome screen is present
       expect(find.byKey(Key('navigateToCreateAccount')), findsOneWidget);
 
       // get a user data object and make the service emit it
-      final userData = await fakeAuthService.signInWithEmail('a', 'b');
+      final userData = await mockAuthService.signInWithEmail('a', 'b');
       controller.add(userData);
 
       await tester.pump();

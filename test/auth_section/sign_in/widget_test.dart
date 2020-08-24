@@ -8,58 +8,12 @@ import 'package:niira/screens/sign_in.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/navigation_service.dart';
 import 'package:provider/provider.dart';
+import '../../../test_driver/mocks/services/mock_auth_service.dart';
+import '../../../test_driver/mocks/mock_user_data.dart';
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
 class MockNavService extends Mock implements NavigationService {}
-
-class FakeAuthService extends Fake implements AuthService {
-  final bool _successfullAuth;
-  final NavigationService _nav;
-  FakeAuthService(this._nav, this._successfullAuth);
-
-  @override
-  Future<UserData> createUserAccount(String email, String password) async {
-    if (_successfullAuth) {
-      return Future.value(UserData(
-          uid: null,
-          displayName: null,
-          photoURL: null,
-          email: null,
-          phoneNumber: null,
-          createdOn: null,
-          lastSignedInOn: null,
-          isAnonymous: null,
-          isEmailVerified: null,
-          providers: null));
-    } else {
-      final errors = ['email in use', 'wronf password'];
-      _nav.displayError(errors[0]);
-      return Future.value(null);
-    }
-  }
-
-  @override
-  Future<UserData> signInWithEmail(String email, String password) async {
-    if (_successfullAuth) {
-      return Future.value(UserData(
-          uid: null,
-          displayName: null,
-          photoURL: null,
-          email: null,
-          phoneNumber: null,
-          createdOn: null,
-          lastSignedInOn: null,
-          isAnonymous: null,
-          isEmailVerified: null,
-          providers: null));
-    } else {
-      final errors = ['user not found', 'wronf password'];
-      _nav.displayError(errors[0]);
-      return Future.value(null);
-    }
-  }
-}
 
 void main() {
   Finder emailField() {
@@ -91,7 +45,7 @@ void main() {
   }
 
   Widget makeTestableSignInWidget(
-      NavigationService mockNav, FakeAuthService mockAuth) {
+      NavigationService mockNav, MockAuthService mockAuth) {
     return MultiProvider(
         providers: [
           Provider<AuthService>(create: (_) => mockAuth),
@@ -107,9 +61,21 @@ void main() {
         (WidgetTester tester) async {
       //set up for testing
       final _mockNavService = MockNavService();
-      final _mockAuthService = FakeAuthService(_mockNavService, true);
+      final _mockUserData = MockUser().userData;
+      final _controller = StreamController<UserData>();
+
+      final _mockAuthService = MockAuthService(
+        _controller,
+        _mockUserData,
+        _mockNavService,
+        true,
+      );
       await tester.pumpWidget(
-          makeTestableSignInWidget(_mockNavService, _mockAuthService));
+        makeTestableSignInWidget(
+          _mockNavService,
+          _mockAuthService,
+        ),
+      );
 
       // fill in and submit form
       await inputValidDetails(tester);
@@ -125,8 +91,12 @@ void main() {
         (WidgetTester tester) async {
       //set up for testing
       final _mockNavService = MockNavService();
+      final _mockUserData = MockUser().userData;
+      final _controller = StreamController<UserData>();
+
       // return firebase auth error
-      final _mockAuthService = FakeAuthService(_mockNavService, false);
+      final _mockAuthService =
+          MockAuthService(_controller, _mockUserData, _mockNavService, false);
       await tester.pumpWidget(
           makeTestableSignInWidget(_mockNavService, _mockAuthService));
 
@@ -141,7 +111,11 @@ void main() {
         (WidgetTester tester) async {
       //set up for testing
       final _mockNavService = MockNavService();
-      final _mockAuthService = FakeAuthService(_mockNavService, true);
+      final _mockUserData = MockUser().userData;
+      final _controller = StreamController<UserData>();
+
+      final _mockAuthService =
+          MockAuthService(_controller, _mockUserData, _mockNavService, true);
       await tester.pumpWidget(
           makeTestableSignInWidget(_mockNavService, _mockAuthService));
 
@@ -157,7 +131,11 @@ void main() {
         (WidgetTester tester) async {
       //set up for testing
       final _mockNavService = MockNavService();
-      final _mockAuthService = FakeAuthService(_mockNavService, true);
+      final _mockUserData = MockUser().userData;
+      final _controller = StreamController<UserData>();
+
+      final _mockAuthService =
+          MockAuthService(_controller, _mockUserData, _mockNavService, true);
       await tester.pumpWidget(
           makeTestableSignInWidget(_mockNavService, _mockAuthService));
 
@@ -174,8 +152,12 @@ void main() {
     testWidgets('show loading animation on successfull validation + submit',
         (WidgetTester tester) async {
       //set up for testing
-      final _mockNavService = NavigationService();
-      final _mockAuthService = FakeAuthService(_mockNavService, true);
+      final _mockNavService = MockNavService();
+      final _mockUserData = MockUser().userData;
+      final _controller = StreamController<UserData>();
+
+      final _mockAuthService =
+          MockAuthService(_controller, _mockUserData, _mockNavService, true);
       await tester.pumpWidget(
           makeTestableSignInWidget(_mockNavService, _mockAuthService));
 
