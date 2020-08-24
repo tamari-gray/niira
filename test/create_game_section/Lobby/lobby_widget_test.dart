@@ -8,18 +8,7 @@ import 'package:niira/models/user_data.dart';
 import 'package:niira/services/auth/auth_service.dart';
 
 import '../../app_section/widget_test.dart';
-
-final UserData mockUser = UserData(
-    uid: 'uid',
-    displayName: 'name',
-    photoURL: 'url',
-    email: 'email@gmail.com',
-    phoneNumber: '123',
-    createdOn: DateTime.now(),
-    lastSignedInOn: DateTime.now(),
-    isAnonymous: true,
-    isEmailVerified: true,
-    providers: []);
+import '../../../test_driver/mocks/mock_user_data.dart';
 
 class FakeAuthServiceLobby extends Fake implements AuthService {
   final StreamController<UserData> _controller;
@@ -37,6 +26,7 @@ class FakeAuthServiceLobby extends Fake implements AuthService {
 }
 
 void main() {
+  final mockUserData = MockUser().userData;
   testWidgets(
       'shows loading icon + redirects to welcome screen on successfull logout',
       (WidgetTester tester) async {
@@ -51,7 +41,7 @@ void main() {
     );
 
     //sign in the user
-    controller.add(mockUser);
+    controller.add(mockUserData);
     await tester.pump();
 
     // tap sign out btn
