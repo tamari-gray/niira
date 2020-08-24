@@ -1,21 +1,25 @@
 import 'dart:async';
-
 import 'package:niira/models/user_data.dart';
 import 'package:niira/services/auth/auth_service.dart';
-import 'package:niira/services/auth/navigation_service.dart';
+import '../../mocks/services/mock_nav_service.dart';
+
+import 'package:meta/meta.dart';
 
 class MockAuthService implements AuthService {
   final StreamController<UserData> _controller;
   final UserData _mockUserData;
-  final NavigationService _nav;
-  final bool _successfullAuth;
+  final MockNavService _mockNavService;
+  final bool _successfulAuth;
 
-  MockAuthService(
-    this._controller,
-    this._mockUserData,
-    this._nav,
-    this._successfullAuth,
-  );
+  MockAuthService({
+    @required StreamController<UserData> controller,
+    UserData mockUserData,
+    MockNavService mockNavService,
+    bool successfulAuth = true,
+  })  : _controller = controller,
+        _mockUserData = mockUserData,
+        _mockNavService = mockNavService,
+        _successfulAuth = successfulAuth = true;
 
   @override
   String get currentUserId => 'uid';
@@ -25,45 +29,23 @@ class MockAuthService implements AuthService {
 
   @override
   Future<UserData> createUserAccount(String email, String password) async {
-    if (_successfullAuth) {
-      return Future.value(UserData(
-          uid: null,
-          displayName: null,
-          photoURL: null,
-          email: null,
-          phoneNumber: null,
-          createdOn: null,
-          lastSignedInOn: null,
-          isAnonymous: null,
-          isEmailVerified: null,
-          providers: null));
+    if (_successfulAuth) {
+      return Future.value(_mockUserData);
     } else {
       final errors = ['email in use', 'wronf password'];
-      _nav.displayError(errors[0]);
+      _mockNavService.displayError(errors[0]);
       return Future.value(null);
     }
   }
 
   @override
   Future<UserData> signInWithEmail(String email, String password) async {
-    if (_successfullAuth) {
+    if (_successfulAuth) {
       _controller.add(_mockUserData);
-
-      return Future.value(UserData(
-          uid: null,
-          displayName: null,
-          photoURL: null,
-          email: null,
-          phoneNumber: null,
-          createdOn: null,
-          lastSignedInOn: null,
-          isAnonymous: null,
-          isEmailVerified: null,
-          providers: null));
+      return Future.value(_mockUserData);
     } else {
       final errors = ['user not found', 'wronf password'];
-
-      _nav.displayError(errors[0]);
+      _mockNavService.displayError(errors[0]);
       return Future.value(null);
     }
   }

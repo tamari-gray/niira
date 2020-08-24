@@ -6,15 +6,13 @@ import 'package:mockito/mockito.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/screens/create_account.dart';
 import 'package:niira/services/auth/auth_service.dart';
-import 'package:niira/services/auth/navigation_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:provider/provider.dart';
 import '../../../test_driver/mocks/services/mock_auth_service.dart';
+import '../../../test_driver/mocks/services/mock_nav_service.dart';
 import '../../../test_driver/mocks/mock_user_data.dart';
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
-
-class MockNavService extends Mock implements NavigationService {}
 
 class MockDBService extends Mock implements DatabaseService {}
 
@@ -40,8 +38,10 @@ void main() {
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
-      final _mockAuthService =
-          MockAuthService(_controller, _mockUserData, _mockNavService, true);
+      final _mockAuthService = MockAuthService(
+          controller: _controller,
+          mockUserData: _mockUserData,
+          mockNavService: _mockNavService);
       final _mockDBService = MockDBService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
         _mockNavService,
@@ -77,45 +77,6 @@ void main() {
       // expect pop sign in + observe welcome screen
       expect(find.byKey(Key('create_account_submit_btn')), findsNothing);
     });
-    testWidgets('auth error: shows dialog with error message',
-        (WidgetTester tester) async {
-      //set up for testing
-      final _mockNavService = MockNavService();
-      final _mockUserData = MockUser().userData;
-      final _controller = StreamController<UserData>();
-
-      final _mockAuthService =
-          MockAuthService(_controller, _mockUserData, _mockNavService, false);
-      final _mockDBService = MockDBService();
-      await tester.pumpWidget(makeTestableCreateAccountWidget(
-        _mockNavService,
-        _mockAuthService,
-        _mockDBService,
-      ));
-
-      // submit credentials of already created account
-      final emailField = find.byKey(Key('email_field'));
-      expect(emailField, findsOneWidget);
-      await tester.enterText(emailField, 'tamarigray97@gmail.com');
-
-      final usernameFeild = find.byKey(Key('username_field'));
-      expect(usernameFeild, findsOneWidget);
-      await tester.enterText(usernameFeild, 'tamari');
-
-      final passwordFeild = find.byKey(Key('password_field'));
-      expect(passwordFeild, findsOneWidget);
-      await tester.enterText(passwordFeild, 'password-test');
-
-      final rePasswordFeild = find.byKey(Key('re_password_field'));
-      expect(rePasswordFeild, findsOneWidget);
-      await tester.enterText(rePasswordFeild, 'password-test');
-
-      await tester.tap(find.byKey(Key('create_account_submit_btn')));
-      await tester.pump();
-      await tester.pump();
-
-      verify(_mockNavService.displayError(any)).called(1);
-    });
   });
   group('validation tests', () {
     testWidgets('show error messages on empty text feilds',
@@ -125,8 +86,10 @@ void main() {
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
-      final _mockAuthService =
-          MockAuthService(_controller, _mockUserData, _mockNavService, true);
+      final _mockAuthService = MockAuthService(
+          controller: _controller,
+          mockUserData: _mockUserData,
+          mockNavService: _mockNavService);
       final _mockDBService = MockDBService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
         _mockNavService,
@@ -152,8 +115,10 @@ void main() {
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
-      final _mockAuthService =
-          MockAuthService(_controller, _mockUserData, _mockNavService, true);
+      final _mockAuthService = MockAuthService(
+          controller: _controller,
+          mockUserData: _mockUserData,
+          mockNavService: _mockNavService);
       final _mockDBService = MockDBService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
         _mockNavService,
@@ -193,8 +158,10 @@ void main() {
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
-      final _mockAuthService =
-          MockAuthService(_controller, _mockUserData, _mockNavService, true);
+      final _mockAuthService = MockAuthService(
+          controller: _controller,
+          mockUserData: _mockUserData,
+          mockNavService: _mockNavService);
       final _mockDBService = MockDBService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
         _mockNavService,

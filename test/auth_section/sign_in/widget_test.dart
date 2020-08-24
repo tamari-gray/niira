@@ -10,10 +10,9 @@ import 'package:niira/services/auth/navigation_service.dart';
 import 'package:provider/provider.dart';
 import '../../../test_driver/mocks/services/mock_auth_service.dart';
 import '../../../test_driver/mocks/mock_user_data.dart';
+import '../../../test_driver/mocks/services/mock_nav_service.dart';
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
-
-class MockNavService extends Mock implements NavigationService {}
 
 void main() {
   Finder emailField() {
@@ -47,13 +46,14 @@ void main() {
   Widget makeTestableSignInWidget(
       NavigationService mockNav, MockAuthService mockAuth) {
     return MultiProvider(
-        providers: [
-          Provider<AuthService>(create: (_) => mockAuth),
-        ],
-        child: MaterialApp(
-          navigatorKey: mockNav.navigatorKey,
-          home: SignInScreen(),
-        ));
+      providers: [
+        Provider<AuthService>(create: (_) => mockAuth),
+      ],
+      child: MaterialApp(
+        navigatorKey: mockNav.navigatorKey,
+        home: SignInScreen(),
+      ),
+    );
   }
 
   group('auth tests', () {
@@ -65,10 +65,9 @@ void main() {
       final _controller = StreamController<UserData>();
 
       final _mockAuthService = MockAuthService(
-        _controller,
-        _mockUserData,
-        _mockNavService,
-        true,
+        controller: _controller,
+        mockUserData: _mockUserData,
+        mockNavService: _mockNavService,
       );
       await tester.pumpWidget(
         makeTestableSignInWidget(
@@ -87,24 +86,6 @@ void main() {
       // expect pop sign in + observe welcome screen
       expect(emailField(), findsNothing);
     });
-    testWidgets('auth error: shows dialog with error message',
-        (WidgetTester tester) async {
-      //set up for testing
-      final _mockNavService = MockNavService();
-      final _mockUserData = MockUser().userData;
-      final _controller = StreamController<UserData>();
-
-      // return firebase auth error
-      final _mockAuthService =
-          MockAuthService(_controller, _mockUserData, _mockNavService, false);
-      await tester.pumpWidget(
-          makeTestableSignInWidget(_mockNavService, _mockAuthService));
-
-      // fill in and submit form
-      await inputValidDetails(tester);
-
-      verify(_mockNavService.displayError(any)).called(1);
-    });
   });
   group('validation tests', () {
     testWidgets('show error messages on empty text feilds',
@@ -114,8 +95,12 @@ void main() {
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
-      final _mockAuthService =
-          MockAuthService(_controller, _mockUserData, _mockNavService, true);
+      final _mockAuthService = MockAuthService(
+        controller: _controller,
+        mockUserData: _mockUserData,
+        mockNavService: _mockNavService,
+        successfulAuth: true,
+      );
       await tester.pumpWidget(
           makeTestableSignInWidget(_mockNavService, _mockAuthService));
 
@@ -134,8 +119,12 @@ void main() {
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
-      final _mockAuthService =
-          MockAuthService(_controller, _mockUserData, _mockNavService, true);
+      final _mockAuthService = MockAuthService(
+        controller: _controller,
+        mockUserData: _mockUserData,
+        mockNavService: _mockNavService,
+        successfulAuth: true,
+      );
       await tester.pumpWidget(
           makeTestableSignInWidget(_mockNavService, _mockAuthService));
 
@@ -156,8 +145,12 @@ void main() {
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
-      final _mockAuthService =
-          MockAuthService(_controller, _mockUserData, _mockNavService, true);
+      final _mockAuthService = MockAuthService(
+        controller: _controller,
+        mockUserData: _mockUserData,
+        mockNavService: _mockNavService,
+        successfulAuth: true,
+      );
       await tester.pumpWidget(
           makeTestableSignInWidget(_mockNavService, _mockAuthService));
 

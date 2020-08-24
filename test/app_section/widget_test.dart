@@ -8,7 +8,7 @@ import 'package:niira/models/user_data.dart';
 import 'package:niira/services/database/database_service.dart';
 import '../../test_driver/mocks/services/mock_auth_service.dart';
 import '../../test_driver/mocks/mock_user_data.dart';
-import '../auth_section/create_account/widget_test.dart';
+import '../../test_driver/mocks/services/mock_nav_service.dart';
 
 class FakeDatabaseService extends Fake implements DatabaseService {}
 
@@ -21,10 +21,10 @@ void main() {
       final mockUserData = MockUser().userData;
       final mockNavService = MockNavService();
       final mockAuthService = MockAuthService(
-        controller,
-        mockUserData,
-        mockNavService,
-        true,
+        controller: controller,
+        mockUserData: mockUserData,
+        mockNavService: mockNavService,
+        successfulAuth: true,
       );
       final fakeDBService = FakeDatabaseService();
       controller.add(null);
