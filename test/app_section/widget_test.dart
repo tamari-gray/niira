@@ -7,6 +7,7 @@ import 'package:niira/main.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
+import '../../test_driver/mocks/mock_user_data.dart';
 
 class FakeDatabaseService extends Fake implements DatabaseService {}
 
@@ -16,18 +17,10 @@ class FakeAuthServiceAppSection extends Fake implements AuthService {
   FakeAuthServiceAppSection(this._controller);
 
   @override
-  Future<UserData> signInWithEmail(String email, String password) =>
-      Future.value(UserData(
-          uid: 'uid',
-          displayName: 'name',
-          photoURL: 'url',
-          email: 'email@gmail.com',
-          phoneNumber: '123',
-          createdOn: DateTime.now(),
-          lastSignedInOn: DateTime.now(),
-          isAnonymous: true,
-          isEmailVerified: true,
-          providers: []));
+  Future<UserData> signInWithEmail(String email, String password) {
+    final mockUserData = MockUser().userData;
+    return Future.value(mockUserData);
+  }
 
   @override
   Stream<UserData> get streamOfAuthState => _controller.stream;
