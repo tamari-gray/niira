@@ -27,5 +27,6 @@ void main() {
     mockAuthService,
     mockNavService.navigatorKey,
     mockDBService,
+    mockNavService,
   ));
 }
