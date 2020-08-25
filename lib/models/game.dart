@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:niira/models/boundary.dart';
 
 class Game {
@@ -7,11 +8,11 @@ class Game {
   final int sonarIntervals;
   final Boundary boundary; //game location is boundary.position
 
-  Game(
-    this.name,
-    this.creatorName,
-    this.id,
-    this.sonarIntervals,
-    this.boundary,
-  );
+  Game({
+    @required this.name,
+    @required this.creatorName,
+    @required this.id,
+    @required this.sonarIntervals,
+    @required this.boundary,
+  });
 }
