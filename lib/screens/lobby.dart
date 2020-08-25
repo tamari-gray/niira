@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:niira/models/boundary.dart';
+import 'package:niira/loading.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/screens/input_password.dart';
 import 'package:niira/services/auth/auth_service.dart';
+import 'package:niira/services/database/database_service.dart';
 import 'package:provider/provider.dart';
 
 class LobbyScreen extends StatelessWidget {
@@ -40,29 +41,6 @@ class LobbyScreen extends StatelessWidget {
       );
     }
 
-    final _mockGames = <Game>[
-      Game(
-        name: 'yeet',
-        creatorName: 'tam',
-        id: 'fdhi',
-        sonarIntervals: 5,
-        boundary: Boundary(position: 5, size: 10),
-      ),
-      Game(
-        name: 'very yeet',
-        creatorName: 'tam',
-        id: 'fdhi',
-        sonarIntervals: 5,
-        boundary: Boundary(position: 5, size: 10),
-      ),
-      Game(
-        name: 'yeeting',
-        creatorName: 'tam',
-        id: 'fdhi',
-        sonarIntervals: 5,
-        boundary: Boundary(position: 5, size: 10),
-      )
-    ];
     return Scaffold(
       appBar: AppBar(
         title: Text('Lobby'),
@@ -77,12 +55,20 @@ class LobbyScreen extends StatelessWidget {
         ],
       ),
       body: Container(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-          child: ListView(
-            children: <Widget>[for (var game in _mockGames) GameTile(game)],
-          ),
-        ),
+        child: StreamBuilder<List<Game>>(
+            stream: context.watch<DatabaseService>().streamOfCreatedGames,
+            builder: (context, snapshot) {
+              return snapshot.data == null
+                  ? Loading()
+                  : Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                      child: ListView(
+                        children: <Widget>[
+                          for (var game in snapshot.data) GameTile(game)
+                        ],
+                      ),
+                    );
+            }),
       ),
     );
   }
@@ -95,6 +81,7 @@ class GameTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      key: Key('created_game_tile_${_game.id}'),
       child: Padding(
         padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
         child: Card(
@@ -111,7 +98,7 @@ class GameTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        '500m away', // will get data in ticket #60
+                        '500m away', // will replace with real data in ticket #60
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 14,
