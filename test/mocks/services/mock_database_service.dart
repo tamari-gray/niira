@@ -1,13 +1,13 @@
 import 'dart:async';
+
 import 'package:niira/models/game.dart';
-import 'package:meta/meta.dart';
 import 'package:niira/services/database/database_service.dart';
 
 class MockDBService implements DatabaseService {
   final StreamController<List<Game>> _controller;
 
   MockDBService({
-    @required StreamController<List<Game>> controller,
+    StreamController<List<Game>> controller,
   }) : _controller = controller;
 
   Future<bool> usernameAlreadyExists(String username) {}
