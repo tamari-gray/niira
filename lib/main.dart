@@ -5,7 +5,7 @@ import 'package:niira/screens/lobby.dart';
 import 'package:niira/screens/welcome.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/firebase_auth_service.dart';
-import 'package:niira/services/auth/navigation_service.dart';
+import 'package:niira/services/navigation_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/database/firestore_service.dart';
 import 'package:provider/provider.dart';
