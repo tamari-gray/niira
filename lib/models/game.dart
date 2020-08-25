@@ -1,6 +1,8 @@
 import 'package:meta/meta.dart';
 import 'package:niira/models/boundary.dart';
 
+enum GameState { created, initialising, playing, finished }
+
 class Game {
   final String name;
   final String creatorName;
@@ -8,11 +10,13 @@ class Game {
   final int sonarIntervals;
   final Boundary boundary; //game location is boundary.position
 
+  final GameState state;
   Game({
     @required this.name,
     @required this.creatorName,
     @required this.id,
     @required this.sonarIntervals,
     @required this.boundary,
+    @required this.state,
   });
 }
