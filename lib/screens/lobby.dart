@@ -40,7 +40,29 @@ class LobbyScreen extends StatelessWidget {
       );
     }
 
-    final games = <Game>[Game('yeet', 'tam', 'fdhi', 5, Boundary(5, 10))];
+    final _mockGames = <Game>[
+      Game(
+        name: 'yeet',
+        creatorName: 'tam',
+        id: 'fdhi',
+        sonarIntervals: 5,
+        boundary: Boundary(position: 5, size: 10),
+      ),
+      Game(
+        name: 'very yeet',
+        creatorName: 'tam',
+        id: 'fdhi',
+        sonarIntervals: 5,
+        boundary: Boundary(position: 5, size: 10),
+      ),
+      Game(
+        name: 'yeeting',
+        creatorName: 'tam',
+        id: 'fdhi',
+        sonarIntervals: 5,
+        boundary: Boundary(position: 5, size: 10),
+      )
+    ];
     return Scaffold(
       appBar: AppBar(
         title: Text('Lobby'),
@@ -55,8 +77,11 @@ class LobbyScreen extends StatelessWidget {
         ],
       ),
       body: Container(
-        child: ListView(
-          children: <Widget>[for (var game in games) GameTile(game)],
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+          child: ListView(
+            children: <Widget>[for (var game in _mockGames) GameTile(game)],
+          ),
         ),
       ),
     );
@@ -71,7 +96,7 @@ class GameTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Padding(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
         child: Card(
           elevation: 2,
           child: Padding(
