@@ -4,11 +4,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:niira/main.dart';
+import 'package:niira/models/game.dart';
 import 'package:niira/models/user_data.dart';
+import 'package:niira/screens/lobby.dart';
 import 'package:niira/services/auth/auth_service.dart';
+import 'package:provider/provider.dart';
 
 import '../../app_section/widget_test.dart';
 import '../../../test_driver/mocks/mock_user_data.dart';
+import '../../auth_section/create_account/widget_test.dart';
 
 class FakeAuthServiceLobby extends Fake implements AuthService {
   final StreamController<UserData> _controller;
@@ -27,6 +31,31 @@ class FakeAuthServiceLobby extends Fake implements AuthService {
 
 void main() {
   final mockUserData = MockUser().userData;
+
+  group('joining a game', () {
+    testWidgets(
+        'find a list of created games, tap to join ad navigate to inputPassword page',
+        (WidgetTester tester) async {
+      final controller = StreamController<List<Game>>();
+      final mockDBService = MockDBService(controller);
+
+      // init lobby page
+      await tester.pumpWidget(
+        Provider<Stream<List<Game>>>(
+          create: (_) => mockDBService.streamOfCreatedGames,
+        ),
+      );
+
+      // pump mock data
+      controller.add(MockGames().gamesToJoin);
+
+      // observe list of games
+
+      // tap to join a game
+
+      // observe navigation to input password screen
+    });
+  });
   testWidgets(
       'shows loading icon + redirects to welcome screen on successfull logout',
       (WidgetTester tester) async {
