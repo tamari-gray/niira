@@ -6,7 +6,7 @@ import 'package:mockito/mockito.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/screens/sign_in.dart';
 import 'package:niira/services/auth/auth_service.dart';
-import 'package:niira/services/auth/navigation_service.dart';
+import 'package:niira/services/navigation_service.dart';
 import 'package:provider/provider.dart';
 import '../../../test_driver/mocks/services/mock_auth_service.dart';
 import '../../../test_driver/mocks/mock_user_data.dart';
