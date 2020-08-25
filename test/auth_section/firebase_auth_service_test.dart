@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mockito/mockito.dart';
 import 'package:niira/services/auth/firebase_auth_service.dart';
-import 'package:niira/services/auth/navigation_service.dart';
+import 'package:niira/services/navigation_service.dart';
 import 'package:test/test.dart';
 
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
