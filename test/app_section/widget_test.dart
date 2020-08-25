@@ -36,6 +36,7 @@ void main() {
           mockAuthService,
           GlobalKey<NavigatorState>(),
           fakeDBService,
+          mockNavService,
         ),
       );
 

@@ -2,28 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:niira/main.dart';
 import 'package:niira/models/user_data.dart';
-import 'package:niira/services/auth/auth_service.dart';
+import 'package:niira/services/navigation_service.dart';
 
 import '../../app_section/widget_test.dart';
 import '../../mocks/mock_user_data.dart';
-
-class FakeAuthServiceLobby extends Fake implements AuthService {
-  final StreamController<UserData> _controller;
-
-  FakeAuthServiceLobby(this._controller);
-
-  @override
-  Future<void> signOut() {
-    _controller.add(null);
-    return Future.value(true);
-  }
-
-  @override
-  Stream<UserData> get streamOfAuthState => _controller.stream;
-}
+import '../../mocks/services/mock_auth_service.dart';
 
 void main() {
   final mockUserData = MockUser().userData;
@@ -32,12 +17,14 @@ void main() {
       (WidgetTester tester) async {
     // create a controller that the fake auth servive will hold
     final controller = StreamController<UserData>();
-    final fakeAuthService = FakeAuthServiceLobby(controller);
+    final navService = NavigationService();
+    final fakeAuthService = MockAuthService(controller: controller);
     final fakeDBService = FakeDatabaseService();
 
     // create the widget under test
     await tester.pumpWidget(
-      MyApp(fakeAuthService, GlobalKey<NavigatorState>(), fakeDBService),
+      MyApp(
+          fakeAuthService, navService.navigatorKey, fakeDBService, navService),
     );
 
     //sign in the user
@@ -51,7 +38,7 @@ void main() {
     await tester.pump();
 
     // confirm sign out
-    await tester.tap(find.byKey(Key('confirmSignOutBtn')));
+    await tester.tap(find.byKey(Key('confirmBtn')));
     await tester.pumpAndSettle();
 
     // check the lobby screen is no longer present
