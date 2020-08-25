@@ -8,7 +8,7 @@ import 'package:niira/models/user_data.dart';
 import 'package:niira/services/auth/auth_service.dart';
 
 import '../../app_section/widget_test.dart';
-import '../../../test_driver/mocks/mock_user_data.dart';
+import '../../mocks/mock_user_data.dart';
 
 class FakeAuthServiceLobby extends Fake implements AuthService {
   final StreamController<UserData> _controller;

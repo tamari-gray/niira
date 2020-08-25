@@ -8,9 +8,10 @@ import 'package:niira/screens/create_account.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:provider/provider.dart';
-import '../../../test_driver/mocks/services/mock_auth_service.dart';
-import '../../../test_driver/mocks/services/mock_nav_service.dart';
-import '../../../test_driver/mocks/mock_user_data.dart';
+
+import '../../mocks/mock_user_data.dart';
+import '../../mocks/services/mock_auth_service.dart';
+import '../../mocks/services/mock_nav_service.dart';
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
