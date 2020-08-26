@@ -6,7 +6,7 @@ import 'package:niira/main.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/services/navigation_service.dart';
 
-import '../../app_section/widget_test.dart';
+import '../../app_section/app_widget_test.dart';
 import '../../mocks/mock_user_data.dart';
 import '../../mocks/services/mock_auth_service.dart';
 
@@ -24,7 +24,11 @@ void main() {
     // create the widget under test
     await tester.pumpWidget(
       MyApp(
-          fakeAuthService, navService.navigatorKey, fakeDBService, navService),
+        fakeAuthService,
+        navService.navigatorKey,
+        fakeDBService,
+        navService,
+      ),
     );
 
     //sign in the user
