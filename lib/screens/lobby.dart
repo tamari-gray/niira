@@ -18,16 +18,16 @@ class LobbyScreen extends StatelessWidget {
             key: Key('signOutBtn'),
             onPressed: () {
               // create a function to call on confirmation
-              // final signOut = () async {
-              //   Navigator.of(context).pop();
-              //   await context.read<AuthService>().signOut();
-              // };
+              final signOut = () async {
+                Navigator.of(context).pop();
+                await context.read<AuthService>().signOut();
+              };
 
-              // context.read<NavigationService>().showConfirmationDialog(
-              //       onConfirmed: signOut,
-              //       confirmText: 'Sign Out',
-              //       cancelText: 'Return',
-              //     );
+              context.read<NavigationService>().showConfirmationDialog(
+                    onConfirmed: signOut,
+                    confirmText: 'Sign Out',
+                    cancelText: 'Return',
+                  );
             },
             child: Text('log out'),
           )

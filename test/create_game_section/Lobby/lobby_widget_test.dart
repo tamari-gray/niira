@@ -27,10 +27,6 @@ void main() {
       _controller.add(mockCreatedGames);
       final mockDatabaseService = MockDatabaseService(controller: _controller);
 
-      // mockDatabaseService.streamOfCreatedGames.listen((event) {
-      //   print(event);
-      // });
-
       // init lobby page
       await tester.pumpWidget(
         MultiProvider(providers: [
@@ -56,7 +52,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // observe navigation to input password screen
-      // expect(find.byKey(Key('inputPasswordScreen')), findsOneWidget);
+      expect(find.byKey(Key('inputPasswordScreen')), findsOneWidget);
     });
   });
   testWidgets(
@@ -66,9 +62,13 @@ void main() {
     final controller = StreamController<UserData>();
     final navService = NavigationService();
     final mockAuthService = MockAuthService(controller: controller);
-    final mockDBService = MockDatabaseService();
+    final createdGamesStreamContoller = StreamController<List<Game>>();
+    final mockDBService =
+        MockDatabaseService(controller: createdGamesStreamContoller);
     final mockUserData = MockUser().userData;
 
+    //sign in the user
+    controller.add(mockUserData);
     // create the widget under test
     await tester.pumpWidget(
       MyApp(
@@ -79,9 +79,7 @@ void main() {
       ),
     );
 
-    //sign in the user
-    controller.add(mockUserData);
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     // tap sign out btn
     final signOutBtn = find.byKey(Key('signOutBtn'));
