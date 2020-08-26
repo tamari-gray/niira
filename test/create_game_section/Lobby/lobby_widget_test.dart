@@ -34,6 +34,7 @@ void main() {
         ], child: MaterialApp(home: LobbyScreen())),
       );
 
+      // ol reliable
       await tester.pumpAndSettle();
 
       // observe list of created games
