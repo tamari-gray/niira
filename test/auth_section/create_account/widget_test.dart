@@ -18,7 +18,7 @@ class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
 void main() {
   Widget makeTestableCreateAccountWidget(MockNavService mockNavService,
-      MockAuthService mockAuth, MockDBService mockDBService) {
+      MockAuthService mockAuth, MockDatabaseService mockDBService) {
     return MultiProvider(
         providers: [
           Provider<AuthService>(create: (_) => mockAuth),
@@ -42,7 +42,7 @@ void main() {
           controller: _controller,
           mockUserData: _mockUserData,
           mockNavService: _mockNavService);
-      final _mockDBService = MockDBService();
+      final _mockDBService = MockDatabaseService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
         _mockNavService,
         _mockAuthService,
@@ -90,7 +90,7 @@ void main() {
           controller: _controller,
           mockUserData: _mockUserData,
           mockNavService: _mockNavService);
-      final _mockDBService = MockDBService();
+      final _mockDBService = MockDatabaseService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
         _mockNavService,
         _mockAuthService,
@@ -119,7 +119,7 @@ void main() {
           controller: _controller,
           mockUserData: _mockUserData,
           mockNavService: _mockNavService);
-      final _mockDBService = MockDBService();
+      final _mockDBService = MockDatabaseService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
         _mockNavService,
         _mockAuthService,
@@ -162,7 +162,7 @@ void main() {
           controller: _controller,
           mockUserData: _mockUserData,
           mockNavService: _mockNavService);
-      final _mockDBService = MockDBService();
+      final _mockDBService = MockDatabaseService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
         _mockNavService,
         _mockAuthService,

@@ -1,12 +1,13 @@
 import 'dart:async';
-import 'package:niira/models/game.dart';
+
 import 'package:meta/meta.dart';
+import 'package:niira/models/game.dart';
 import 'package:niira/services/database/database_service.dart';
 
-class MockDBService implements DatabaseService {
+class MockDatabaseService implements DatabaseService {
   final StreamController<List<Game>> _controller;
 
-  MockDBService({
+  MockDatabaseService({
     @required StreamController<List<Game>> controller,
   }) : _controller = controller;
 
