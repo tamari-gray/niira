@@ -6,9 +6,9 @@ class MockGames {
         Game(
           name: 'yeet',
           creatorName: 'tam',
-          id: 'fdhi',
+          id: '034280',
           sonarIntervals: 5,
-          state: GameState.created,
+          phase: GamePhase.created,
           boundary: Boundary(position: 5, size: 10),
         ),
         Game(
@@ -16,15 +16,15 @@ class MockGames {
           creatorName: 'tam',
           id: 'fdhi',
           sonarIntervals: 5,
-          state: GameState.created,
+          phase: GamePhase.created,
           boundary: Boundary(position: 5, size: 10),
         ),
         Game(
           name: 'yeeting',
           creatorName: 'tam',
-          id: 'fdhi',
+          id: 'fdfdshi',
           sonarIntervals: 5,
-          state: GameState.created,
+          phase: GamePhase.created,
           boundary: Boundary(position: 5, size: 10),
         )
       ].toList();

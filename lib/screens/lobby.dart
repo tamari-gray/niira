@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:niira/loading.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/screens/input_password.dart';
 import 'package:niira/services/auth/auth_service.dart';
@@ -10,6 +9,7 @@ import 'package:provider/provider.dart';
 class LobbyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    print('lobby screen build');
     return Scaffold(
       appBar: AppBar(
         title: Text('Lobby'),
@@ -18,15 +18,16 @@ class LobbyScreen extends StatelessWidget {
             key: Key('signOutBtn'),
             onPressed: () {
               // create a function to call on confirmation
-              final signOut = () async {
-                Navigator.of(context).pop();
-                await context.read<AuthService>().signOut();
-              };
+              // final signOut = () async {
+              //   Navigator.of(context).pop();
+              //   await context.read<AuthService>().signOut();
+              // };
 
-              context.read<NavigationService>().showConfirmationDialog(
-                  onConfirmed: signOut,
-                  confirmText: 'Sign Out',
-                  cancelText: 'Return');
+              // context.read<NavigationService>().showConfirmationDialog(
+              //       onConfirmed: signOut,
+              //       confirmText: 'Sign Out',
+              //       cancelText: 'Return',
+              //     );
             },
             child: Text('log out'),
           )
@@ -36,16 +37,20 @@ class LobbyScreen extends StatelessWidget {
         child: StreamBuilder<List<Game>>(
             stream: context.watch<DatabaseService>().streamOfCreatedGames,
             builder: (context, snapshot) {
-              return snapshot.data == null
-                  ? Loading()
-                  : Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                      child: ListView(
-                        children: <Widget>[
-                          for (var game in snapshot.data) GameTile(game)
-                        ],
-                      ),
-                    );
+              if (snapshot.data == null) {
+                print('still null');
+                return Container();
+              } else {
+                print(' stream builder working');
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                  child: ListView(
+                    children: <Widget>[
+                      for (var game in snapshot.data) GameTile(game)
+                    ],
+                  ),
+                );
+              }
             }),
       ),
     );
@@ -58,6 +63,7 @@ class GameTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('created game tile: ${_game.id}');
     return Container(
       key: Key('created_game_tile_${_game.id}'),
       child: Padding(
@@ -102,6 +108,7 @@ class GameTile extends StatelessWidget {
                   ),
                 ),
                 OutlineButton(
+                  key: Key('join_created_game_tile__btn_${_game.id}'),
                   textColor: Theme.of(context).primaryColor,
                   borderSide: BorderSide(color: Theme.of(context).primaryColor),
                   child: Text('Join'),

@@ -1,14 +1,18 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:niira/main.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/screens/lobby.dart';
+import 'package:niira/services/database/database_service.dart';
+import 'package:niira/services/database/firestore_service.dart';
 import 'package:provider/provider.dart';
 
-import '../../app_section/widget_test.dart';
 import 'package:niira/services/navigation_service.dart';
 
 import '../../mocks/data/mock_games.dart';
@@ -16,32 +20,47 @@ import '../../mocks/mock_user_data.dart';
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
 
-void main() {
-  final mockUserData = MockUser().userData;
+class MockFirebaseInstance extends Mock implements FirebaseFirestore {}
 
+void main() {
   group('joining a game', () {
     testWidgets(
         'find a list of created games, tap to join ad navigate to inputPassword page',
         (WidgetTester tester) async {
-      final controller = StreamController<List<Game>>();
-      final mockDBService = MockDBService(controller: controller);
+      // final _controller = StreamController<List<Game>>();
+      final mockCreatedGames = MockGames().gamesToJoin;
+      // print('mock created games: $moc');
+
+      final mockFirebaseInstance = MockFirebaseInstance();
+      final firestoreService = FirestoreService(mockFirebaseInstance);
+      // pump mock data
+      // _controller.add(mockCreatedGames);
 
       // init lobby page
       await tester.pumpWidget(
-        Provider<Stream<List<Game>>>(
-          create: (_) => mockDBService.streamOfCreatedGames,
-        ),
+        MultiProvider(providers: [
+          Provider<DatabaseService>.value(value: firestoreService),
+        ], child: MaterialApp(home: LobbyScreen())),
       );
+      // _controller.add(mockCreatedGames);
 
-      // pump mock data
-      final mockCreatedGames = MockGames().gamesToJoin;
-      controller.add(mockCreatedGames);
-
-      // observe list of games
+      // observe list of created games
+      expect(find.byKey(Key('created_game_tile_${mockCreatedGames[0].id}')),
+          findsOneWidget);
+      expect(find.byKey(Key('created_game_tile_${mockCreatedGames[1].id}')),
+          findsOneWidget);
+      expect(find.byKey(Key('created_game_tile_${mockCreatedGames[2].id}')),
+          findsOneWidget);
 
       // tap to join a game
+      final joinGameBtn = find
+          .byKey(Key('join_created_game_tile__btn_${mockCreatedGames[0].id}'));
+      expect((joinGameBtn), findsOneWidget);
+      await tester.tap(joinGameBtn);
+      await tester.pumpAndSettle();
 
       // observe navigation to input password screen
+      expect(find.byKey(Key('inputPasswordScreen')), findsOneWidget);
     });
   });
   testWidgets(
@@ -50,13 +69,18 @@ void main() {
     // create a controller that the fake auth servive will hold
     final controller = StreamController<UserData>();
     final navService = NavigationService();
-    final fakeAuthService = MockAuthService(controller: controller);
-    final fakeDBService = FakeDatabaseService();
+    final mockAuthService = MockAuthService(controller: controller);
+    final mockDBService = MockDBService();
+    final mockUserData = MockUser().userData;
 
     // create the widget under test
     await tester.pumpWidget(
       MyApp(
-          fakeAuthService, navService.navigatorKey, fakeDBService, navService),
+        mockAuthService,
+        navService.navigatorKey,
+        mockDBService,
+        navService,
+      ),
     );
 
     //sign in the user

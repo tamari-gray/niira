@@ -34,7 +34,7 @@ class FirestoreService implements DatabaseService {
             creatorName:
                 gameDoc.data()['creatorName'].toString() ?? 'undefined',
             sonarIntervals: gameDoc.data()['sonarIntervals'] as int,
-            // state: gameDoc.data()['creatorName'].toString() ?? 'undefined', //TODO: how to turn string into enum?
+            // phase: gameDoc.data()['phase'].toString() ?? 'undefined', //TODO: how to turn int into enum?
             boundary: Boundary(
               size: gameDoc.data()['boundary']['position'] as int ?? 0,
               position: gameDoc.data()['boundary']['position'] as int ?? 0,
