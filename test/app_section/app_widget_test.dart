@@ -4,11 +4,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:niira/main.dart';
+import 'package:niira/models/game.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/services/database/database_service.dart';
 
 import '../mocks/mock_user_data.dart';
 import '../mocks/services/mock_auth_service.dart';
+import '../mocks/services/mock_database_service.dart';
 import '../mocks/services/mock_nav_service.dart';
 
 class FakeDatabaseService extends Fake implements DatabaseService {}
@@ -27,7 +29,9 @@ void main() {
         mockNavService: mockNavService,
         successfulAuth: true,
       );
-      final fakeDBService = FakeDatabaseService();
+      final mockDatabaseStreamController = StreamController<List<Game>>();
+      final mockDatabaseService =
+          MockDatabaseService(controller: mockDatabaseStreamController);
       controller.add(null);
 
       // create the widget under test
@@ -35,7 +39,7 @@ void main() {
         MyApp(
           mockAuthService,
           GlobalKey<NavigatorState>(),
-          fakeDBService,
+          mockDatabaseService,
           mockNavService,
         ),
       );
