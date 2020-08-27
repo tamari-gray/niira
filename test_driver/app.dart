@@ -20,7 +20,7 @@ void main() {
     mockUserData: mockUserData,
     mockNavService: mockNavService,
   );
-  final mockDBService = MockDBService();
+  final mockDBService = MockDatabaseService();
   mockAuthService.signInWithEmail('email', 'password');
 
   runApp(MyApp(

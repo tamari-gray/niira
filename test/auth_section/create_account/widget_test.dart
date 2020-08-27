@@ -11,15 +11,14 @@ import 'package:provider/provider.dart';
 
 import '../../mocks/mock_user_data.dart';
 import '../../mocks/services/mock_auth_service.dart';
+import '../../mocks/services/mock_database_service.dart';
 import '../../mocks/services/mock_nav_service.dart';
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
-class MockDBService extends Mock implements DatabaseService {}
-
 void main() {
   Widget makeTestableCreateAccountWidget(MockNavService mockNavService,
-      MockAuthService mockAuth, MockDBService mockDBService) {
+      MockAuthService mockAuth, MockDatabaseService mockDBService) {
     return MultiProvider(
         providers: [
           Provider<AuthService>(create: (_) => mockAuth),
@@ -43,7 +42,7 @@ void main() {
           controller: _controller,
           mockUserData: _mockUserData,
           mockNavService: _mockNavService);
-      final _mockDBService = MockDBService();
+      final _mockDBService = MockDatabaseService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
         _mockNavService,
         _mockAuthService,
@@ -91,7 +90,7 @@ void main() {
           controller: _controller,
           mockUserData: _mockUserData,
           mockNavService: _mockNavService);
-      final _mockDBService = MockDBService();
+      final _mockDBService = MockDatabaseService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
         _mockNavService,
         _mockAuthService,
@@ -120,7 +119,7 @@ void main() {
           controller: _controller,
           mockUserData: _mockUserData,
           mockNavService: _mockNavService);
-      final _mockDBService = MockDBService();
+      final _mockDBService = MockDatabaseService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
         _mockNavService,
         _mockAuthService,
@@ -163,7 +162,7 @@ void main() {
           controller: _controller,
           mockUserData: _mockUserData,
           mockNavService: _mockNavService);
-      final _mockDBService = MockDBService();
+      final _mockDBService = MockDatabaseService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
         _mockNavService,
         _mockAuthService,
