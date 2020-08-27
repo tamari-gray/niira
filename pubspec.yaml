@@ -17,6 +17,7 @@ dependencies:
   firebase_auth:
   cloud_firestore:
   flutter_spinkit:
+  enum_to_string:
 
 dev_dependencies:
   mockito: ^4.1.1
