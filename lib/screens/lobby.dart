@@ -38,16 +38,17 @@ class LobbyScreen extends StatelessWidget {
             stream: context.watch<DatabaseService>().streamOfCreatedGames,
             builder: (context, snapshot) {
               if (snapshot.data == null) {
-                print('still null');
                 return Container();
               } else {
-                print(' stream builder working');
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                  child: ListView(
-                    children: <Widget>[
-                      for (var game in snapshot.data) GameTile(game)
-                    ],
+                  child: ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      return GameTile(
+                        snapshot.data[index],
+                      );
+                    },
                   ),
                 );
               }
@@ -81,7 +82,7 @@ class GameTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        '500m away', // will replace with real data in ticket #60
+                        '500m away', //TODO: will replace with real data in ticket #60
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 14,
