@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 class LobbyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    print('lobby screen build');
     return Scaffold(
       appBar: AppBar(
         title: Text('Lobby'),
