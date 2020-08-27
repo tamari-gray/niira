@@ -20,8 +20,6 @@ class LocationService {
         desiredAccuracy: LocationAccuracy.high);
   }
 
-  //
-
   // listen to users location
   void listenToUsersLocation() {
     var geolocator = _geolocator;
