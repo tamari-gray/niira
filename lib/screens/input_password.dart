@@ -63,7 +63,7 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
                 .read<DatabaseService>()
                 .joinGame(widget.game.id, player);
 
-            //navigate to waiting screen
+            // navigate to waiting screen
             await Navigator.push<dynamic>(
               context,
               MaterialPageRoute<dynamic>(
