@@ -17,6 +17,7 @@ dependencies:
   firebase_auth:
   cloud_firestore:
   flutter_spinkit:
+  enum_to_string:
   geolocator:
 
 dev_dependencies:
