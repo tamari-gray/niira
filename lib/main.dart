@@ -62,12 +62,7 @@ class MyApp extends StatelessWidget {
             stream: _authService.streamOfAuthState,
             builder: (context, snapshot) {
               // TODO: check for snapshot error and send to navigation manager for display
-              return (snapshot.data == null)
-                  ? WelcomeScreen()
-                  : InputPasswordScreen(
-                      game: Game(id: 'dhfjs'),
-                    );
-              // return InputPasswordScreen();
+              return (snapshot.data == null) ? WelcomeScreen() : LobbyScreen();
             },
           )),
     );

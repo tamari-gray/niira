@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 class InputPasswordScreen extends StatefulWidget {
   final Game game;
-  InputPasswordScreen({this.game});
+  InputPasswordScreen({@required this.game});
   @override
   _InputPasswordScreenState createState() => _InputPasswordScreenState();
 }
@@ -18,16 +18,7 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final mockGame = Game(
-      id: 'yeet',
-      name: null,
-      creatorName: null,
-      sonarIntervals: null,
-      password: 'hi',
-      boundary: null,
-      phase: null,
-    );
-
+    final databaseService = context.read<DatabaseService>();
     return Scaffold(
       key: Key('inputPasswordScreen'),
       appBar: AppBar(
@@ -47,8 +38,7 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
           if (_formKey.currentState.validate()) {
             // get player details
             final userId = await context.read<AuthService>().currentUserId;
-            final username =
-                await context.read<DatabaseService>().getUserName(userId);
+            final username = await databaseService.getUserName(userId);
 
             // add user as player to game
             final player = Player(
@@ -59,9 +49,7 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
               hasItem: false,
               isAdmin: false,
             );
-            await context
-                .read<DatabaseService>()
-                .joinGame(widget.game.id, player);
+            await databaseService.joinGame(widget.game.id, player);
 
             // navigate to waiting screen
             await Navigator.push<dynamic>(
@@ -88,7 +76,7 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please enter password';
-                  } else if (value != mockGame.password) {
+                  } else if (value != widget.game.password) {
                     return 'Password is incorrect';
                   }
                   return null;
