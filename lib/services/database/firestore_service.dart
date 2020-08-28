@@ -25,21 +25,24 @@ class FirestoreService implements DatabaseService {
   }
 
   @override
-  Stream<List<Game>> get streamOfCreatedGames =>
-      _firestore.collection('games').snapshots().map((QuerySnapshot snapshot) {
-        return snapshot.docs.map((gameDoc) {
-          return Game(
-            id: gameDoc.data()['id'].toString() ?? 'undefined',
-            name: gameDoc.data()['name'].toString() ?? 'undefined',
-            creatorName:
-                gameDoc.data()['creatorName'].toString() ?? 'undefined',
-            sonarIntervals: gameDoc.data()['sonarIntervals'] as int,
-            // phase: gameDoc.data()['phase'].toString() ?? 'undefined', //TODO: how to turn int into enum?
-            boundary: Boundary(
-              size: gameDoc.data()['boundary']['position'] as int ?? 0,
-              position: gameDoc.data()['boundary']['position'] as int ?? 0,
-            ),
-          );
-        }).toList();
-      });
+  Stream<List<Game>> get streamOfCreatedGames => _firestore
+      .collection('games')
+      .snapshots()
+      .map(
+        (QuerySnapshot snapshot) => snapshot.docs
+            .map((gameDoc) => Game(
+                  id: gameDoc.data()['id'].toString() ?? 'undefined',
+                  name: gameDoc.data()['name'].toString() ?? 'undefined',
+                  creatorName:
+                      gameDoc.data()['creatorName'].toString() ?? 'undefined',
+                  sonarIntervals: gameDoc.data()['sonarIntervals'] as int,
+                  // phase: gameDoc.data()['phase'].toString() ?? 'undefined', //TODO: how to turn int into enum?
+                  boundary: Boundary(
+                    size: gameDoc.data()['boundary']['position'] as int ?? 0,
+                    position:
+                        gameDoc.data()['boundary']['position'] as int ?? 0,
+                  ),
+                ))
+            .toList(),
+      );
 }
