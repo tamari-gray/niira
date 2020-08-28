@@ -5,8 +5,7 @@ class Player {
   final String id;
   final String username;
   final bool isTagger;
-  final bool
-      hasBeenTagged; //TODO: think of name that isnt confused with isTagger
+  final bool hasBeenTagged;
   final bool hasItem;
   final bool isAdmin;
 
