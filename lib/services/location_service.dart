@@ -7,15 +7,12 @@ class LocationService {
   LocationService(this._geolocator);
 
   // check if location services are enabled
-  Future<GeolocationStatus> checkForLocationPermission() async {
-    return await _geolocator.checkGeolocationPermissionStatus();
-  }
+  Future<GeolocationStatus> checkForLocationPermission() =>
+      _geolocator.checkGeolocationPermissionStatus();
 
   // get users currentLocation
-  Future<Position> getUsersCurrentLocation() async {
-    return await _geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-  }
+  Future<Position> getUsersCurrentLocation() =>
+      _geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
   // listen to users location
   Stream<Position> get listenToUsersLocation {
