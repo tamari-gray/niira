@@ -62,7 +62,9 @@ void main() {
         (WidgetTester tester) async {
       final _authController = StreamController<UserData>();
       final _mockAuthService = MockAuthService(controller: _authController);
-      final _mockDatabaseService = MockDatabaseService();
+      final _databaseController = StreamController<List<Game>>();
+      final _mockDatabaseService =
+          MockDatabaseService(controller: _databaseController);
       final mockGame = Game(
           id: 'mock_game_123',
           name: null,
@@ -90,16 +92,19 @@ void main() {
           find.byKey(Key('input_password_screen_text_feild')), 'test_password');
       await tester.tap(find.byKey(Key('input_password_screen_submit_btn')));
       await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
 
       // check user has been added to game
       final mockPlayer = Player(
-          id: 'uid123',
-          username: 'username123',
+          id: 'uid123', // given from _mockAuthService.currentUserId
+          username:
+              'username123', // given from _mockDatabaseService.getUsername
           isTagger: null,
           hasBeenTagged: null,
           hasItem: null,
           isAdmin: null);
-      verify(_mockDatabaseService.joinGame(mockGame.id, mockPlayer)).called(1);
+      verify(_mockDatabaseService.joinGame(mockGame.id, mockPlayer))
+          .called(1); // TODO: fix verify error
 
       // navigate to waiting screen
       expect(
