@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:mockito/mockito.dart';
 import 'package:niira/models/game.dart';
-import 'package:niira/models/player.dart';
 import 'package:niira/services/database/database_service.dart';
 
-class MockDatabaseService implements DatabaseService {
+class MockDatabaseService extends Mock implements DatabaseService {
   final StreamController<List<Game>> _controller;
 
   MockDatabaseService({
@@ -22,8 +22,8 @@ class MockDatabaseService implements DatabaseService {
     return Future.value('username123');
   }
 
-  @override
-  Future<void> joinGame(String gameId, Player player) {
-    return Future.value();
-  }
+  // @override
+  // Future<void> joinGame(String gameId, Player player) {
+  //   return Future.value();
+  // }
 }
