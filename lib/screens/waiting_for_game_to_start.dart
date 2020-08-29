@@ -11,6 +11,7 @@ class _WaitingForGameToStartScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: Key('waiting_for_game_to_start_screen'),
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text('Waiting...'),

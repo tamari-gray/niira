@@ -18,7 +18,6 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final databaseService = context.read<DatabaseService>();
     return Scaffold(
       key: Key('inputPasswordScreen'),
       appBar: AppBar(
@@ -26,6 +25,7 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
         title: Text('Password'),
       ),
       floatingActionButton: FloatingActionButton.extended(
+        key: Key('input_password_screen_submit_btn'),
         label: Text(
           'Next',
           style: TextStyle(color: Colors.white),
@@ -38,7 +38,8 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
           if (_formKey.currentState.validate()) {
             // get player details
             final userId = await context.read<AuthService>().currentUserId;
-            final username = await databaseService.getUserName(userId);
+            final username =
+                await context.read<DatabaseService>().getUserName(userId);
 
             // add user as player to game
             final player = Player(
@@ -49,7 +50,9 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
               hasItem: false,
               isAdmin: false,
             );
-            await databaseService.joinGame(widget.game.id, player);
+            await context
+                .read<DatabaseService>()
+                .joinGame(widget.game.id, player);
 
             // navigate to waiting screen
             await Navigator.push<dynamic>(
@@ -68,6 +71,7 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(50, 0, 50, 0),
               child: TextFormField(
+                key: Key('input_password_screen_text_feild'),
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Input password',

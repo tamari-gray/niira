@@ -19,11 +19,11 @@ class MockDatabaseService implements DatabaseService {
 
   @override
   Future<String> getUserName(String userId) {
-    throw UnimplementedError();
+    return Future.value('username123');
   }
 
   @override
-  Future<void> joinGame(String gameIdPlayer, Player player) {
-    throw UnimplementedError();
+  Future<void> joinGame(String gameId, Player player) {
+    return Future.value();
   }
 }
