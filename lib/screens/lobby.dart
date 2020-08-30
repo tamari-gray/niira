@@ -116,7 +116,9 @@ class GameTile extends StatelessWidget {
                     Navigator.push<dynamic>(
                       context,
                       MaterialPageRoute<dynamic>(
-                        builder: (context) => InputPasswordScreen(),
+                        builder: (context) => InputPasswordScreen(
+                          game: _game,
+                        ),
                       ),
                     );
                   },
