@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:niira/models/game.dart';
-import 'package:niira/models/player.dart';
 import 'package:niira/screens/waiting_for_game_to_start.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
@@ -24,6 +23,7 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
         automaticallyImplyLeading: true,
         title: Text('Password'),
       ),
+      // form submit button
       floatingActionButton: FloatingActionButton.extended(
         key: Key('input_password_screen_submit_btn'),
         label: Text(
@@ -35,24 +35,15 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
           color: Colors.white,
         ),
         onPressed: () async {
+          // check if password is correct
           if (_formKey.currentState.validate()) {
             // get player details
             final userId = await context.read<AuthService>().currentUserId;
-            final username =
-                await context.read<DatabaseService>().getUserName(userId);
 
-            // add user as player to game
-            final player = Player(
-              id: userId,
-              username: username,
-              isTagger: false,
-              hasBeenTagged: false,
-              hasItem: false,
-              isAdmin: false,
-            );
+            // add player to game in database
             await context
                 .read<DatabaseService>()
-                .joinGame(widget.game.id, player);
+                .joinGame(widget.game.id, userId);
 
             // navigate to waiting screen
             await Navigator.push<dynamic>(
@@ -66,10 +57,11 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
       ),
       body: Container(
         child: Center(
+          // form to inpt game password
           child: Form(
             key: _formKey,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+              padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
               child: TextFormField(
                 key: Key('input_password_screen_text_feild'),
                 obscureText: true,
@@ -77,6 +69,7 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
                   labelText: 'Input password',
                   prefixIcon: Icon(Icons.visibility),
                 ),
+                // check if password is correct
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please enter password';

@@ -58,7 +58,19 @@ class FirestoreService implements DatabaseService {
           }).toList());
 
   @override
-  Future<void> joinGame(String gameId, Player player) {
+  Future<void> joinGame(String gameId, String userId) async {
+    // create player object
+    final username = await getUserName(userId);
+    final player = Player(
+      id: userId,
+      username: username,
+      isTagger: false,
+      hasBeenTagged: false,
+      hasItem: false,
+      isAdmin: false,
+    );
+
+    // add player to game in db
     return _firestore
         .doc('games/$gameId/players/${player.id}')
         .set(<String, dynamic>{

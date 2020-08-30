@@ -6,5 +6,5 @@ abstract class DatabaseService {
   Future<void> addUsername(String userId, String username);
   Future<String> getUserName(String userId);
   Stream<List<Game>> get streamOfCreatedGames;
-  Future<void> joinGame(String gameId, Player player);
+  Future<void> joinGame(String gameId, String userId);
 }
