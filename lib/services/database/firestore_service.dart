@@ -1,5 +1,6 @@
 import 'package:niira/models/boundary.dart';
 import 'package:niira/models/game.dart';
+import 'package:niira/models/player.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enum_to_string/enum_to_string.dart';
@@ -41,9 +42,29 @@ class FirestoreService implements DatabaseService {
               sonarIntervals: gameDoc.data()['sonarIntervals'] as int,
               phase: gamePhase ?? GamePhase.created,
               boundary: Boundary(
-                size: gameDoc.data()['boundary']['position'] as int ?? 0,
+                size: gameDoc.data()['boundary']['size'] as int ?? 0,
                 position: gameDoc.data()['boundary']['position'] as int ?? 0,
               ),
             );
           }).toList());
+
+  @override
+  Stream<List<Player>> streamOfJoinedPlayers(String gameId) {
+    return _firestore.collection('games/$gameId/players').snapshots().map(
+          (QuerySnapshot snapshot) => snapshot.docs
+              .map(
+                (playerDoc) => Player(
+                  id: playerDoc.data()['id'].toString() ?? 'undefined',
+                  username:
+                      playerDoc.data()['username'].toString() ?? 'undefined',
+                  isTagger: playerDoc.data()['isTagger'] as bool ?? false,
+                  hasBeenTagged:
+                      playerDoc.data()['hasBeenTagged'] as bool ?? false,
+                  hasItem: playerDoc.data()['hasItem'] as bool ?? false,
+                  isAdmin: playerDoc.data()['isAdmin'] as bool ?? false,
+                ),
+              )
+              .toList(),
+        );
+  }
 }
