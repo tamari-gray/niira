@@ -3,10 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:niira/main.dart';
-import 'package:niira/models/game.dart';
 import 'package:niira/models/player.dart';
-import 'package:niira/models/user_data.dart';
 import 'package:niira/screens/lobby.dart';
 import 'package:niira/screens/waiting_for_game_to_start.dart';
 import 'package:niira/services/database/database_service.dart';
@@ -14,32 +11,32 @@ import 'package:niira/services/navigation_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/data/mock_games.dart';
-import '../../mocks/mock_user_data.dart';
-import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
 import '../../mocks/services/mock_nav_service.dart';
 
 void main() {
   testWidgets('show player current tagger when its selected',
       (WidgetTester tester) async {
+    // add mock list of joined players to mock database
     final _controller = StreamController<List<Player>>();
-
     final _mockJoinedPlayers = [
-      Player(username: 'pete', isTagger: false),
-      Player(username: 'yeet', isTagger: false),
-      Player(username: 'wheat', isTagger: false),
+      Player(id: 'ui1', username: 'pete', isTagger: false),
+      Player(id: 'ui12', username: 'yeet', isTagger: false),
+      Player(id: 'ui123', username: 'wheat', isTagger: false),
     ];
     _controller.add(_mockJoinedPlayers);
-    final mockDatabaseService =
+
+    // setup dependant services
+    final _mockDatabaseService =
         MockDatabaseService(playerStreamController: _controller);
     final _mockNavigationService = MockNavService();
 
-    // init lobby page
+    // init waiting for game to start screen
     final mockGame = MockGames().gamesToJoin[0];
     await tester.pumpWidget(
       MultiProvider(
           providers: [
-            Provider<DatabaseService>.value(value: mockDatabaseService),
+            Provider<DatabaseService>.value(value: _mockDatabaseService),
             Provider<NavigationService>.value(value: _mockNavigationService),
           ],
           child: MaterialApp(
@@ -47,6 +44,9 @@ void main() {
             game: mockGame,
           ))),
     );
+
+    // ensure stream has recieved data
+    await tester.pumpAndSettle();
 
     // observe list of joined players
     expect(find.byKey(Key('created_game_tile_${_mockJoinedPlayers[0].id}')),
@@ -56,54 +56,59 @@ void main() {
     expect(find.byKey(Key('created_game_tile_${_mockJoinedPlayers[2].id}')),
         findsOneWidget);
 
-    // choose tagger
+    // mock admin choose a tagger by updating stream
     final _mockJoinedPlayersWithTagger = [
-      Player(username: 'pete', isTagger: false),
-      Player(username: 'yeet', isTagger: true),
-      Player(username: 'wheat', isTagger: false),
+      Player(id: 'ui1', username: 'pete', isTagger: false),
+      Player(id: 'ui12', username: 'yeet', isTagger: true),
+      Player(id: 'ui123', username: 'wheat', isTagger: false),
     ];
     _controller.add(_mockJoinedPlayersWithTagger);
+    await tester.pumpAndSettle();
 
-    // show player tagger has been chosen
+    // show user tagger has been chosen
+    expect(find.byKey(Key('tagger_tile_${_mockJoinedPlayers[1].id}')),
+        findsOneWidget);
   });
   testWidgets('when tap leave game, pop routes until at lobby',
       (WidgetTester tester) async {
-    // create a controller that the fake auth servive will hold
-    final controller = StreamController<UserData>();
-    final navService = NavigationService();
-    final mockAuthService = MockAuthService(controller: controller);
-    final createdGamesStreamContoller = StreamController<List<Game>>();
-    final mockDBService =
-        MockDatabaseService(controller: createdGamesStreamContoller);
-    final mockUserData = MockUser().userData;
+    // init dependant services
+    final _controller = StreamController<List<Player>>();
+    final _mockDatabaseService =
+        MockDatabaseService(playerStreamController: _controller);
+    final _mockNavigationService = MockNavService();
 
-    //sign in the user
-    controller.add(mockUserData);
-    // create the widget under test
+    // init waiting for game to start screen
+    final mockGame = MockGames().gamesToJoin[0];
     await tester.pumpWidget(
-      MyApp(
-        mockAuthService,
-        navService.navigatorKey,
-        mockDBService,
-        navService,
-      ),
+      MultiProvider(providers: [
+        Provider<DatabaseService>.value(value: _mockDatabaseService),
+        Provider<NavigationService>.value(value: _mockNavigationService),
+      ], child: MaterialApp(home: LobbyScreen())),
     );
+
+    // join a game from lobby
+
+    // input correct password
+
+    // show waiting screen
+
+    //
 
     await tester.pumpAndSettle();
 
-    // tap sign out btn
-    final signOutBtn = find.byKey(Key('signOutBtn'));
-    expect((signOutBtn), findsOneWidget);
-    await tester.tap(signOutBtn);
+    // tap quit btn
+    final quitButton = find.byKey(Key('waiting_screen_quit_btn'));
+    expect((quitButton), findsOneWidget);
+    await tester.tap(quitButton);
     await tester.pump();
 
-    // confirm sign out
+    // confirm quit
     await tester.tap(find.byKey(Key('confirmBtn')));
     await tester.pumpAndSettle();
 
     // check the lobby screen is no longer present
-    expect(find.text('Lobby'), findsNothing);
-    // check that the welcome screen is present
-    expect(find.byKey(Key('navigateToCreateAccount')), findsOneWidget);
+    expect(find.byKey(Key('waiting_for_game_to_start_screen')), findsNothing);
+    // check that the lobby screen is present
+    expect(find.text('Lobby'), findsOneWidget);
   });
 }

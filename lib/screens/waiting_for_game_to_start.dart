@@ -19,7 +19,7 @@ class _WaitingForGameToStartScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: Key('waiting_for_game_to_start_screen'),
+      key: Key('c'),
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text('Waiting for game to start'),
@@ -29,15 +29,19 @@ class _WaitingForGameToStartScreenState
             label: Text('leave'),
             icon: Icon(Icons.exit_to_app),
             onPressed: () {
-              // handle player leaving game
+              // handle player leaving gamec
               // TODO: if admin leaving, force all players to quit and redirect to lobby
+
+              // navigate to lobby route
               final lobbyRoute = MaterialPageRoute<dynamic>(
                 builder: (context) => LobbyScreen(),
               );
 
+              // TODO: use navigation service to pop until lobby screen
               context.read<NavigationService>().showConfirmationDialog(
-                    onConfirmed: () => Navigator.of(context).popUntil((route) =>
-                        LobbyScreen), // TODO: pop until at lobby screen
+                    onConfirmed: () => Navigator.of(context).popUntil(
+                      (route) => route == lobbyRoute,
+                    ),
                     confirmText: 'Leave game',
                     cancelText: 'Return',
                   );
@@ -98,9 +102,11 @@ class JoinedPlayerTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
+      key: Key('created_game_tile_${player.id}'),
       padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
       child: player.isTagger
           ? Card(
+              key: Key('tagger_tile_${player.id}'),
               color: Theme.of(context).accentColor,
               child: ListTile(
                 title: Text(
