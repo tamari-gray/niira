@@ -15,6 +15,7 @@ import '../../mocks/data/mock_games.dart';
 import '../../mocks/mock_user_data.dart';
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
+import '../../mocks/services/mock_location_service.dart';
 
 void main() {
   group('joining a game', () {
@@ -66,6 +67,7 @@ void main() {
     final createdGamesStreamContoller = StreamController<List<Game>>();
     final mockDBService =
         MockDatabaseService(controller: createdGamesStreamContoller);
+    final mockLocationService = MockLocationService();
     final mockUserData = MockUser().userData;
 
     //sign in the user
@@ -77,6 +79,7 @@ void main() {
         navService.navigatorKey,
         mockDBService,
         navService,
+        mockLocationService,
       ),
     );
 

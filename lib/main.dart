@@ -2,12 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:niira/screens/lobby.dart';
 import 'package:niira/screens/welcome.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/firebase_auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/database/firestore_service.dart';
+import 'package:niira/services/location_service.dart';
 import 'package:niira/services/navigation_service.dart';
 import 'package:provider/provider.dart';
 
@@ -26,18 +28,27 @@ void main() async {
       FirebaseAuthService(FirebaseAuth.instance, navigationService);
   final databaseService = FirestoreService(FirebaseFirestore.instance);
 
-  runApp(MyApp(authService, navigationService.navigatorKey, databaseService,
-      navigationService));
+  final geolocator = Geolocator();
+  final locationService = LocationService(geolocator);
+
+  runApp(MyApp(
+    authService,
+    navigationService.navigatorKey,
+    databaseService,
+    navigationService,
+    locationService,
+  ));
 }
 
 class MyApp extends StatelessWidget {
   final AuthService _authService;
   final DatabaseService _databaseService;
   final NavigationService _navigationService;
+  final LocationService _locationService;
   final GlobalKey<NavigatorState> _navigatorKey;
 
   MyApp(this._authService, this._navigatorKey, this._databaseService,
-      this._navigationService);
+      this._navigationService, this._locationService);
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +57,7 @@ class MyApp extends StatelessWidget {
         Provider<AuthService>.value(value: _authService),
         Provider<DatabaseService>.value(value: _databaseService),
         Provider<NavigationService>.value(value: _navigationService),
+        Provider<LocationService>.value(value: _locationService),
       ],
       child: MaterialApp(
           title: 'Flutter Demo',
