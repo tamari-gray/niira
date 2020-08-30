@@ -19,6 +19,7 @@ dependencies:
   flutter_spinkit:
   enum_to_string:
   geolocator:
+  google_maps_flutter:
 
 dev_dependencies:
   mockito: ^4.1.1
