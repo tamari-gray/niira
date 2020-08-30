@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 import 'package:niira/models/game.dart';
+import 'package:niira/models/player.dart';
 import 'package:niira/services/database/database_service.dart';
 
 class MockDatabaseService implements DatabaseService {
@@ -16,4 +17,9 @@ class MockDatabaseService implements DatabaseService {
 
   @override
   Stream<List<Game>> get streamOfCreatedGames => _controller.stream;
+
+  @override
+  Stream<List<Player>> streamOfJoinedPlayers(String gameId) {
+    throw UnimplementedError();
+  }
 }
