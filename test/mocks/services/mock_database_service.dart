@@ -1,10 +1,11 @@
 import 'dart:async';
 
+import 'package:mockito/mockito.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/player.dart';
 import 'package:niira/services/database/database_service.dart';
 
-class MockDatabaseService implements DatabaseService {
+class MockDatabaseService extends Mock implements DatabaseService {
   final StreamController<List<Game>> _controller;
   final StreamController<List<Player>> _playerStreamController;
 
@@ -15,9 +16,10 @@ class MockDatabaseService implements DatabaseService {
         _playerStreamController = playerStreamController;
 
   @override
-  Future<bool> usernameAlreadyExists(String username) {}
+  Future<bool> usernameAlreadyExists(String username) => Future.value(true);
+
   @override
-  Future<void> addUsername(String userId, String username) {}
+  Future<void> addUsername(String userId, String username) => Future.value();
 
   @override
   Stream<List<Game>> get streamOfCreatedGames => _controller.stream;
@@ -25,4 +27,10 @@ class MockDatabaseService implements DatabaseService {
   @override
   Stream<List<Player>> streamOfJoinedPlayers(String gameId) =>
       _playerStreamController.stream;
+
+  @override
+  Future<String> getUserName(String userId) => Future.value('username123');
+
+  // @override
+  // Future<void> joinGame(String gameId, String userId) => Future.value();
 }

@@ -22,7 +22,7 @@ class MockAuthService implements AuthService {
         _successfulAuth = successfulAuth = true;
 
   @override
-  String get currentUserId => 'uid';
+  String get currentUserId => 'uid123';
 
   @override
   Stream<UserData> get streamOfAuthState => _controller.stream;
