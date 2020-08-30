@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:niira/models/game.dart';
+import 'package:niira/models/player.dart';
+import 'package:niira/screens/lobby.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/navigation_service.dart';
 import 'package:provider/provider.dart';
 
 class WaitingForGameToStartScreen extends StatefulWidget {
+  final Game game;
+  WaitingForGameToStartScreen({this.game});
   @override
   _WaitingForGameToStartScreenState createState() =>
       _WaitingForGameToStartScreenState();
@@ -24,8 +29,15 @@ class _WaitingForGameToStartScreenState
             label: Text('leave'),
             icon: Icon(Icons.exit_to_app),
             onPressed: () {
+              // handle player leaving game
+              // TODO: if admin leaving, force all players to quit and redirect to lobby
+              final lobbyRoute = MaterialPageRoute<dynamic>(
+                builder: (context) => LobbyScreen(),
+              );
+
               context.read<NavigationService>().showConfirmationDialog(
-                    onConfirmed: () => Navigator.of(context).pop(),
+                    onConfirmed: () => Navigator.of(context).popUntil((route) =>
+                        LobbyScreen), // TODO: pop until at lobby screen
                     confirmText: 'Leave game',
                     cancelText: 'Return',
                   );
@@ -35,27 +47,86 @@ class _WaitingForGameToStartScreenState
       ),
       body: Container(
         child: StreamBuilder<List<Player>>(
-            // stream: context.watch<DatabaseService>().streamOfJoinedPlayers,
+            // get stream of players that have joined this game
+            stream: context
+                .watch<DatabaseService>()
+                .streamOfJoinedPlayers(widget.game.id),
             builder: (context, snapshot) {
-          if (snapshot.data == null) {
-            return Container();
-          } else {
-            return Padding(
-              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-              child: ListView.builder(
-                itemCount: snapshot.data.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(
-                      snapshot.data[index].toString(),
-                    ),
-                  ); // TODO: make list tile
-                },
-              ),
-            );
-          }
-        }),
+              if (snapshot.data == null) {
+                return Container();
+              } else {
+                //render list of joined players
+                return JoinedPlayersList(joinedPlayers: snapshot.data);
+              }
+            }),
       ),
+    );
+  }
+}
+
+// show list of all joined players to all joined players
+class JoinedPlayersList extends StatelessWidget {
+  final List<Player> joinedPlayers;
+
+  JoinedPlayersList({
+    @required this.joinedPlayers,
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+      child: ListView.builder(
+        itemCount: joinedPlayers.length,
+        itemBuilder: (context, index) => JoinedPlayerTile(
+          player: joinedPlayers[index],
+        ),
+      ),
+    );
+  }
+}
+
+// show joined player including their name and indicating if they have been chosen as tagger
+class JoinedPlayerTile extends StatelessWidget {
+  JoinedPlayerTile({
+    @required this.player,
+  });
+
+  final Player player;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+      child: player.isTagger
+          ? Card(
+              color: Theme.of(context).accentColor,
+              child: ListTile(
+                title: Text(
+                  player.username,
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Colors.white,
+                  ),
+                ),
+                subtitle: Text(
+                  'is the tagger',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            )
+          : Card(
+              child: ListTile(
+                title: Text(
+                  player.username,
+                  style: TextStyle(
+                    fontSize: 22,
+                  ),
+                ),
+                subtitle: Text('has joined'),
+              ),
+            ),
     );
   }
 }
