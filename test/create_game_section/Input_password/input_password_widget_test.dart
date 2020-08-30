@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:niira/models/game.dart';
-import 'package:niira/models/player.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/screens/input_password.dart';
 import 'package:niira/services/auth/auth_service.dart';

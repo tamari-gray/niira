@@ -1,5 +1,4 @@
 import 'package:niira/models/game.dart';
-import 'package:niira/models/player.dart';
 
 abstract class DatabaseService {
   Future<bool> usernameAlreadyExists(String username);

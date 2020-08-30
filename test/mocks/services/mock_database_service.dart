@@ -11,19 +11,18 @@ class MockDatabaseService extends Mock implements DatabaseService {
     StreamController<List<Game>> controller,
   }) : _controller = controller;
 
-  Future<bool> usernameAlreadyExists(String username) {}
-  Future<void> addUsername(String userId, String username) {}
+  @override
+  Future<bool> usernameAlreadyExists(String username) => Future.value(true);
+
+  @override
+  Future<void> addUsername(String userId, String username) => Future.value();
 
   @override
   Stream<List<Game>> get streamOfCreatedGames => _controller.stream;
 
   @override
-  Future<String> getUserName(String userId) {
-    return Future.value('username123');
-  }
+  Future<String> getUserName(String userId) => Future.value('username123');
 
   // @override
-  // Future<void> joinGame(String gameId, Player player) {
-  //   return Future.value();
-  // }
+  // Future<void> joinGame(String gameId, String userId) => Future.value();
 }
