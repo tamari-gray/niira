@@ -83,7 +83,7 @@ void main() {
       MultiProvider(providers: [
         Provider<DatabaseService>.value(value: _mockDatabaseService),
         Provider<NavigationService>.value(value: _mockNavigationService),
-      ], child: MaterialApp(home: LobbyScreen())),
+      ], child: MaterialApp(home: WaitingForGameToStartScreen(game: mockGame))),
     );
 
     // join a game from lobby

@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 class WaitingForGameToStartScreen extends StatefulWidget {
   final Game game;
-  WaitingForGameToStartScreen({this.game});
+  WaitingForGameToStartScreen({@required this.game});
   @override
   _WaitingForGameToStartScreenState createState() =>
       _WaitingForGameToStartScreenState();
