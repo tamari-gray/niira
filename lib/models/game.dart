@@ -10,6 +10,7 @@ class Game {
   final String password;
   final int sonarIntervals;
   final Boundary boundary; //game location is boundary.position
+  double distanceFromUser;
 
   final GamePhase phase;
   Game({

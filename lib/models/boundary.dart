@@ -1,8 +1,9 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:meta/meta.dart';
 
 class Boundary {
   final int size;
-  final int
+  final Position
       position; // TODO: position will be an object of latlng coords, update when choose geolocation library
 
   Boundary({

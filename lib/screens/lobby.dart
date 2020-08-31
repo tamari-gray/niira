@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/screens/input_password.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
+import 'package:niira/services/location_service.dart';
 import 'package:niira/services/navigation_service.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +23,6 @@ class LobbyScreen extends StatelessWidget {
                 Navigator.of(context).pop();
                 await context.read<AuthService>().signOut();
               };
-
               context.read<NavigationService>().showConfirmationDialog(
                     onConfirmed: signOut,
                     confirmText: 'Sign Out',
@@ -33,27 +34,43 @@ class LobbyScreen extends StatelessWidget {
         ],
       ),
       body: Container(
-        child: StreamBuilder<List<Game>>(
-            stream: context.watch<DatabaseService>().streamOfCreatedGames,
-            builder: (context, snapshot) {
-              if (snapshot.data == null) {
-                return Container();
-              } else {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                  child: ListView.builder(
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) {
-                      return GameTile(
-                        snapshot.data[index],
-                      );
-                    },
-                  ),
-                );
-              }
-            }),
+        child: ListOfCreatedGames(),
       ),
     );
+  }
+}
+
+class ListOfCreatedGames extends StatelessWidget {
+  const ListOfCreatedGames({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final createdGames = context.watch<DatabaseService>().streamOfCreatedGames;
+
+    final createdGamesInOrderOfDistance = context
+        .read<LocationService>()
+        .getDistanceBetweenUserAndGames(createdGames.toList());
+    return StreamBuilder<List<Game>>(
+        stream: context.watch<DatabaseService>().streamOfCreatedGames,
+        builder: (context, snapshot) {
+          if (snapshot.data == null) {
+            return Container();
+          } else {
+            return Padding(
+              padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+              child: ListView.builder(
+                itemCount: snapshot.data.length,
+                itemBuilder: (context, index) {
+                  return GameTile(
+                    snapshot.data[index],
+                  );
+                },
+              ),
+            );
+          }
+        });
   }
 }
 
@@ -81,7 +98,7 @@ class GameTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        '500m away', //TODO: will replace with real data in ticket #60
+                        '500m away', // TODO: will replace with real data in ticket #60
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 14,

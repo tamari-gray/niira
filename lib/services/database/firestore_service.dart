@@ -1,3 +1,4 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:niira/models/boundary.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/player.dart';
@@ -52,7 +53,14 @@ class FirestoreService implements DatabaseService {
               phase: gamePhase ?? GamePhase.created,
               boundary: Boundary(
                 size: gameDoc.data()['boundary']['position'] as int ?? 0,
-                position: gameDoc.data()['boundary']['position'] as int ?? 0,
+                position: Position(
+                  latitude: gameDoc.data()['boundary']['position']['latitude']
+                          as double ??
+                      0,
+                  longitude: gameDoc.data()['boundary']['position']['longitude']
+                          as double ??
+                      0,
+                ),
               ),
             );
           }).toList());
