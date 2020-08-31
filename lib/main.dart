@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:niira/map_page.dart';
+import 'package:niira/screens/lobby.dart';
+import 'package:niira/screens/welcome.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/firebase_auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
@@ -76,9 +77,8 @@ class _MyAppState extends State<MyApp> {
           home: StreamBuilder(
             stream: widget._authService.streamOfAuthState,
             builder: (context, snapshot) {
-              return MapPage();
               // TODO: check for snapshot error and send to navigation manager for display
-              // return (snapshot.data == null) ? WelcomeScreen() : LobbyScreen();
+              return (snapshot.data == null) ? WelcomeScreen() : LobbyScreen();
             },
           )),
     );
