@@ -50,3 +50,4 @@ ios/Runner/GoogleService-Info.plist
 
 # google firebase credentials
 android/google-services.json
+android/app/google-services.json

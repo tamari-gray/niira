@@ -20,6 +20,7 @@ dependencies:
   enum_to_string:
   geolocator:
   google_maps_flutter:
+  permission_handler:
 
 dev_dependencies:
   mockito: ^4.1.1
