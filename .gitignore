@@ -50,3 +50,6 @@ ios/Runner/GoogleService-Info.plist
 
 # google firebase credentials
 android/google-services.json
+
+# google maps API key 
+ios/Flutter/MapsKey.xcconfig

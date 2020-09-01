@@ -11,6 +11,7 @@ import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/database/firestore_service.dart';
 import 'package:niira/services/location_service.dart';
 import 'package:niira/services/navigation_service.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -40,7 +41,7 @@ void main() async {
   ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   final AuthService _authService;
   final DatabaseService _databaseService;
   final NavigationService _navigationService;
@@ -51,17 +52,33 @@ class MyApp extends StatelessWidget {
       this._navigationService, this._locationService);
 
   @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    _requestPermissions();
+    super.initState();
+  }
+
+  void _requestPermissions() async {
+    if (await Permission.location.request().isGranted) {
+      // Either the permission was already granted before or the user just granted it.
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<AuthService>.value(value: _authService),
-        Provider<DatabaseService>.value(value: _databaseService),
-        Provider<NavigationService>.value(value: _navigationService),
-        Provider<LocationService>.value(value: _locationService),
+        Provider<AuthService>.value(value: widget._authService),
+        Provider<DatabaseService>.value(value: widget._databaseService),
+        Provider<NavigationService>.value(value: widget._navigationService),
       ],
       child: MaterialApp(
           title: 'Flutter Demo',
-          navigatorKey: _navigatorKey,
+          navigatorKey: widget._navigatorKey,
           theme: ThemeData(
             brightness: Brightness.light,
             primaryColor: Color.fromRGBO(247, 152, 0, 1),
@@ -69,7 +86,7 @@ class MyApp extends StatelessWidget {
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
           home: StreamBuilder(
-            stream: _authService.streamOfAuthState,
+            stream: widget._authService.streamOfAuthState,
             builder: (context, snapshot) {
               // TODO: check for snapshot error and send to navigation manager for display
               return (snapshot.data == null) ? WelcomeScreen() : LobbyScreen();
