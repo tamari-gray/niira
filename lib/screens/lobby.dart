@@ -41,17 +41,14 @@ class LobbyScreen extends StatelessWidget {
 }
 
 class ListOfCreatedGames extends StatelessWidget {
-  const ListOfCreatedGames({
-    Key key,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     final createdGames = context.watch<DatabaseService>().streamOfCreatedGames;
 
     final createdGamesInOrderOfDistance = context
         .read<LocationService>()
-        .getDistanceBetweenUserAndGames(createdGames.toList());
+        .getDistanceBetweenUserAndGames(createdGames);
+
     return StreamBuilder<List<Game>>(
         stream: context.watch<DatabaseService>().streamOfCreatedGames,
         builder: (context, snapshot) {

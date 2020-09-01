@@ -75,6 +75,7 @@ class _MyAppState extends State<MyApp> {
         Provider<AuthService>.value(value: widget._authService),
         Provider<DatabaseService>.value(value: widget._databaseService),
         Provider<NavigationService>.value(value: widget._navigationService),
+        Provider<LocationService>.value(value: widget._locationService),
       ],
       child: MaterialApp(
           title: 'Flutter Demo',

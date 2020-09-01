@@ -26,17 +26,18 @@ class LocationService {
   }
 
   // get distance between user and games and order from nearest to furthest
-  Future<List<Game>> getDistanceBetweenUserAndGames(List<Game> games) async {
+  Future<Stream<List<Game>>> getDistanceBetweenUserAndGames(
+      Stream<List<Game>> games) async {
     final usersCurrentLocation = await getUsersCurrentLocation;
 
-    games.map((game) async {
-      game.distanceFromUser = await _geolocator.distanceBetween(
+    for (var game in games) {
+      final distance = await _geolocator.distanceBetween(
         game.boundary.position.latitude,
         game.boundary.position.longitude,
         usersCurrentLocation.latitude,
         usersCurrentLocation.longitude,
       );
-      // return game
-    });
+      game.distanceFromUser = distance;
+    }
   }
 }
