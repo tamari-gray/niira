@@ -1,5 +1,6 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/screens/input_password.dart';
 import 'package:niira/services/auth/auth_service.dart';
@@ -43,14 +44,20 @@ class LobbyScreen extends StatelessWidget {
 class ListOfCreatedGames extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final createdGames = context.watch<DatabaseService>().streamOfCreatedGames;
+    final locationService = context.read<LocationService>();
+    final userLocation = await locationService
+        .getUsersCurrentLocation; // is async, convert to stateful widget?
+    final createdGamesWithDistance = context
+        .watch<DatabaseService>()
+        .streamOfCreatedGames
+        .map<List<Game>>((games) => locationService
+            .setDistanceBetweenUserAndGames(games, userLocation));
 
-    final createdGamesInOrderOfDistance = context
-        .read<LocationService>()
-        .getDistanceBetweenUserAndGames(createdGames);
-
+    final createdGamesInOrderOfDistance = createdGamesWithDistance.map(
+        (_games) => _games
+            .sort((a, b) => a.distanceFromUser.compareTo(b.distanceFromUser)));
     return StreamBuilder<List<Game>>(
-        stream: context.watch<DatabaseService>().streamOfCreatedGames,
+        stream: createdGamesWithDistance,
         builder: (context, snapshot) {
           if (snapshot.data == null) {
             return Container();

@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'package:meta/meta.dart';
+
 import 'package:geolocator/geolocator.dart';
 import 'package:niira/models/game.dart';
+import 'dart:math';
 
 class LocationService {
   final Geolocator _geolocator;
@@ -26,18 +27,42 @@ class LocationService {
   }
 
   // get distance between user and games and order from nearest to furthest
-  Future<Stream<List<Game>>> getDistanceBetweenUserAndGames(
-      Stream<List<Game>> games) async {
-    final usersCurrentLocation = await getUsersCurrentLocation;
+  List<Game> setDistanceBetweenUserAndGames(
+          List<Game> games, Position userLocation) =>
+      games.map<Game>((game) {
+        game.distanceFromUser = distance(
+          userLocation.latitude,
+          game.boundary.position.latitude,
+          userLocation.longitude,
+          game.boundary.position.latitude,
+        );
+        return game;
+      }).toList();
+}
 
-    for (var game in games) {
-      final distance = await _geolocator.distanceBetween(
-        game.boundary.position.latitude,
-        game.boundary.position.longitude,
-        usersCurrentLocation.latitude,
-        usersCurrentLocation.longitude,
-      );
-      game.distanceFromUser = distance;
-    }
-  }
+// algorithm from:
+// https://www.geeksforgeeks.org/program-distance-two-points-earth/
+double distance(double lat1, double lat2, double lon1, double lon2) {
+  lon1 = degreesToRads(lon1);
+  lon2 = degreesToRads(lon2);
+  lat1 = degreesToRads(lat1);
+  lat2 = degreesToRads(lat2);
+
+  // Haversine formula
+  final dlon = lon2 - lon1;
+  final dlat = lat2 - lat1;
+  final a = pow(sin(dlat / 2), 2) +
+      cos(lat1) * cos(lat2) * pow(sin(dlon / 2), 2) as double;
+
+  final c = 2 * asin(sqrt(a));
+
+  // Radius of earth in kilometers. Use 3956 for miles
+  final r = 6371;
+
+  // calculate the result
+  return (c * r);
+}
+
+double degreesToRads(double deg) {
+  return (deg * pi) / 180.0;
 }
