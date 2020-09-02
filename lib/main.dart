@@ -2,8 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:niira/screens/create_account.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/screens/lobby.dart';
+import 'package:niira/screens/sign_in.dart';
+import 'package:niira/screens/waiting_for_game_to_start.dart';
 import 'package:niira/screens/welcome.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/firebase_auth_service.dart';
@@ -58,17 +61,14 @@ class _MyAppState extends State<MyApp> {
     }
 
     // create services to pass to app
-    final navigation = widget._navigation ?? Navigation();
-    final authService = widget._authService ??
-        FirebaseAuthService(FirebaseAuth.instance, navigation);
-    final databaseService =
+    _navigation = widget._navigation ?? Navigation();
+    _authService = widget._authService ??
+        FirebaseAuthService(FirebaseAuth.instance, _navigation);
+    _databaseService =
         widget._databaseService ?? FirestoreService(FirebaseFirestore.instance);
 
     // initialise services in app
     setState(() {
-      _navigation = navigation;
-      _authService = authService;
-      _databaseService = databaseService;
       _loadingServices = false;
     });
   }
@@ -90,24 +90,34 @@ class _MyAppState extends State<MyApp> {
               Provider<Navigation>.value(value: _navigation),
             ],
             child: MaterialApp(
-              title: 'Flutter Demo',
-              navigatorKey: _navigation.navigatorKey,
-              theme: ThemeData(
-                brightness: Brightness.light,
-                primaryColor: Color.fromRGBO(247, 152, 0, 1),
-                accentColor: Color.fromRGBO(130, 250, 184, 1),
-                visualDensity: VisualDensity.adaptivePlatformDensity,
-              ),
-              home: StreamBuilder(
-                stream: _authService.streamOfAuthState,
-                builder: (context, snapshot) {
-                  // TODO: check for snapshot error and send to navigation manager for display
-                  return (snapshot.data == null)
-                      ? WelcomeScreen()
-                      : LobbyScreen();
+                title: 'Flutter Demo',
+                navigatorKey: _navigation.navigatorKey,
+                theme: ThemeData(
+                  brightness: Brightness.light,
+                  primaryColor: Color.fromRGBO(247, 152, 0, 1),
+                  accentColor: Color.fromRGBO(130, 250, 184, 1),
+                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                ),
+                routes: {
+                  '/waiting_for_game_start': (context) =>
+                      WaitingForGameToStartScreen(),
+                  '/create_account': (context) => CreateAccountScreen(),
+                  '/sign_in': (context) => SignInScreen(),
+                  // TODO: complete when database strategy for games has been finalised
+                  // '/input_password': (context) => InputPasswordScreen(),
                 },
-              ),
-            ),
+                home: StreamBuilder(
+                  stream: widget._authService.streamOfAuthState,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      context.read<Navigation>().displayError(snapshot.error);
+                    }
+
+                    return (snapshot.data == null)
+                        ? WelcomeScreen()
+                        : LobbyScreen();
+                  },
+                )),
           );
   }
 }

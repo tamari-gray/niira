@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/models/user_data.dart';
-import 'package:niira/screens/create_account.dart';
+import 'package:niira/navigation/navigation.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:provider/provider.dart';
 import 'package:niira/extensions/custom_colors_extension.dart';
@@ -15,6 +15,7 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
+
   bool _waitingForAuthResult;
   bool _autoValidateForm;
   String _email;
@@ -22,10 +23,10 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   void initState() {
-    super.initState();
     _waitingForAuthResult = false;
     _autoValidateForm = false;
     _clearForm();
+    super.initState();
   }
 
   void _clearForm() {
@@ -123,7 +124,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
                             // go to lobby if successfull login
                             if (authResult is UserData) {
-                              Navigator.pop(context);
+                              context.read<Navigation>().pop();
                             } else if (authResult == null) {
                               setState(() {
                                 _waitingForAuthResult = false;
@@ -144,13 +145,9 @@ class _SignInScreenState extends State<SignInScreen> {
                             onTap: () {
                               _formKey.currentState.reset();
                               _clearForm();
-                              Navigator.pushReplacement<CreateAccountScreen,
-                                  SignInScreen>(
-                                context,
-                                MaterialPageRoute<CreateAccountScreen>(
-                                    builder: (context) =>
-                                        CreateAccountScreen()),
-                              );
+                              context
+                                  .read<Navigation>()
+                                  .switchToCreateAccount();
                             }),
                       ],
                     ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/models/user_data.dart';
-import 'package:niira/screens/sign_in.dart';
+import 'package:niira/navigation/navigation.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:provider/provider.dart';
@@ -171,7 +171,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                   .addUsername(userId, _userName);
 
                               // go to lobby
-                              Navigator.pop(context);
+                              context.read<Navigation>().pop();
                             } else if (authResult == null) {
                               // unsuccessfull create account
                               setState(() {
@@ -193,13 +193,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                             onTap: () {
                               _formKey.currentState.reset();
                               _clearForm();
-                              Navigator.pushReplacement<SignInScreen,
-                                  CreateAccountScreen>(
-                                context,
-                                MaterialPageRoute<SignInScreen>(
-                                  builder: (context) => SignInScreen(),
-                                ),
-                              );
+                              context.read<Navigation>().switchToSignIn();
                             }),
                       ],
                     ),
