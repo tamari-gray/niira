@@ -4,9 +4,12 @@ import 'package:niira/screens/input_password.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/navigation/navigation.dart';
+import 'package:niira/services/location_service.dart';
 import 'package:provider/provider.dart';
 
 class LobbyScreen extends StatelessWidget {
+  // TODO: get permission & users location here,  & decide on what happens when user refuses location
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,26 +35,30 @@ class LobbyScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Container(
-        child: StreamBuilder<List<Game>>(
-            stream: context.watch<DatabaseService>().streamOfCreatedGames,
-            builder: (context, snapshot) {
-              if (snapshot.data == null) {
-                return Container();
-              } else {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                  child: ListView.builder(
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) {
-                      return GameTile(
-                        snapshot.data[index],
-                      );
-                    },
-                  ),
-                );
-              }
-            }),
+      body: FutureBuilder<dynamic>(
+        future: context.read<LocationService>().getUsersCurrentLocation(),
+        builder: ()
+        Container(
+          child: StreamBuilder<List<Game>>(
+              stream: context.watch<DatabaseService>().streamOfCreatedGames,
+              builder: (context, snapshot) {
+                if (snapshot.data == null) {
+                  return Container();
+                } else {
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    child: ListView.builder(
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (context, index) {
+                        return GameTile(
+                          snapshot.data[index],
+                        );
+                      },
+                    ),
+                  );
+                }
+              }),
+        ),
       ),
     );
   }
