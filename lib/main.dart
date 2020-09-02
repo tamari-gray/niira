@@ -14,11 +14,21 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); //TODO: delete this line??
   runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  final AuthService authService;
+  final DatabaseService databaseService;
+  final NavigationService navigation;
+  final GlobalKey<NavigatorState> navigatorKey;
+
+  MyApp(
+      {this.authService,
+      this.navigatorKey,
+      this.databaseService,
+      this.navigation});
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -29,10 +39,12 @@ class _MyAppState extends State<MyApp> {
   DatabaseService _databaseService;
   NavigationService _navigation;
   GlobalKey<NavigatorState> _navigatorKey;
+
   @override
   void initState() {
     _requestPermissions();
     super.initState();
+    // show loading icon
     _loadingServices = true;
     initServices();
   }
@@ -45,13 +57,19 @@ class _MyAppState extends State<MyApp> {
       // show user an error message
     }
 
-    // init services
-    final navigation = NavigationService();
-    final authService = FirebaseAuthService(FirebaseAuth.instance, navigation);
-    final databaseService = FirestoreService(FirebaseFirestore.instance);
+    // create services to pass to app
+    final navigation = widget.navigation ?? NavigationService();
+    final navigatorKey =
+        widget.navigation.navigatorKey ?? navigation.navigatorKey;
+    final authService = widget.authService ??
+        FirebaseAuthService(FirebaseAuth.instance, navigation);
+    final databaseService =
+        widget.databaseService ?? FirestoreService(FirebaseFirestore.instance);
 
+    // initialise services in app
     setState(() {
       _navigation = navigation;
+      _navigatorKey = navigatorKey;
       _authService = authService;
       _databaseService = databaseService;
       _loadingServices = false;

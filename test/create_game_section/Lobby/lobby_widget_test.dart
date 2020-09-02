@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:niira/main.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/user_data.dart';
@@ -15,8 +17,12 @@ import '../../mocks/data/mock_games.dart';
 import '../../mocks/mock_user_data.dart';
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
+import '../../mocks/services/mock_firebase_platform.dart';
 
 void main() {
+  setUp(() {
+    Firebase.delegatePackingProperty = MockFirebasePlatform();
+  });
   group('joining a game', () {
     testWidgets(
         'find a list of created games, tap to join ad navigate to inputPassword page',
@@ -68,18 +74,16 @@ void main() {
         MockDatabaseService(controller: createdGamesStreamContoller);
     final mockUserData = MockUser().userData;
 
+    // create the widget under test
+    await tester.pumpWidget(MyApp(
+      authService: mockAuthService,
+      navigatorKey: navService.navigatorKey,
+      databaseService: mockDBService,
+      navigation: navService,
+    ));
+
     //sign in the user
     controller.add(mockUserData);
-    // create the widget under test
-    await tester.pumpWidget(
-      MyApp(
-        mockAuthService,
-        navService.navigatorKey,
-        mockDBService,
-        navService,
-      ),
-    );
-
     await tester.pumpAndSettle();
 
     // tap sign out btn
