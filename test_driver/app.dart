@@ -24,9 +24,8 @@ void main() {
   mockAuthService.signInWithEmail('email', 'password');
 
   runApp(MyApp(
-    mockAuthService,
-    mockNavigation.navigatorKey,
-    mockDBService,
-    mockNavigation,
+    authService: mockAuthService,
+    databaseService: mockDBService,
+    navigation: mockNavigation,
   ));
 }
