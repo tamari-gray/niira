@@ -18,7 +18,7 @@ class LobbyScreen extends StatelessWidget {
             onPressed: () {
               // create a function to call on confirmation
               final signOut = () async {
-                Navigator.of(context).pop();
+                context.read<Navigation>().pop();
                 await context.read<AuthService>().signOut();
               };
 
@@ -113,6 +113,7 @@ class GameTile extends StatelessWidget {
                   child: Text('Join'),
                   onPressed: () {
                     // navigate to input password screen
+                    // TODO: replace with named route + database access for passing Game
                     Navigator.push<dynamic>(
                       context,
                       MaterialPageRoute<dynamic>(

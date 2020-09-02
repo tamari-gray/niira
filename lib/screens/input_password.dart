@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:niira/models/game.dart';
+import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/waiting_for_game_to_start.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
@@ -45,13 +46,9 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
                 .read<DatabaseService>()
                 .joinGame(widget.game.id, userId);
 
-            // navigate to waiting screen
-            await Navigator.push<dynamic>(
-              context,
-              MaterialPageRoute<dynamic>(
-                builder: (context) => WaitingForGameToStartScreen(),
-              ),
-            );
+            await context
+                .read<Navigation>()
+                .navigateTo('/waiting_for_game_start');
           }
         },
       ),
