@@ -38,7 +38,7 @@ class LobbyScreen extends StatelessWidget {
         ],
       ),
       body: FutureBuilder<Position>(
-        future: context.read<LocationService>().getUsersCurrentLocation(),
+        future: context.watch<LocationService>().getUsersCurrentLocation(),
         builder: (context, snapshot) => snapshot.hasData == false
             ? Loading()
             : Container(
