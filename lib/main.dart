@@ -22,23 +22,22 @@ void main() async {
   }
 
   // init services
-  final navigationService = Navigation();
-  final authService =
-      FirebaseAuthService(FirebaseAuth.instance, navigationService);
+  final navigation = Navigation();
+  final authService = FirebaseAuthService(FirebaseAuth.instance, navigation);
   final databaseService = FirestoreService(FirebaseFirestore.instance);
 
-  runApp(MyApp(authService, navigationService.navigatorKey, databaseService,
-      navigationService));
+  runApp(
+      MyApp(authService, navigation.navigatorKey, databaseService, navigation));
 }
 
 class MyApp extends StatefulWidget {
   final AuthService _authService;
   final DatabaseService _databaseService;
-  final Navigation _navigationService;
+  final Navigation _navigation;
   final GlobalKey<NavigatorState> _navigatorKey;
 
   MyApp(this._authService, this._navigatorKey, this._databaseService,
-      this._navigationService);
+      this._navigation);
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -63,7 +62,7 @@ class _MyAppState extends State<MyApp> {
       providers: [
         Provider<AuthService>.value(value: widget._authService),
         Provider<DatabaseService>.value(value: widget._databaseService),
-        Provider<Navigation>.value(value: widget._navigationService),
+        Provider<Navigation>.value(value: widget._navigation),
       ],
       child: MaterialApp(
           title: 'Flutter Demo',
