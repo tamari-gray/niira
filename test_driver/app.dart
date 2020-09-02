@@ -13,20 +13,20 @@ import 'mocks/navigation/mock_navigation.dart';
 void main() {
   enableFlutterDriverExtension();
 
-  final mockNavService = MockNavigation();
+  final mockNavigation = MockNavigation();
   final mockUserData = MockUser().userData;
   final mockAuthService = MockAuthService(
     controller: StreamController<UserData>(),
     mockUserData: mockUserData,
-    mockNavService: mockNavService,
+    mockNavigation: mockNavigation,
   );
   final mockDBService = MockDatabaseService();
   mockAuthService.signInWithEmail('email', 'password');
 
   runApp(MyApp(
     mockAuthService,
-    mockNavService.navigatorKey,
+    mockNavigation.navigatorKey,
     mockDBService,
-    mockNavService,
+    mockNavigation,
   ));
 }

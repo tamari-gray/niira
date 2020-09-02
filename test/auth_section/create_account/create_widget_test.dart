@@ -17,7 +17,7 @@ import '../../mocks/navigation/mock_navigation.dart';
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
 void main() {
-  Widget makeTestableCreateAccountWidget(MockNavigation mockNavService,
+  Widget makeTestableCreateAccountWidget(MockNavigation mockNavigation,
       MockAuthService mockAuth, MockDatabaseService mockDBService) {
     return MultiProvider(
         providers: [
@@ -25,7 +25,7 @@ void main() {
           Provider<DatabaseService>(create: (_) => mockDBService)
         ],
         child: MaterialApp(
-          navigatorKey: mockNavService.navigatorKey,
+          navigatorKey: mockNavigation.navigatorKey,
           home: CreateAccountScreen(),
         ));
   }
@@ -34,17 +34,17 @@ void main() {
     testWidgets('navigate to lobby on successfull create account',
         (WidgetTester tester) async {
       //set up for testing
-      final _mockNavService = MockNavigation();
+      final _mockNavigation = MockNavigation();
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
       final _mockAuthService = MockAuthService(
           controller: _controller,
           mockUserData: _mockUserData,
-          mockNavService: _mockNavService);
+          mockNavigation: _mockNavigation);
       final _mockDBService = MockDatabaseService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
-        _mockNavService,
+        _mockNavigation,
         _mockAuthService,
         _mockDBService,
       ));
@@ -82,17 +82,17 @@ void main() {
     testWidgets('show error messages on empty text feilds',
         (WidgetTester tester) async {
       //set up for testing
-      final _mockNavService = MockNavigation();
+      final _mockNavigation = MockNavigation();
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
       final _mockAuthService = MockAuthService(
           controller: _controller,
           mockUserData: _mockUserData,
-          mockNavService: _mockNavService);
+          mockNavigation: _mockNavigation);
       final _mockDBService = MockDatabaseService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
-        _mockNavService,
+        _mockNavigation,
         _mockAuthService,
         _mockDBService,
       ));
@@ -111,17 +111,17 @@ void main() {
         'show error messages on invalid email + re-enter password feilds',
         (WidgetTester tester) async {
       //set up for testing
-      final _mockNavService = MockNavigation();
+      final _mockNavigation = MockNavigation();
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
       final _mockAuthService = MockAuthService(
           controller: _controller,
           mockUserData: _mockUserData,
-          mockNavService: _mockNavService);
+          mockNavigation: _mockNavigation);
       final _mockDBService = MockDatabaseService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
-        _mockNavService,
+        _mockNavigation,
         _mockAuthService,
         _mockDBService,
       ));
@@ -154,17 +154,17 @@ void main() {
     testWidgets('show loading animation on successfull validation + submit',
         (WidgetTester tester) async {
       //set up for testing
-      final _mockNavService = MockNavigation();
+      final _mockNavigation = MockNavigation();
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
       final _mockAuthService = MockAuthService(
           controller: _controller,
           mockUserData: _mockUserData,
-          mockNavService: _mockNavService);
+          mockNavigation: _mockNavigation);
       final _mockDBService = MockDatabaseService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
-        _mockNavService,
+        _mockNavigation,
         _mockAuthService,
         _mockDBService,
       ));

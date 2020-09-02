@@ -8,12 +8,13 @@ import '../mocks/navigation/mock_navigation.dart';
 
 void main() {
   final mockFirebaseAuth = MockFirebaseAuth();
-  final mockNav = MockNavigation();
+  final mockNavigation = MockNavigation();
 
   test(
       'if firebase auth error on create account, passes error msg to navService to display it',
       () {
-    final firebaseAuthService = FirebaseAuthService(mockFirebaseAuth, mockNav);
+    final firebaseAuthService =
+        FirebaseAuthService(mockFirebaseAuth, mockNavigation);
     final authError = FirebaseAuthException(
         code: 'email-already-in-use',
         message: 'Email already in use, please try again');
@@ -28,13 +29,15 @@ void main() {
         'tamarigray@gmail.com', 'password123');
 
     // check that error message is displayed
-    verify(mockNav.displayError('Email already in use, please try again'))
+    verify(mockNavigation
+            .displayError('Email already in use, please try again'))
         .called(1);
   });
   test(
       'if firebase auth error on sign in, passes error msg to navService to display it',
       () {
-    final firebaseAuthService = FirebaseAuthService(mockFirebaseAuth, mockNav);
+    final firebaseAuthService =
+        FirebaseAuthService(mockFirebaseAuth, mockNavigation);
     final authError = FirebaseAuthException(
         code: 'user-not-found', message: 'No user found with this email.');
 
@@ -47,6 +50,7 @@ void main() {
     firebaseAuthService.signInWithEmail('tamarigray@gmail.com', 'password123');
 
     // check that error message is displayed
-    verify(mockNav.displayError('No user found with this email.')).called(1);
+    verify(mockNavigation.displayError('No user found with this email.'))
+        .called(1);
   });
 }
