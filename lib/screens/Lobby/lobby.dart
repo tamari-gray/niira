@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:niira/loading.dart';
 import 'package:niira/screens/Lobby/list_of_created_games.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/navigation/navigation.dart';
+import 'package:niira/services/location_service.dart';
 import 'package:provider/provider.dart';
 
 class LobbyScreen extends StatelessWidget {
@@ -32,9 +35,11 @@ class LobbyScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Container(
-        child: ListOfCreatedGames(),
-      ),
+      body: FutureBuilder<Position>(
+          future: context.watch<LocationService>().getUsersCurrentLocation,
+          builder: (context, snapshot) => snapshot.hasData == false
+              ? Loading()
+              : ListOfCreatedGames(snapshot.data)),
     );
   }
 }

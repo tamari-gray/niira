@@ -28,8 +28,8 @@ void main() async {
   final authService = FirebaseAuthService(FirebaseAuth.instance, navigation);
   final databaseService = FirestoreService(FirebaseFirestore.instance);
 
-  final geolocator = Geolocator();
-  final locationService = LocationService(geolocator);
+  // final geolocator = GeolocatorPlatform();
+  final locationService = LocationService();
 
   runApp(MyApp(
     authService,

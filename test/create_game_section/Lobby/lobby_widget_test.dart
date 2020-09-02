@@ -9,6 +9,7 @@ import 'package:niira/models/user_data.dart';
 import 'package:niira/screens/Lobby/lobby.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/navigation/navigation.dart';
+import 'package:niira/services/location_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/data/mock_games.dart';
@@ -25,17 +26,19 @@ void main() {
       final _controller = StreamController<List<Game>>();
       final mockCreatedGames = MockGames().gamesToJoin;
 
-      _controller.add(mockCreatedGames);
       final mockDatabaseService = MockDatabaseService(controller: _controller);
+      final mockLocationService = MockLocationService();
 
       // init lobby page
       await tester.pumpWidget(
         MultiProvider(providers: [
           Provider<DatabaseService>.value(value: mockDatabaseService),
+          Provider<LocationService>.value(value: mockLocationService),
         ], child: MaterialApp(home: LobbyScreen())),
       );
 
       // ol reliable
+      _controller.add(mockCreatedGames);
       await tester.pumpAndSettle();
 
       // observe list of created games

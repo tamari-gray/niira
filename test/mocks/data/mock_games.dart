@@ -1,3 +1,4 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:niira/models/boundary.dart';
 import 'package:niira/models/game.dart';
 
@@ -9,7 +10,7 @@ class MockGames {
             id: '034280',
             sonarIntervals: 5,
             phase: GamePhase.created,
-            boundary: Boundary(position: 5, size: 10),
+            boundary: Boundary(position: Position(), size: 10),
             password: 'password123'),
         Game(
             name: 'very yeet',
@@ -17,7 +18,7 @@ class MockGames {
             id: 'fdhi',
             sonarIntervals: 5,
             phase: GamePhase.created,
-            boundary: Boundary(position: 5, size: 10),
+            boundary: Boundary(position: Position(), size: 10),
             password: 'password345'),
         Game(
             name: 'yeeting',
@@ -25,7 +26,7 @@ class MockGames {
             id: 'fdfdshi',
             sonarIntervals: 5,
             phase: GamePhase.created,
-            boundary: Boundary(position: 5, size: 10),
+            boundary: Boundary(position: Position(), size: 10),
             password: 'password678')
       ].toList();
 }
