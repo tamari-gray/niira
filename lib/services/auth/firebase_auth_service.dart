@@ -3,13 +3,13 @@ import 'package:niira/models/user_data.dart';
 import 'package:niira/services/auth/auth_service.dart';
 
 import 'package:niira/extensions/firebase_user_extensions.dart';
-import 'package:niira/services/navigation_service.dart';
+import 'package:niira/navigation/navigation.dart';
 
 class FirebaseAuthService implements AuthService {
   final FirebaseAuth _firebaseAuth;
-  final NavigationService _navService;
+  final Navigation _navigation;
 
-  FirebaseAuthService(this._firebaseAuth, this._navService);
+  FirebaseAuthService(this._firebaseAuth, this._navigation);
 
   @override
   String get currentUserId => _firebaseAuth.currentUser?.uid;
@@ -43,12 +43,12 @@ class FirebaseAuthService implements AuthService {
         default:
           customErrorMessage = 'An undefined Error happened.';
       }
-      _navService.displayError(customErrorMessage);
+      _navigation.displayError(customErrorMessage);
       return null;
     } catch (e) {
       // non platform specific errors
       print('caught error: $e');
-      _navService.displayError(e);
+      _navigation.displayError(e);
       return null;
     }
   }
@@ -77,14 +77,14 @@ class FirebaseAuthService implements AuthService {
         default:
           customErrorMessage = 'An undefined Error happened.';
       }
-      _navService.displayError(customErrorMessage);
+      _navigation.displayError(customErrorMessage);
 
       return null;
     } catch (e, trace) {
       // non platform specific errors
       print('caught unknown firebase auth error: $e');
       print('stacktrace of error: $trace');
-      _navService.displayError('unkown error occured');
+      _navigation.displayError('unkown error occured');
       return null;
     }
   }
@@ -94,7 +94,7 @@ class FirebaseAuthService implements AuthService {
     try {
       await _firebaseAuth.signOut();
     } catch (e) {
-      _navService.displayError(e);
+      _navigation.displayError(e);
     }
   }
 }

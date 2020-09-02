@@ -9,7 +9,7 @@ import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/firebase_auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/database/firestore_service.dart';
-import 'package:niira/services/navigation_service.dart';
+import 'package:niira/navigation/navigation.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +20,7 @@ void main() async {
 class MyApp extends StatefulWidget {
   final AuthService authService;
   final DatabaseService databaseService;
-  final NavigationService navigation;
+  final Navigation navigation;
   final GlobalKey<NavigatorState> navigatorKey;
 
   MyApp(
@@ -37,7 +37,7 @@ class _MyAppState extends State<MyApp> {
   bool _loadingServices;
   AuthService _authService;
   DatabaseService _databaseService;
-  NavigationService _navigation;
+  Navigation _navigation;
   GlobalKey<NavigatorState> _navigatorKey;
 
   @override
@@ -58,7 +58,7 @@ class _MyAppState extends State<MyApp> {
     }
 
     // create services to pass to app
-    final navigation = widget.navigation ?? NavigationService();
+    final navigation = widget.navigation ?? Navigation();
     final navigatorKey =
         widget.navigation.navigatorKey ?? navigation.navigatorKey;
     final authService = widget.authService ??
@@ -90,7 +90,7 @@ class _MyAppState extends State<MyApp> {
             providers: [
               Provider<AuthService>.value(value: _authService),
               Provider<DatabaseService>.value(value: _databaseService),
-              Provider<NavigationService>.value(value: _navigation),
+              Provider<Navigation>.value(value: _navigation),
             ],
             child: MaterialApp(
               title: 'Flutter Demo',

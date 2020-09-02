@@ -11,7 +11,7 @@ import '../mocks/mock_user_data.dart';
 import '../mocks/services/mock_auth_service.dart';
 import '../mocks/services/mock_database_service.dart';
 import '../mocks/services/mock_firebase_platform.dart';
-import '../mocks/services/mock_nav_service.dart';
+import '../mocks/navigation/mock_navigation.dart';
 
 void main() {
   setUp(() {
@@ -23,11 +23,11 @@ void main() {
       // create mock services
       final controller = StreamController<UserData>();
       final mockUserData = MockUser().userData;
-      final mockNavService = MockNavService();
+      final mockNavigation = MockNavigation();
       final mockAuthService = MockAuthService(
         controller: controller,
         mockUserData: mockUserData,
-        mockNavService: mockNavService,
+        mockNavigation: mockNavigation,
         successfulAuth: true,
       );
       final mockDatabaseStreamController = StreamController<List<Game>>();
@@ -39,7 +39,7 @@ void main() {
         authService: mockAuthService,
         navigatorKey: GlobalKey<NavigatorState>(),
         databaseService: mockDatabaseService,
-        navigation: mockNavService,
+        navigation: mockNavigation,
       ));
 
       // check for loading widget
@@ -52,11 +52,11 @@ void main() {
       // create a controller that the mock auth servive will hold
       final controller = StreamController<UserData>();
       final mockUserData = MockUser().userData;
-      final mockNavService = MockNavService();
+      final mockNavigation = MockNavigation();
       final mockAuthService = MockAuthService(
         controller: controller,
         mockUserData: mockUserData,
-        mockNavService: mockNavService,
+        mockNavigation: mockNavigation,
         successfulAuth: true,
       );
       final mockDatabaseStreamController = StreamController<List<Game>>();
@@ -68,7 +68,7 @@ void main() {
         authService: mockAuthService,
         navigatorKey: GlobalKey<NavigatorState>(),
         databaseService: mockDatabaseService,
-        navigation: mockNavService,
+        navigation: mockNavigation,
       ));
 
       // update auth stream to have no signed in user
