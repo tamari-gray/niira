@@ -61,7 +61,7 @@ void main() {
       (WidgetTester tester) async {
     // create a controller that the fake auth servive will hold
     final controller = StreamController<UserData>();
-    final navService = Navigation();
+    final navigation = Navigation();
     final mockAuthService = MockAuthService(controller: controller);
     final createdGamesStreamContoller = StreamController<List<Game>>();
     final mockDBService =
@@ -74,9 +74,9 @@ void main() {
     await tester.pumpWidget(
       MyApp(
         mockAuthService,
-        navService.navigatorKey,
+        navigation.navigatorKey,
         mockDBService,
-        navService,
+        navigation,
       ),
     );
 

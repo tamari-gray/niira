@@ -11,7 +11,7 @@ void main() {
   final mockNavigation = MockNavigation();
 
   test(
-      'if firebase auth error on create account, passes error msg to navService to display it',
+      'if firebase auth error on create account, passes error msg to navigation to display it',
       () {
     final firebaseAuthService =
         FirebaseAuthService(mockFirebaseAuth, mockNavigation);
@@ -34,7 +34,7 @@ void main() {
         .called(1);
   });
   test(
-      'if firebase auth error on sign in, passes error msg to navService to display it',
+      'if firebase auth error on sign in, passes error msg to navigation to display it',
       () {
     final firebaseAuthService =
         FirebaseAuthService(mockFirebaseAuth, mockNavigation);
