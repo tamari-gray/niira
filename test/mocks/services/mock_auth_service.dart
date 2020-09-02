@@ -1,28 +1,28 @@
 import 'dart:async';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/services/auth/auth_service.dart';
-import '../../mocks/services/mock_nav_service.dart';
+import '../navigation/mock_navigation.dart';
 
 import 'package:meta/meta.dart';
 
 class MockAuthService implements AuthService {
   final StreamController<UserData> _controller;
   final UserData _mockUserData;
-  final MockNavService _mockNavService;
+  final MockNavigation _mockNavigation;
   final bool _successfulAuth;
 
   MockAuthService({
     @required StreamController<UserData> controller,
     UserData mockUserData,
-    MockNavService mockNavService,
+    MockNavigation mockNavigation,
     bool successfulAuth = true,
   })  : _controller = controller,
         _mockUserData = mockUserData,
-        _mockNavService = mockNavService,
+        _mockNavigation = mockNavigation,
         _successfulAuth = successfulAuth = true;
 
   @override
-  String get currentUserId => 'uid';
+  String get currentUserId => 'uid123';
 
   @override
   Stream<UserData> get streamOfAuthState => _controller.stream;
@@ -33,7 +33,7 @@ class MockAuthService implements AuthService {
       return Future.value(_mockUserData);
     } else {
       final errors = ['email in use', 'wronf password'];
-      _mockNavService.displayError(errors[0]);
+      _mockNavigation.displayError(errors[0]);
       return Future.value(null);
     }
   }
@@ -45,7 +45,7 @@ class MockAuthService implements AuthService {
       return Future.value(_mockUserData);
     } else {
       final errors = ['user not found', 'wronf password'];
-      _mockNavService.displayError(errors[0]);
+      _mockNavigation.displayError(errors[0]);
       return Future.value(null);
     }
   }

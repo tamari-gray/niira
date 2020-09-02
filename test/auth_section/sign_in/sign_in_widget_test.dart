@@ -6,12 +6,12 @@ import 'package:mockito/mockito.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/screens/sign_in.dart';
 import 'package:niira/services/auth/auth_service.dart';
-import 'package:niira/services/navigation_service.dart';
+import 'package:niira/navigation/navigation.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_user_data.dart';
 import '../../mocks/services/mock_auth_service.dart';
-import '../../mocks/services/mock_nav_service.dart';
+import '../../mocks/navigation/mock_navigation.dart';
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
@@ -44,14 +44,15 @@ void main() {
     await tester.pump();
   }
 
-  Widget makeTestableSignInWidget(
-      NavigationService mockNav, MockAuthService mockAuth) {
+  Widget makeTestableSignInWidget(MockAuthService mockAuth) {
+    final navigation = Navigation();
     return MultiProvider(
       providers: [
-        Provider<AuthService>(create: (_) => mockAuth),
+        Provider<AuthService>.value(value: mockAuth),
+        Provider<Navigation>.value(value: navigation)
       ],
       child: MaterialApp(
-        navigatorKey: mockNav.navigatorKey,
+        navigatorKey: navigation.navigatorKey,
         home: SignInScreen(),
       ),
     );
@@ -61,18 +62,19 @@ void main() {
     testWidgets('navigate to lobby on successfull login',
         (WidgetTester tester) async {
       //set up for testing
-      final _mockNavService = MockNavService();
+      final _mockNavigation = MockNavigation();
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
+
+      final navigation = Navigation();
 
       final _mockAuthService = MockAuthService(
         controller: _controller,
         mockUserData: _mockUserData,
-        mockNavService: _mockNavService,
+        mockNavigation: _mockNavigation,
       );
       await tester.pumpWidget(
         makeTestableSignInWidget(
-          _mockNavService,
           _mockAuthService,
         ),
       );
@@ -92,18 +94,17 @@ void main() {
     testWidgets('show error messages on empty text feilds',
         (WidgetTester tester) async {
       //set up for testing
-      final _mockNavService = MockNavService();
+      final _mockNavigation = MockNavigation();
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
       final _mockAuthService = MockAuthService(
         controller: _controller,
         mockUserData: _mockUserData,
-        mockNavService: _mockNavService,
+        mockNavigation: _mockNavigation,
         successfulAuth: true,
       );
-      await tester.pumpWidget(
-          makeTestableSignInWidget(_mockNavService, _mockAuthService));
+      await tester.pumpWidget(makeTestableSignInWidget(_mockAuthService));
 
       // press submit with empty form
       await tester.tap(signInBtn());
@@ -116,18 +117,17 @@ void main() {
     testWidgets('show error messages on invalid email ',
         (WidgetTester tester) async {
       //set up for testing
-      final _mockNavService = MockNavService();
+      final _mockNavigation = MockNavigation();
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
       final _mockAuthService = MockAuthService(
         controller: _controller,
         mockUserData: _mockUserData,
-        mockNavService: _mockNavService,
+        mockNavigation: _mockNavigation,
         successfulAuth: true,
       );
-      await tester.pumpWidget(
-          makeTestableSignInWidget(_mockNavService, _mockAuthService));
+      await tester.pumpWidget(makeTestableSignInWidget(_mockAuthService));
 
       // input invalid text into fields
       expect(emailField(), findsOneWidget);
@@ -142,18 +142,17 @@ void main() {
     testWidgets('show loading animation on successfull validation + submit',
         (WidgetTester tester) async {
       //set up for testing
-      final _mockNavService = MockNavService();
+      final _mockNavigation = MockNavigation();
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
       final _mockAuthService = MockAuthService(
         controller: _controller,
         mockUserData: _mockUserData,
-        mockNavService: _mockNavService,
+        mockNavigation: _mockNavigation,
         successfulAuth: true,
       );
-      await tester.pumpWidget(
-          makeTestableSignInWidget(_mockNavService, _mockAuthService));
+      await tester.pumpWidget(makeTestableSignInWidget(_mockAuthService));
 
       // submit valid credentials
       await inputValidDetails(tester);
@@ -166,9 +165,13 @@ void main() {
     testWidgets(
         'clears form before navigating between sign in/create account screens',
         (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(
-        home: SignInScreen(),
-      ));
+      final navigation = Navigation();
+      await tester.pumpWidget(Provider.value(
+          value: navigation,
+          child: MaterialApp(
+            home: SignInScreen(),
+            navigatorKey: navigation.navigatorKey,
+          )));
 
       expect(emailField(), findsOneWidget);
 

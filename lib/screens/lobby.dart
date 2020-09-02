@@ -4,7 +4,7 @@ import 'package:niira/screens/input_password.dart';
 import 'package:niira/screens/new_game1.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/navigation_service.dart';
+import 'package:niira/navigation/navigation.dart';
 import 'package:provider/provider.dart';
 
 class LobbyScreen extends StatelessWidget {
@@ -19,11 +19,11 @@ class LobbyScreen extends StatelessWidget {
             onPressed: () {
               // create a function to call on confirmation
               final signOut = () async {
-                Navigator.of(context).pop();
+                context.read<Navigation>().pop();
                 await context.read<AuthService>().signOut();
               };
 
-              context.read<NavigationService>().showConfirmationDialog(
+              context.read<Navigation>().showConfirmationDialog(
                     onConfirmed: signOut,
                     confirmText: 'Sign Out',
                     cancelText: 'Return',
@@ -125,10 +125,13 @@ class GameTile extends StatelessWidget {
                   child: Text('Join'),
                   onPressed: () {
                     // navigate to input password screen
+                    // TODO: replace with named route + database access for passing Game
                     Navigator.push<dynamic>(
                       context,
                       MaterialPageRoute<dynamic>(
-                        builder: (context) => InputPasswordScreen(),
+                        builder: (context) => InputPasswordScreen(
+                          game: _game,
+                        ),
                       ),
                     );
                   },

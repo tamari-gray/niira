@@ -1,22 +1,28 @@
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:niira/main.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/screens/lobby.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/navigation_service.dart';
+import 'package:niira/navigation/navigation.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/data/mock_games.dart';
 import '../../mocks/mock_user_data.dart';
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
+import '../../mocks/services/mock_firebase_platform.dart';
 
 void main() {
+  setUp(() {
+    Firebase.delegatePackingProperty = MockFirebasePlatform();
+  });
   group('joining a game', () {
     testWidgets(
         'find a list of created games, tap to join ad navigate to inputPassword page',
@@ -61,25 +67,22 @@ void main() {
       (WidgetTester tester) async {
     // create a controller that the fake auth servive will hold
     final controller = StreamController<UserData>();
-    final navService = NavigationService();
+    final navigation = Navigation();
     final mockAuthService = MockAuthService(controller: controller);
     final createdGamesStreamContoller = StreamController<List<Game>>();
     final mockDBService =
         MockDatabaseService(controller: createdGamesStreamContoller);
     final mockUserData = MockUser().userData;
 
+    // create the widget under test
+    await tester.pumpWidget(MyApp(
+      authService: mockAuthService,
+      databaseService: mockDBService,
+      navigation: navigation,
+    ));
+
     //sign in the user
     controller.add(mockUserData);
-    // create the widget under test
-    await tester.pumpWidget(
-      MyApp(
-        mockAuthService,
-        navService.navigatorKey,
-        mockDBService,
-        navService,
-      ),
-    );
-
     await tester.pumpAndSettle();
 
     // tap sign out btn
