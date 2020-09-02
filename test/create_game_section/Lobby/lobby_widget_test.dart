@@ -8,7 +8,7 @@ import 'package:niira/models/game.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/screens/lobby.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/navigation_service.dart';
+import 'package:niira/navigation/navigation.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/data/mock_games.dart';
@@ -61,7 +61,7 @@ void main() {
       (WidgetTester tester) async {
     // create a controller that the fake auth servive will hold
     final controller = StreamController<UserData>();
-    final navService = NavigationService();
+    final navService = Navigation();
     final mockAuthService = MockAuthService(controller: controller);
     final createdGamesStreamContoller = StreamController<List<Game>>();
     final mockDBService =

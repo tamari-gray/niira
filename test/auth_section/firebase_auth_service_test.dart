@@ -4,11 +4,11 @@ import 'package:niira/services/auth/firebase_auth_service.dart';
 import 'package:test/test.dart';
 
 import '../mocks/services/mock_firebase_auth.dart';
-import '../mocks/services/mock_nav_service.dart';
+import '../mocks/navigation/mock_navigation.dart';
 
 void main() {
   final mockFirebaseAuth = MockFirebaseAuth();
-  final mockNav = MockNavService();
+  final mockNav = MockNavigation();
 
   test(
       'if firebase auth error on create account, passes error msg to navService to display it',

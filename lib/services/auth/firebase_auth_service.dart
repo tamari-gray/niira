@@ -3,11 +3,11 @@ import 'package:niira/models/user_data.dart';
 import 'package:niira/services/auth/auth_service.dart';
 
 import 'package:niira/extensions/firebase_user_extensions.dart';
-import 'package:niira/services/navigation_service.dart';
+import 'package:niira/navigation/navigation.dart';
 
 class FirebaseAuthService implements AuthService {
   final FirebaseAuth _firebaseAuth;
-  final NavigationService _navService;
+  final Navigation _navService;
 
   FirebaseAuthService(this._firebaseAuth, this._navService);
 

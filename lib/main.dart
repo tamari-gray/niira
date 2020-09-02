@@ -8,7 +8,7 @@ import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/firebase_auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/database/firestore_service.dart';
-import 'package:niira/services/navigation_service.dart';
+import 'package:niira/navigation/navigation.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +22,7 @@ void main() async {
   }
 
   // init services
-  final navigationService = NavigationService();
+  final navigationService = Navigation();
   final authService =
       FirebaseAuthService(FirebaseAuth.instance, navigationService);
   final databaseService = FirestoreService(FirebaseFirestore.instance);
@@ -34,7 +34,7 @@ void main() async {
 class MyApp extends StatefulWidget {
   final AuthService _authService;
   final DatabaseService _databaseService;
-  final NavigationService _navigationService;
+  final Navigation _navigationService;
   final GlobalKey<NavigatorState> _navigatorKey;
 
   MyApp(this._authService, this._navigatorKey, this._databaseService,
@@ -63,7 +63,7 @@ class _MyAppState extends State<MyApp> {
       providers: [
         Provider<AuthService>.value(value: widget._authService),
         Provider<DatabaseService>.value(value: widget._databaseService),
-        Provider<NavigationService>.value(value: widget._navigationService),
+        Provider<Navigation>.value(value: widget._navigationService),
       ],
       child: MaterialApp(
           title: 'Flutter Demo',
