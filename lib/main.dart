@@ -107,7 +107,7 @@ class _MyAppState extends State<MyApp> {
                   // '/input_password': (context) => InputPasswordScreen(),
                 },
                 home: StreamBuilder(
-                  stream: widget._authService.streamOfAuthState,
+                  stream: _authService.streamOfAuthState,
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       context.read<Navigation>().displayError(snapshot.error);
