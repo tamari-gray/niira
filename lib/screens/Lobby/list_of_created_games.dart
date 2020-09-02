@@ -13,15 +13,19 @@ class ListOfCreatedGames extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('building list of games, userLocation = $_userLocation');
     // init location service here in hopes of making the next fn call thing more readable
-    final locationService = context.read<LocationService>();
+    final locationService = context.watch<LocationService>();
 
     // get stream of created games and set every game's distanceFromUser property
-    final createdGamesWithDistanceFromUser =
-        context.watch<DatabaseService>().streamOfCreatedGames.map<List<Game>>(
-              (games) => locationService.setDistanceBetweenUserAndGames(
-                  games, _userLocation),
-            );
+    final createdGames = context.watch<DatabaseService>().streamOfCreatedGames;
+    print('created games: ${createdGames}');
+
+    final createdGamesWithDistanceFromUser = createdGames.map<List<Game>>(
+      (games) =>
+          locationService.setDistanceBetweenUserAndGames(games, _userLocation),
+    );
+    print('created games: ${createdGamesWithDistanceFromUser}');
 
     // build list of tiles that show a game's info
     return StreamBuilder<List<Game>>(
@@ -29,6 +33,7 @@ class ListOfCreatedGames extends StatelessWidget {
         builder: (context, snapshot) {
           // show empty screen if stream hasnt come through yet
           if (snapshot.data == null) {
+            print('snapshot is null');
             return Container();
           } else {
             // sort games by distance from user (nearest to furtherest)

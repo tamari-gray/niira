@@ -23,22 +23,53 @@ void main() {
     testWidgets(
         'find a list of created games, tap to join ad navigate to inputPassword page',
         (WidgetTester tester) async {
-      final _controller = StreamController<List<Game>>();
+      // final _controller = StreamController<List<Game>>();
+      // final mockCreatedGames = MockGames().gamesToJoin;
+
+      // final mockDatabaseService = MockDatabaseService(controller: _controller);
+      // final mockLocationService = MockLocationService();
+
+      // // init lobby page
+      // await tester.pumpWidget(
+      //   MultiProvider(providers: [
+      //     Provider<DatabaseService>.value(value: mockDatabaseService),
+      //     Provider<LocationService>.value(value: mockLocationService),
+      //   ], child: MaterialApp(home: LobbyScreen())),
+      // );
+
+      // expect(find.byKey(Key('signOutBtn')), findsOneWidget);
+      // expect(find.text('Lobby'), findsOneWidget);
+      // create a controller that the fake auth servive will hold
+      final controller = StreamController<UserData>();
+      final navigation = Navigation();
+      final mockAuthService = MockAuthService(controller: controller);
+      final createdGamesStreamContoller = StreamController<List<Game>>();
+      final mockDBService =
+          MockDatabaseService(controller: createdGamesStreamContoller);
+      final mockLocationService = MockLocationService();
+      final mockUserData = MockUser().userData;
       final mockCreatedGames = MockGames().gamesToJoin;
 
-      final mockDatabaseService = MockDatabaseService(controller: _controller);
-      final mockLocationService = MockLocationService();
-
-      // init lobby page
+      // create the widget under test
       await tester.pumpWidget(
-        MultiProvider(providers: [
-          Provider<DatabaseService>.value(value: mockDatabaseService),
-          Provider<LocationService>.value(value: mockLocationService),
-        ], child: MaterialApp(home: LobbyScreen())),
+        MyApp(
+          mockAuthService,
+          navigation.navigatorKey,
+          mockDBService,
+          navigation,
+          mockLocationService,
+        ),
       );
 
+      //sign in the user
+      controller.add(mockUserData);
+      await tester.pumpAndSettle();
+
+      final signOutBtn = find.byKey(Key('signOutBtn'));
+      expect((signOutBtn), findsOneWidget);
+
       // ol reliable
-      _controller.add(mockCreatedGames);
+      createdGamesStreamContoller.add(mockCreatedGames);
       await tester.pumpAndSettle();
 
       // observe list of created games
@@ -73,8 +104,6 @@ void main() {
     final mockLocationService = MockLocationService();
     final mockUserData = MockUser().userData;
 
-    //sign in the user
-    controller.add(mockUserData);
     // create the widget under test
     await tester.pumpWidget(
       MyApp(
@@ -86,6 +115,8 @@ void main() {
       ),
     );
 
+    //sign in the user
+    controller.add(mockUserData);
     await tester.pumpAndSettle();
 
     // tap sign out btn

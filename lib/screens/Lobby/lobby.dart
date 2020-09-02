@@ -8,7 +8,7 @@ import 'package:niira/services/location_service.dart';
 import 'package:provider/provider.dart';
 
 class LobbyScreen extends StatelessWidget {
-  // TODO: get permission & users location here,  & decide on what happens when user refuses location
+  // TODO: decide on what happens when user refuses location
 
   @override
   Widget build(BuildContext context) {
