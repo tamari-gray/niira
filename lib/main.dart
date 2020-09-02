@@ -35,6 +35,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool _loadingServices;
+  bool _initError;
   AuthService _authService;
   DatabaseService _databaseService;
   Navigation _navigation;
@@ -46,6 +47,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     // show loading icon
     _loadingServices = true;
+    _loadingServices = false;
     initServices();
   }
 
@@ -55,6 +57,9 @@ class _MyAppState extends State<MyApp> {
       await Firebase.initializeApp();
     } catch (e) {
       // show user an error message
+      setState(() {
+        _initError = true;
+      });
     }
 
     // create services to pass to app
@@ -84,33 +89,37 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return _loadingServices
-        ? Loading()
-        : MultiProvider(
-            providers: [
-              Provider<AuthService>.value(value: _authService),
-              Provider<DatabaseService>.value(value: _databaseService),
-              Provider<Navigation>.value(value: _navigation),
-            ],
-            child: MaterialApp(
-              title: 'Flutter Demo',
-              navigatorKey: _navigatorKey,
-              theme: ThemeData(
-                brightness: Brightness.light,
-                primaryColor: Color.fromRGBO(247, 152, 0, 1),
-                accentColor: Color.fromRGBO(130, 250, 184, 1),
-                visualDensity: VisualDensity.adaptivePlatformDensity,
+    if (_initError) {
+      return Container(); // show user an error message & restart app?
+    } else {
+      return _loadingServices
+          ? Loading()
+          : MultiProvider(
+              providers: [
+                Provider<AuthService>.value(value: _authService),
+                Provider<DatabaseService>.value(value: _databaseService),
+                Provider<Navigation>.value(value: _navigation),
+              ],
+              child: MaterialApp(
+                title: 'Flutter Demo',
+                navigatorKey: _navigatorKey,
+                theme: ThemeData(
+                  brightness: Brightness.light,
+                  primaryColor: Color.fromRGBO(247, 152, 0, 1),
+                  accentColor: Color.fromRGBO(130, 250, 184, 1),
+                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                ),
+                home: StreamBuilder(
+                  stream: _authService.streamOfAuthState,
+                  builder: (context, snapshot) {
+                    // TODO: check for snapshot error and send to navigation manager for display
+                    return (snapshot.data == null)
+                        ? WelcomeScreen()
+                        : LobbyScreen();
+                  },
+                ),
               ),
-              home: StreamBuilder(
-                stream: _authService.streamOfAuthState,
-                builder: (context, snapshot) {
-                  // TODO: check for snapshot error and send to navigation manager for display
-                  return (snapshot.data == null)
-                      ? WelcomeScreen()
-                      : LobbyScreen();
-                },
-              ),
-            ),
-          );
+            );
+    }
   }
 }
