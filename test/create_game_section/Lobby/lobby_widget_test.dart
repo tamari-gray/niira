@@ -77,7 +77,6 @@ void main() {
     // create the widget under test
     await tester.pumpWidget(MyApp(
       authService: mockAuthService,
-      navigatorKey: navigation.navigatorKey,
       databaseService: mockDBService,
       navigation: navigation,
     ));

@@ -37,7 +37,6 @@ void main() {
       // create the widget under test
       await tester.pumpWidget(MyApp(
         authService: mockAuthService,
-        navigatorKey: GlobalKey<NavigatorState>(),
         databaseService: mockDatabaseService,
         navigation: mockNavigation,
       ));
@@ -66,7 +65,6 @@ void main() {
       // create the widget under test
       await tester.pumpWidget(MyApp(
         authService: mockAuthService,
-        navigatorKey: GlobalKey<NavigatorState>(),
         databaseService: mockDatabaseService,
         navigation: mockNavigation,
       ));

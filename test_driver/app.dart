@@ -25,7 +25,6 @@ void main() {
 
   runApp(MyApp(
     authService: mockAuthService,
-    navigatorKey: mockNavigation.navigatorKey,
     databaseService: mockDBService,
     navigation: mockNavigation,
   ));

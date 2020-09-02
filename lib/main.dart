@@ -24,7 +24,6 @@ class MyApp extends StatefulWidget {
 
   MyApp(
       {AuthService authService,
-      GlobalKey<NavigatorState> navigatorKey,
       DatabaseService databaseService,
       Navigation navigation})
       : _authService = authService,
