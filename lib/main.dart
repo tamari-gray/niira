@@ -10,7 +10,7 @@ import 'package:niira/services/auth/firebase_auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/database/firestore_service.dart';
 import 'package:niira/services/location_service.dart';
-import 'package:niira/services/navigation_service.dart';
+import 'package:niira/navigation/navigation.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -24,9 +24,8 @@ void main() async {
   }
 
   // init services
-  final navigationService = NavigationService();
-  final authService =
-      FirebaseAuthService(FirebaseAuth.instance, navigationService);
+  final navigation = Navigation();
+  final authService = FirebaseAuthService(FirebaseAuth.instance, navigation);
   final databaseService = FirestoreService(FirebaseFirestore.instance);
 
   final geolocator = Geolocator();
@@ -34,9 +33,9 @@ void main() async {
 
   runApp(MyApp(
     authService,
-    navigationService.navigatorKey,
+    navigation.navigatorKey,
     databaseService,
-    navigationService,
+    navigation,
     locationService,
   ));
 }
@@ -44,12 +43,12 @@ void main() async {
 class MyApp extends StatefulWidget {
   final AuthService _authService;
   final DatabaseService _databaseService;
-  final NavigationService _navigationService;
+  final Navigation _navigation;
   final LocationService _locationService;
   final GlobalKey<NavigatorState> _navigatorKey;
 
   MyApp(this._authService, this._navigatorKey, this._databaseService,
-      this._navigationService, this._locationService);
+      this._navigation, this._locationService);
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -74,8 +73,8 @@ class _MyAppState extends State<MyApp> {
       providers: [
         Provider<AuthService>.value(value: widget._authService),
         Provider<DatabaseService>.value(value: widget._databaseService),
-        Provider<NavigationService>.value(value: widget._navigationService),
         Provider<LocationService>.value(value: widget._locationService),
+        Provider<Navigation>.value(value: widget._navigation),
       ],
       child: MaterialApp(
           title: 'Flutter Demo',

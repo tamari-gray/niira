@@ -9,17 +9,17 @@ import 'mocks/mock_user_data.dart';
 import 'mocks/services/mock_auth_service.dart';
 import 'mocks/services/mock_database_service.dart';
 import 'mocks/services/mock_location_service.dart';
-import 'mocks/services/mock_nav_service.dart';
+import 'mocks/navigation/mock_navigation.dart';
 
 void main() {
   enableFlutterDriverExtension();
 
-  final mockNavService = MockNavService();
+  final mockNavigation = MockNavigation();
   final mockUserData = MockUser().userData;
   final mockAuthService = MockAuthService(
     controller: StreamController<UserData>(),
     mockUserData: mockUserData,
-    mockNavService: mockNavService,
+    mockNavigation: mockNavigation,
   );
   final mockLocationService = MockLocationService();
   final mockDBService = MockDatabaseService();
@@ -27,9 +27,9 @@ void main() {
 
   runApp(MyApp(
     mockAuthService,
-    mockNavService.navigatorKey,
+    mockNavigation.navigatorKey,
     mockDBService,
-    mockNavService,
+    mockNavigation,
     mockLocationService,
   ));
 }

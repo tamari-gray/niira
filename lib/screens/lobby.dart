@@ -6,7 +6,7 @@ import 'package:niira/screens/input_password.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/location_service.dart';
-import 'package:niira/services/navigation_service.dart';
+import 'package:niira/navigation/navigation.dart';
 import 'package:provider/provider.dart';
 
 class LobbyScreen extends StatelessWidget {
@@ -24,7 +24,8 @@ class LobbyScreen extends StatelessWidget {
                 Navigator.of(context).pop();
                 await context.read<AuthService>().signOut();
               };
-              context.read<NavigationService>().showConfirmationDialog(
+
+              context.read<Navigation>().showConfirmationDialog(
                     onConfirmed: signOut,
                     confirmText: 'Sign Out',
                     cancelText: 'Return',

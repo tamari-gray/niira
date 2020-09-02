@@ -12,7 +12,7 @@ import '../mocks/mock_user_data.dart';
 import '../mocks/services/mock_auth_service.dart';
 import '../mocks/services/mock_database_service.dart';
 import '../mocks/services/mock_location_service.dart';
-import '../mocks/services/mock_nav_service.dart';
+import '../mocks/navigation/mock_navigation.dart';
 
 class FakeDatabaseService extends Fake implements DatabaseService {}
 
@@ -23,13 +23,13 @@ void main() {
       // create a controller that the fake auth servive will hold
       final controller = StreamController<UserData>();
       final mockUserData = MockUser().userData;
-      final mockNavService = MockNavService();
       final mockLocationService = MockLocationService();
 
+      final mockNavigation = MockNavigation();
       final mockAuthService = MockAuthService(
         controller: controller,
         mockUserData: mockUserData,
-        mockNavService: mockNavService,
+        mockNavigation: mockNavigation,
         successfulAuth: true,
       );
       final mockDatabaseStreamController = StreamController<List<Game>>();
@@ -43,7 +43,7 @@ void main() {
           mockAuthService,
           GlobalKey<NavigatorState>(),
           mockDatabaseService,
-          mockNavService,
+          mockNavigation,
           mockLocationService,
         ),
       );
