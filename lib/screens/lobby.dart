@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:niira/loading.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/screens/input_password.dart';
 import 'package:niira/services/auth/auth_service.dart';
@@ -8,7 +10,7 @@ import 'package:niira/services/location_service.dart';
 import 'package:provider/provider.dart';
 
 class LobbyScreen extends StatelessWidget {
-  // TODO: get permission & users location here,  & decide on what happens when user refuses location
+  // TODO: decide on what happens when user refuses location accesss
 
   @override
   Widget build(BuildContext context) {
@@ -35,30 +37,32 @@ class LobbyScreen extends StatelessWidget {
           )
         ],
       ),
-      body: FutureBuilder<dynamic>(
+      body: FutureBuilder<Position>(
         future: context.read<LocationService>().getUsersCurrentLocation(),
-        builder: ()
-        Container(
-          child: StreamBuilder<List<Game>>(
-              stream: context.watch<DatabaseService>().streamOfCreatedGames,
-              builder: (context, snapshot) {
-                if (snapshot.data == null) {
-                  return Container();
-                } else {
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    child: ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        return GameTile(
-                          snapshot.data[index],
+        builder: (context, snapshot) => snapshot.hasData == false
+            ? Loading()
+            : Container(
+                child: StreamBuilder<List<Game>>(
+                    stream:
+                        context.watch<DatabaseService>().streamOfCreatedGames,
+                    builder: (context, snapshot) {
+                      if (snapshot.data == null) {
+                        return Container();
+                      } else {
+                        return Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          child: ListView.builder(
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (context, index) {
+                              return GameTile(
+                                snapshot.data[index],
+                              );
+                            },
+                          ),
                         );
-                      },
-                    ),
-                  );
-                }
-              }),
-        ),
+                      }
+                    }),
+              ),
       ),
     );
   }
