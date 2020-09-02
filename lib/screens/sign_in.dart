@@ -16,8 +16,6 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  Navigation _navigation;
-
   bool _waitingForAuthResult;
   bool _autoValidateForm;
   String _email;
@@ -28,7 +26,6 @@ class _SignInScreenState extends State<SignInScreen> {
     _waitingForAuthResult = false;
     _autoValidateForm = false;
     _clearForm();
-    _navigation = context.read<Navigation>();
     super.initState();
   }
 
@@ -148,7 +145,9 @@ class _SignInScreenState extends State<SignInScreen> {
                             onTap: () {
                               _formKey.currentState.reset();
                               _clearForm();
-                              _navigation.switchToCreateAccount();
+                              context
+                                  .read<Navigation>()
+                                  .switchToCreateAccount();
                             }),
                       ],
                     ),
