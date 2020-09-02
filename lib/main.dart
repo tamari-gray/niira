@@ -18,16 +18,18 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
-  final AuthService authService;
-  final DatabaseService databaseService;
-  final Navigation navigation;
-  final GlobalKey<NavigatorState> navigatorKey;
+  final AuthService _authService;
+  final DatabaseService _databaseService;
+  final Navigation _navigation;
 
   MyApp(
-      {this.authService,
-      this.navigatorKey,
-      this.databaseService,
-      this.navigation});
+      {AuthService authService,
+      GlobalKey<NavigatorState> navigatorKey,
+      DatabaseService databaseService,
+      Navigation navigation})
+      : _authService = authService,
+        _databaseService = databaseService,
+        _navigation = navigation;
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -38,7 +40,6 @@ class _MyAppState extends State<MyApp> {
   AuthService _authService;
   DatabaseService _databaseService;
   Navigation _navigation;
-  GlobalKey<NavigatorState> _navigatorKey;
 
   @override
   void initState() {
@@ -58,18 +59,15 @@ class _MyAppState extends State<MyApp> {
     }
 
     // create services to pass to app
-    final navigation = widget.navigation ?? Navigation();
-    final navigatorKey =
-        widget.navigation.navigatorKey ?? navigation.navigatorKey;
-    final authService = widget.authService ??
+    final navigation = widget._navigation ?? Navigation();
+    final authService = widget._authService ??
         FirebaseAuthService(FirebaseAuth.instance, navigation);
     final databaseService =
-        widget.databaseService ?? FirestoreService(FirebaseFirestore.instance);
+        widget._databaseService ?? FirestoreService(FirebaseFirestore.instance);
 
     // initialise services in app
     setState(() {
       _navigation = navigation;
-      _navigatorKey = navigatorKey;
       _authService = authService;
       _databaseService = databaseService;
       _loadingServices = false;
@@ -94,7 +92,7 @@ class _MyAppState extends State<MyApp> {
             ],
             child: MaterialApp(
               title: 'Flutter Demo',
-              navigatorKey: _navigatorKey,
+              navigatorKey: _navigation.navigatorKey,
               theme: ThemeData(
                 brightness: Brightness.light,
                 primaryColor: Color.fromRGBO(247, 152, 0, 1),
