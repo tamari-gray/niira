@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:niira/screens/lobby.dart';
+import 'package:niira/screens/Lobby/lobby.dart';
 import 'package:niira/screens/welcome.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/firebase_auth_service.dart';

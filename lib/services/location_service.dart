@@ -14,7 +14,7 @@ class LocationService {
 
   // get users currentLocation
   Future<Position> get getUsersCurrentLocation =>
-      _geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      _geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
 
   // listen to users location
   Stream<Position> get listenToUsersLocation {
@@ -26,7 +26,7 @@ class LocationService {
     return _geolocator.getPositionStream(locationOptions);
   }
 
-  // get distance between user and games and order from nearest to furthest
+  // set distance between user and games and order from nearest to furthest
   List<Game> setDistanceBetweenUserAndGames(
           List<Game> games, Position userLocation) =>
       games.map<Game>((game) {
@@ -60,6 +60,7 @@ double distance(double lat1, double lat2, double lon1, double lon2) {
   final r = 6371;
 
   // calculate the result
+  //TODO: return result rounded to nearest 10m? or 100m? or 1000m?
   return (c * r);
 }
 
