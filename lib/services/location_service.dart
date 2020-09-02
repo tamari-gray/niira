@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 
 class LocationService {
-  final Geolocator _geolocator;
+  final GeolocatorPlatform _geolocator;
   LocationService(this._geolocator);
 
   // check if location services are enabled
-  Future<GeolocationStatus> checkForLocationPermission() =>
-      _geolocator.checkGeolocationPermissionStatus();
+  Future<LocationPermission> checkForLocationPermission() =>
+      _geolocator.checkPermission();
 
   // get users currentLocation
   Future<Position> getUsersCurrentLocation() =>
@@ -16,11 +16,9 @@ class LocationService {
 
   // listen to users location
   Stream<Position> get listenToUsersLocation {
-    var locationOptions = LocationOptions(
-      accuracy: LocationAccuracy.best,
+    return _geolocator.getPositionStream(
+      desiredAccuracy: LocationAccuracy.best,
       distanceFilter: 0,
     );
-
-    return _geolocator.getPositionStream(locationOptions);
   }
 }
