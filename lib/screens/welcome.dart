@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:niira/screens/create_account.dart';
-import 'package:niira/screens/sign_in.dart';
+import 'package:niira/navigation/navigation.dart';
+
+import 'package:provider/provider.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({Key key}) : super(key: key);
@@ -67,11 +68,9 @@ class WelcomeScreen extends StatelessWidget {
                         key: navigateToCreateAccountBtn,
                         color: Color.fromRGBO(247, 152, 0, 1),
                         onPressed: () {
-                          Navigator.push<dynamic>(
-                            context,
-                            MaterialPageRoute<dynamic>(
-                                builder: (context) => CreateAccountScreen()),
-                          );
+                          context
+                              .read<Navigation>()
+                              .navigateTo('/create_account');
                         },
                         child: Text(
                           'Create account',
@@ -83,11 +82,7 @@ class WelcomeScreen extends StatelessWidget {
                         key: navigateToSignInBtn,
                         textColor: Color.fromRGBO(247, 152, 0, 1),
                         onPressed: () {
-                          Navigator.push<dynamic>(
-                            context,
-                            MaterialPageRoute<dynamic>(
-                                builder: (context) => SignInScreen()),
-                          );
+                          context.read<Navigation>().navigateTo('/sign_in');
                         },
                         color: Color.fromRGBO(247, 152, 0, 1),
                         child: Text(

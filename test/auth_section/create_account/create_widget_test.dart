@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:niira/models/user_data.dart';
+import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/create_account.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
@@ -17,15 +18,17 @@ import '../../mocks/navigation/mock_navigation.dart';
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
 void main() {
-  Widget makeTestableCreateAccountWidget(MockNavigation mockNavigation,
+  Widget makeTestableCreateAccountWidget(
       MockAuthService mockAuth, MockDatabaseService mockDBService) {
+    final navigation = Navigation();
     return MultiProvider(
         providers: [
-          Provider<AuthService>(create: (_) => mockAuth),
-          Provider<DatabaseService>(create: (_) => mockDBService)
+          Provider<AuthService>.value(value: mockAuth),
+          Provider<DatabaseService>.value(value: mockDBService),
+          Provider<Navigation>.value(value: navigation)
         ],
         child: MaterialApp(
-          navigatorKey: mockNavigation.navigatorKey,
+          navigatorKey: navigation.navigatorKey,
           home: CreateAccountScreen(),
         ));
   }
@@ -34,17 +37,14 @@ void main() {
     testWidgets('navigate to lobby on successfull create account',
         (WidgetTester tester) async {
       //set up for testing
-      final _mockNavigation = MockNavigation();
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
-      final _mockAuthService = MockAuthService(
-          controller: _controller,
-          mockUserData: _mockUserData,
-          mockNavigation: _mockNavigation);
+      final _mockAuthService =
+          MockAuthService(controller: _controller, mockUserData: _mockUserData);
       final _mockDBService = MockDatabaseService();
+
       await tester.pumpWidget(makeTestableCreateAccountWidget(
-        _mockNavigation,
         _mockAuthService,
         _mockDBService,
       ));
@@ -92,7 +92,6 @@ void main() {
           mockNavigation: _mockNavigation);
       final _mockDBService = MockDatabaseService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
-        _mockNavigation,
         _mockAuthService,
         _mockDBService,
       ));
@@ -121,7 +120,6 @@ void main() {
           mockNavigation: _mockNavigation);
       final _mockDBService = MockDatabaseService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
-        _mockNavigation,
         _mockAuthService,
         _mockDBService,
       ));
@@ -164,7 +162,6 @@ void main() {
           mockNavigation: _mockNavigation);
       final _mockDBService = MockDatabaseService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
-        _mockNavigation,
         _mockAuthService,
         _mockDBService,
       ));

@@ -58,6 +58,7 @@ class GameTile extends StatelessWidget {
                   child: Text('Join'),
                   onPressed: () {
                     // navigate to input password screen
+                    // TODO: replace with named route + database access for passing Game
                     Navigator.push<dynamic>(
                       context,
                       MaterialPageRoute<dynamic>(

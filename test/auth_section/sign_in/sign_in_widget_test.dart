@@ -44,14 +44,15 @@ void main() {
     await tester.pump();
   }
 
-  Widget makeTestableSignInWidget(
-      Navigation mockNavigation, MockAuthService mockAuth) {
+  Widget makeTestableSignInWidget(MockAuthService mockAuth) {
+    final navigation = Navigation();
     return MultiProvider(
       providers: [
-        Provider<AuthService>(create: (_) => mockAuth),
+        Provider<AuthService>.value(value: mockAuth),
+        Provider<Navigation>.value(value: navigation)
       ],
       child: MaterialApp(
-        navigatorKey: mockNavigation.navigatorKey,
+        navigatorKey: navigation.navigatorKey,
         home: SignInScreen(),
       ),
     );
@@ -65,6 +66,8 @@ void main() {
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
+      final navigation = Navigation();
+
       final _mockAuthService = MockAuthService(
         controller: _controller,
         mockUserData: _mockUserData,
@@ -72,7 +75,6 @@ void main() {
       );
       await tester.pumpWidget(
         makeTestableSignInWidget(
-          _mockNavigation,
           _mockAuthService,
         ),
       );
@@ -102,8 +104,7 @@ void main() {
         mockNavigation: _mockNavigation,
         successfulAuth: true,
       );
-      await tester.pumpWidget(
-          makeTestableSignInWidget(_mockNavigation, _mockAuthService));
+      await tester.pumpWidget(makeTestableSignInWidget(_mockAuthService));
 
       // press submit with empty form
       await tester.tap(signInBtn());
@@ -126,8 +127,7 @@ void main() {
         mockNavigation: _mockNavigation,
         successfulAuth: true,
       );
-      await tester.pumpWidget(
-          makeTestableSignInWidget(_mockNavigation, _mockAuthService));
+      await tester.pumpWidget(makeTestableSignInWidget(_mockAuthService));
 
       // input invalid text into fields
       expect(emailField(), findsOneWidget);
@@ -152,8 +152,7 @@ void main() {
         mockNavigation: _mockNavigation,
         successfulAuth: true,
       );
-      await tester.pumpWidget(
-          makeTestableSignInWidget(_mockNavigation, _mockAuthService));
+      await tester.pumpWidget(makeTestableSignInWidget(_mockAuthService));
 
       // submit valid credentials
       await inputValidDetails(tester);
@@ -166,9 +165,13 @@ void main() {
     testWidgets(
         'clears form before navigating between sign in/create account screens',
         (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(
-        home: SignInScreen(),
-      ));
+      final navigation = Navigation();
+      await tester.pumpWidget(Provider.value(
+          value: navigation,
+          child: MaterialApp(
+            home: SignInScreen(),
+            navigatorKey: navigation.navigatorKey,
+          )));
 
       expect(emailField(), findsOneWidget);
 

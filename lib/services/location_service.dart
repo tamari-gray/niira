@@ -5,19 +5,24 @@ import 'package:niira/models/game.dart';
 import 'dart:math';
 
 class LocationService {
-  void getInstance() {
-    GeolocatorPlatform.instance;
-  }
+  final GeolocatorPlatform _geolocator;
+  LocationService(this._geolocator);
 
   // check if location services are enabled
-  Future<LocationPermission> checkForLocationPermission() => checkPermission();
+  Future<LocationPermission> checkForLocationPermission() =>
+      _geolocator.checkPermission();
 
   // get users currentLocation
   Future<Position> get getUsersCurrentLocation =>
       getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
 
   // listen to users location
-  Stream<Position> get listenToUsersLocation => getPositionStream();
+  Stream<Position> get listenToUsersLocation {
+    return _geolocator.getPositionStream(
+      desiredAccuracy: LocationAccuracy.best,
+      distanceFilter: 0,
+    );
+  }
 
   // set distance between user and games and order from nearest to furthest
   List<Game> setDistanceBetweenUserAndGames(
