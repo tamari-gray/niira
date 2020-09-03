@@ -43,12 +43,20 @@ class FirestoreService implements DatabaseService {
             // convert gamephase into enum
             final gamePhase = EnumToString.fromString(
                 GamePhase.values, gameDoc.data()['phase'].toString());
+            // return Game(
+            //     name: gameDoc.data()['name'].toString(),
+            //     creatorName: 'tam',
+            //     id: '034280',
+            //     sonarIntervals: 5,
+            //     phase: GamePhase.created,
+            //     boundary: Boundary(position: Position(), size: 10),
+            //     password: 'password123');
             return Game(
-              id: gameDoc.data()['id'].toString() ?? 'undefined',
-              name: gameDoc.data()['name'].toString() ?? 'undefined',
+              id: gameDoc.data()['id']?.toString() ?? 'undefined',
+              name: gameDoc.data()['name']?.toString() ?? 'undefined',
               creatorName:
-                  gameDoc.data()['creatorName'].toString() ?? 'undefined',
-              password: gameDoc.data()['password'].toString() ?? 'undefined',
+                  gameDoc.data()['creatorName']?.toString() ?? 'undefined',
+              password: gameDoc.data()['password']?.toString() ?? 'undefined',
               sonarIntervals: gameDoc.data()['sonarIntervals'] as int,
               phase: gamePhase ?? GamePhase.created,
               boundary: Boundary(

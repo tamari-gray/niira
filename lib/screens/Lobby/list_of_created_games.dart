@@ -21,15 +21,15 @@ class ListOfCreatedGames extends StatelessWidget {
     final createdGames = context.watch<DatabaseService>().streamOfCreatedGames;
     print('created games: ${createdGames}');
 
-    final createdGamesWithDistanceFromUser = createdGames.map<List<Game>>(
-      (games) =>
-          locationService.setDistanceBetweenUserAndGames(games, _userLocation),
-    );
-    print('created games: ${createdGamesWithDistanceFromUser}');
+    // final createdGamesWithDistanceFromUser = createdGames.map<List<Game>>(
+    //   (games) =>
+    //       locationService.setDistanceBetweenUserAndGames(games, _userLocation),
+    // );
+    // print('created games: ${createdGamesWithDistanceFromUser}');
 
     // build list of tiles that show a game's info
     return StreamBuilder<List<Game>>(
-        stream: createdGamesWithDistanceFromUser,
+        stream: createdGames,
         builder: (context, snapshot) {
           // show empty screen if stream hasnt come through yet
           if (snapshot.data == null) {
@@ -37,8 +37,8 @@ class ListOfCreatedGames extends StatelessWidget {
             return Container();
           } else {
             // sort games by distance from user (nearest to furtherest)
-            snapshot.data.sort(
-                (a, b) => a.distanceFromUser.compareTo(b.distanceFromUser));
+            // snapshot.data.sort(
+            //     (a, b) => a.distanceFromUser.compareTo(b.distanceFromUser));
 
             // build that list!
             return Padding(
