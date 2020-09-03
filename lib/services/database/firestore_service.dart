@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:geolocator/geolocator.dart';
 import 'package:niira/models/boundary.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/player.dart';
@@ -39,21 +42,31 @@ class FirestoreService implements DatabaseService {
       .collection('games')
       .snapshots()
       .map((QuerySnapshot snapshot) => snapshot.docs.map((gameDoc) {
+            // print(gameDoc.data()['location']['latitude']);
             // convert gamephase into enum
             final gamePhase = EnumToString.fromString(
                 GamePhase.values, gameDoc.data()['phase'].toString());
+
+            final test = int.parse(gameDoc.data()['boundarySize'].toString());
+            print('test: $test');
+
             return Game(
-              id: gameDoc.data()['id'].toString() ?? 'undefined',
-              name: gameDoc.data()['name'].toString() ?? 'undefined',
+              id: gameDoc.data()['id']?.toString() ?? 'undefined',
+              name: gameDoc.data()['name']?.toString() ?? 'undefined',
               creatorName:
-                  gameDoc.data()['creatorName'].toString() ?? 'undefined',
-              password: gameDoc.data()['password'].toString() ?? 'undefined',
+                  gameDoc.data()['creatorName']?.toString() ?? 'undefined',
+              password: gameDoc.data()['password']?.toString() ?? 'undefined',
               sonarIntervals: gameDoc.data()['sonarIntervals'] as int,
               phase: gamePhase ?? GamePhase.created,
-              boundary: Boundary(
-                size: gameDoc.data()['boundary']['position'] as int ?? 0,
-                position: gameDoc.data()['boundary']['position'] as int ?? 0,
-              ),
+              // weird behaviour, when boundarySize is null (not in doc) then it wont render gametile *************************************************************
+              // if add boundary size to doc in db, then everything works smoothly
+              boundarySize: int.parse(
+                  gameDoc.data()['boundarySize']?.toString() ?? 'undefined'),
+              location: Position(
+                  latitude: double.parse(
+                      gameDoc.data()['location']['latitude'].toString()),
+                  longitude: double.parse(
+                      gameDoc.data()['location']['longitude'].toString())),
             );
           }).toList());
 

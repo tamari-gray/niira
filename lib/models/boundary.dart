@@ -1,12 +1,16 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:meta/meta.dart';
 
 class Boundary {
   final int size;
-  final int
-      position; // TODO: position will be an object of latlng coords, update when choose geolocation library
+  final Position position;
 
   Boundary({
     @required this.size,
     @required this.position,
   });
+
+  Boundary.fromMap(Map<dynamic, dynamic> map)
+      : size = map['size'] as int,
+        position = map['position'] as Position;
 }

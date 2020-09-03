@@ -63,6 +63,7 @@ class GameTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('${_game.phase}');
     return Container(
       key: Key('created_game_tile_${_game.id}'),
       child: Padding(
