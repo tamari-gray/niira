@@ -1,9 +1,9 @@
-import 'package:geolocator/geolocator.dart';
 import 'package:meta/meta.dart';
+import 'package:niira/models/location.dart';
 
 class Boundary {
   final int size;
-  final Position position;
+  final Location position;
 
   Boundary({
     @required this.size,
@@ -12,5 +12,5 @@ class Boundary {
 
   Boundary.fromMap(Map<dynamic, dynamic> map)
       : size = map['size'] as int,
-        position = map['position'] as Position;
+        position = Location.fromMap(map['position'] as Map<String, dynamic>);
 }

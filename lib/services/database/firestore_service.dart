@@ -1,12 +1,9 @@
-import 'dart:developer';
-
-import 'package:geolocator/geolocator.dart';
-import 'package:niira/models/boundary.dart';
-import 'package:niira/models/game.dart';
-import 'package:niira/models/player.dart';
-import 'package:niira/services/database/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enum_to_string/enum_to_string.dart';
+import 'package:niira/models/game.dart';
+import 'package:niira/models/location.dart';
+import 'package:niira/models/player.dart';
+import 'package:niira/services/database/database_service.dart';
 
 class FirestoreService implements DatabaseService {
   final FirebaseFirestore _firestore;
@@ -53,28 +50,27 @@ class FirestoreService implements DatabaseService {
             // what is casting, is it the best to cast or parse gameDoc.data
             //
             return Game(
-                id: gameDoc.data()['id']?.toString() ?? 'undefined',
-                name: gameDoc.data()['name']?.toString() ?? 'undefined',
-                creatorName:
-                    gameDoc.data()['creatorName']?.toString() ?? 'undefined',
-                password: gameDoc.data()['password']?.toString() ?? 'undefined',
-                // why the hell does sonar intervals not break it?
-                sonarIntervals: gameDoc.data()['sonarIntervals'] as int,
-                phase: gamePhase ?? GamePhase.created,
-                // weird behaviour, when boundarySize is null (not in doc) then it only works when cast as int *************************************************************
-                // if add boundary size to doc in db, then, tryParse wont break anything
-                boundarySize: gameDoc.data()['boundarySize'] as int,
-                // int.tryParse(gameDoc.data()['boundarySize']?.toString()),
-                // gameDoc.data()['boundarySize'] as int,
-                // location: Position(
-                //     latitude: gameDoc.data()['location']['latitude'] as double,
-                //     longitude: gameDoc.data()['location']['longitude'] as double),
-                location: Position(
-                  latitude: double.tryParse(
-                      gameDoc.data()['location']['latitude']?.toString()),
-                  // longitude: double.parse(
-                  //     gameDoc.data()['location']['longitude']?.toString())),
-                ));
+              id: gameDoc.data()['id']?.toString() ?? 'undefined',
+              name: gameDoc.data()['name']?.toString() ?? 'undefined',
+              creatorName:
+                  gameDoc.data()['creatorName']?.toString() ?? 'undefined',
+              password: gameDoc.data()['password']?.toString() ?? 'undefined',
+              // why the hell does sonar intervals not break it?
+              sonarIntervals: gameDoc.data()['sonarIntervals'] as int,
+              phase: gamePhase ?? GamePhase.created,
+              // weird behaviour, when boundarySize is null (not in doc) then it only works when cast as int *************************************************************
+              // if add boundary size to doc in db, then, tryParse wont break anything
+              boundarySize: gameDoc.data()['boundarySize'] as int,
+              // int.tryParse(gameDoc.data()['boundarySize']?.toString()),
+              // gameDoc.data()['boundarySize'] as int,
+              // location: Position(
+              //     latitude: gameDoc.data()['location']['latitude'] as double,
+              //     longitude: gameDoc.data()['location']['longitude'] as double),
+              location: Location.fromMap(
+                  gameDoc.data()['location'] as Map<String, dynamic>),
+              // longitude: double.parse(
+              //     gameDoc.data()['location']['longitude']?.toString())),
+            );
           }).toList());
 
   @override

@@ -1,6 +1,5 @@
-import 'package:geolocator/geolocator.dart';
 import 'package:meta/meta.dart';
-import 'package:niira/models/boundary.dart';
+import 'package:niira/models/location.dart';
 
 enum GamePhase { created, initialising, playing, finished }
 
@@ -10,7 +9,7 @@ class Game {
   final String creatorName;
   final String password;
   final int sonarIntervals;
-  final Position location;
+  final Location location;
   final int boundarySize;
   final GamePhase phase;
 
