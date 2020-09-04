@@ -1,14 +1,12 @@
-import 'package:geolocator/geolocator.dart';
-import 'package:niira/models/boundary.dart';
-import 'package:niira/models/game.dart';
-import 'package:niira/models/player.dart';
-import 'package:niira/services/database/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enum_to_string/enum_to_string.dart';
+import 'package:niira/models/game.dart';
+import 'package:niira/models/location.dart';
+import 'package:niira/models/player.dart';
+import 'package:niira/services/database/database_service.dart';
 
 class FirestoreService implements DatabaseService {
   final FirebaseFirestore _firestore;
-  // final String _userId;
 
   FirestoreService(this._firestore);
 
@@ -42,15 +40,9 @@ class FirestoreService implements DatabaseService {
       .map((QuerySnapshot snapshot) => snapshot.docs.map((gameDoc) {
             // convert gamephase into enum
             final gamePhase = EnumToString.fromString(
-                GamePhase.values, gameDoc.data()['phase'].toString());
-            // return Game(
-            //     name: gameDoc.data()['name'].toString(),
-            //     creatorName: 'tam',
-            //     id: '034280',
-            //     sonarIntervals: 5,
-            //     phase: GamePhase.created,
-            //     boundary: Boundary(position: Position(), size: 10),
-            //     password: 'password123');
+                GamePhase.values, gameDoc.data()['phase']?.toString());
+
+            // map document to game object
             return Game(
               id: gameDoc.data()['id']?.toString() ?? 'undefined',
               name: gameDoc.data()['name']?.toString() ?? 'undefined',
@@ -59,17 +51,9 @@ class FirestoreService implements DatabaseService {
               password: gameDoc.data()['password']?.toString() ?? 'undefined',
               sonarIntervals: gameDoc.data()['sonarIntervals'] as int,
               phase: gamePhase ?? GamePhase.created,
-              boundary: Boundary(
-                size: gameDoc.data()['boundary']['position'] as int ?? 0,
-                position: Position(
-                  latitude: gameDoc.data()['boundary']['position']['latitude']
-                          as double ??
-                      0,
-                  longitude: gameDoc.data()['boundary']['position']['longitude']
-                          as double ??
-                      0,
-                ),
-              ),
+              boundarySize: gameDoc.data()['boundarySize'] as int,
+              location: Location.fromMap(
+                  gameDoc.data()['location'] as Map<String, dynamic>),
             );
           }).toList());
 
