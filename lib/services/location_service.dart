@@ -13,8 +13,8 @@ class LocationService {
       _geolocator.checkPermission();
 
   // get users currentLocation
-  // now its breaking here ****************************************************8
-  Future<Position> get getUsersCurrentLocation => getCurrentPosition(
+  Future<Position> get getUsersCurrentLocation =>
+      _geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.best,
       );
 
