@@ -39,37 +39,22 @@ class FirestoreService implements DatabaseService {
       .collection('games')
       .snapshots()
       .map((QuerySnapshot snapshot) => snapshot.docs.map((gameDoc) {
-            // print(gameDoc.data()['location']['latitude']);
             // convert gamephase into enum
             final gamePhase = EnumToString.fromString(
                 GamePhase.values, gameDoc.data()['phase']?.toString());
 
-            // final test = int.parse(gameDoc.data()['boundarySize']?.toString());
-            // print('test: $test');
-
-            // what is casting, is it the best to cast or parse gameDoc.data
-            //
+            // map document to game object
             return Game(
               id: gameDoc.data()['id']?.toString() ?? 'undefined',
               name: gameDoc.data()['name']?.toString() ?? 'undefined',
               creatorName:
                   gameDoc.data()['creatorName']?.toString() ?? 'undefined',
               password: gameDoc.data()['password']?.toString() ?? 'undefined',
-              // why the hell does sonar intervals not break it?
               sonarIntervals: gameDoc.data()['sonarIntervals'] as int,
               phase: gamePhase ?? GamePhase.created,
-              // weird behaviour, when boundarySize is null (not in doc) then it only works when cast as int *************************************************************
-              // if add boundary size to doc in db, then, tryParse wont break anything
               boundarySize: gameDoc.data()['boundarySize'] as int,
-              // int.tryParse(gameDoc.data()['boundarySize']?.toString()),
-              // gameDoc.data()['boundarySize'] as int,
-              // location: Position(
-              //     latitude: gameDoc.data()['location']['latitude'] as double,
-              //     longitude: gameDoc.data()['location']['longitude'] as double),
               location: Location.fromMap(
                   gameDoc.data()['location'] as Map<String, dynamic>),
-              // longitude: double.parse(
-              //     gameDoc.data()['location']['longitude']?.toString())),
             );
           }).toList());
 

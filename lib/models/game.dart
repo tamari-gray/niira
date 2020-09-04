@@ -23,7 +23,4 @@ class Game {
     @required this.boundarySize,
     @required this.phase,
   });
-
-  Map<String, dynamic> toMap() =>
-      <String, dynamic>{'name': name, 'id': id, 'creatorName': creatorName};
 }
