@@ -33,11 +33,14 @@ class GameTile extends StatelessWidget {
                           color: Colors.black.withOpacity(0.6),
                         ),
                       ),
-                      Text(
-                        _game.name, // title of game
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontSize: 24,
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                        child: Text(
+                          _game.name, // title of game
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontSize: 24,
+                          ),
                         ),
                       ),
                       Text(

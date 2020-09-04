@@ -9,10 +9,11 @@ class Game {
   final String creatorName;
   final String password;
   final int sonarIntervals;
-  double distanceFromUser;
   final Location location;
   final int boundarySize;
   final GamePhase phase;
+
+  double distanceFromUser;
 
   Game({
     @required this.id,
@@ -23,5 +24,6 @@ class Game {
     @required this.location,
     @required this.boundarySize,
     @required this.phase,
+    this.distanceFromUser,
   });
 }

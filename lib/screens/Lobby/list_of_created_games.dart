@@ -7,25 +7,23 @@ import 'package:niira/services/location_service.dart';
 import 'package:provider/provider.dart';
 
 class ListOfCreatedGames extends StatelessWidget {
-  // pass in userlocation to avoid async operations
+  // pass in userlocation to avoid async operations in build fn
   final Position _userLocation;
   ListOfCreatedGames(this._userLocation);
 
   @override
   Widget build(BuildContext context) {
-    print('building list of games, userLocation = $_userLocation');
     // init location service here in hopes of making the next fn call thing more readable
     final locationService = context.watch<LocationService>();
+    print('jhi');
 
     // get stream of created games and set every game's distanceFromUser property
-    final createdGames = context.watch<DatabaseService>().streamOfCreatedGames;
-    print('created games: ${createdGames}');
-
-    // final createdGamesWithDistanceFromUser = createdGames.map<List<Game>>(
-    //   (games) =>
-    //       locationService.setDistanceBetweenUserAndGames(games, _userLocation),
-    // );
-    // print('created games: ${createdGamesWithDistanceFromUser}');
+    final createdGames =
+        context.watch<DatabaseService>().streamOfCreatedGames.map<List<Game>>(
+              (games) => locationService.setDistanceBetweenUserAndGames(
+                  games, _userLocation),
+            );
+    print(createdGames);
 
     // build list of tiles that show a game's info
     return StreamBuilder<List<Game>>(
@@ -37,8 +35,8 @@ class ListOfCreatedGames extends StatelessWidget {
             return Container();
           } else {
             // sort games by distance from user (nearest to furtherest)
-            // snapshot.data.sort(
-            //     (a, b) => a.distanceFromUser.compareTo(b.distanceFromUser));
+            snapshot.data.sort(
+                (a, b) => a.distanceFromUser.compareTo(b.distanceFromUser));
 
             // build that list!
             return Padding(
