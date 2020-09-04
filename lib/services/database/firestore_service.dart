@@ -45,29 +45,36 @@ class FirestoreService implements DatabaseService {
             // print(gameDoc.data()['location']['latitude']);
             // convert gamephase into enum
             final gamePhase = EnumToString.fromString(
-                GamePhase.values, gameDoc.data()['phase'].toString());
+                GamePhase.values, gameDoc.data()['phase']?.toString());
 
-            final test = int.parse(gameDoc.data()['boundarySize'].toString());
-            print('test: $test');
+            // final test = int.parse(gameDoc.data()['boundarySize']?.toString());
+            // print('test: $test');
 
+            // what is casting, is it the best to cast or parse gameDoc.data
+            //
             return Game(
-              id: gameDoc.data()['id']?.toString() ?? 'undefined',
-              name: gameDoc.data()['name']?.toString() ?? 'undefined',
-              creatorName:
-                  gameDoc.data()['creatorName']?.toString() ?? 'undefined',
-              password: gameDoc.data()['password']?.toString() ?? 'undefined',
-              sonarIntervals: gameDoc.data()['sonarIntervals'] as int,
-              phase: gamePhase ?? GamePhase.created,
-              // weird behaviour, when boundarySize is null (not in doc) then it wont render gametile *************************************************************
-              // if add boundary size to doc in db, then everything works smoothly
-              boundarySize: int.parse(
-                  gameDoc.data()['boundarySize']?.toString() ?? 'undefined'),
-              location: Position(
-                  latitude: double.parse(
-                      gameDoc.data()['location']['latitude'].toString()),
-                  longitude: double.parse(
-                      gameDoc.data()['location']['longitude'].toString())),
-            );
+                id: gameDoc.data()['id']?.toString() ?? 'undefined',
+                name: gameDoc.data()['name']?.toString() ?? 'undefined',
+                creatorName:
+                    gameDoc.data()['creatorName']?.toString() ?? 'undefined',
+                password: gameDoc.data()['password']?.toString() ?? 'undefined',
+                // why the hell does sonar intervals not break it?
+                sonarIntervals: gameDoc.data()['sonarIntervals'] as int,
+                phase: gamePhase ?? GamePhase.created,
+                // weird behaviour, when boundarySize is null (not in doc) then it only works when cast as int *************************************************************
+                // if add boundary size to doc in db, then, tryParse wont break anything
+                boundarySize: gameDoc.data()['boundarySize'] as int,
+                // int.tryParse(gameDoc.data()['boundarySize']?.toString()),
+                // gameDoc.data()['boundarySize'] as int,
+                // location: Position(
+                //     latitude: gameDoc.data()['location']['latitude'] as double,
+                //     longitude: gameDoc.data()['location']['longitude'] as double),
+                location: Position(
+                  latitude: double.tryParse(
+                      gameDoc.data()['location']['latitude']?.toString()),
+                  // longitude: double.parse(
+                  //     gameDoc.data()['location']['longitude']?.toString())),
+                ));
           }).toList());
 
   @override
