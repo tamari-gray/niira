@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:niira/models/game.dart';
+import 'package:niira/models/location.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/input_password.dart';
@@ -29,7 +30,8 @@ void main() {
           creatorName: null,
           sonarIntervals: null,
           password: 'test_password',
-          boundary: null,
+          boundarySize: 0,
+          location: Location(latitude: 0, longitude: 0),
           phase: null);
 
       // init input password page
@@ -72,7 +74,8 @@ void main() {
           creatorName: null,
           sonarIntervals: null,
           password: 'test_password',
-          boundary: null,
+          boundarySize: 0,
+          location: Location(latitude: 0, longitude: 0),
           phase: null);
 
       final navigation = Navigation();
