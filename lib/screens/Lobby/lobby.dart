@@ -36,10 +36,11 @@ class LobbyScreen extends StatelessWidget {
         ],
       ),
       body: FutureBuilder<Position>(
-          future: context.watch<LocationService>().getUsersCurrentLocation,
-          builder: (context, snapshot) => snapshot.hasData == false
-              ? Loading()
-              : ListOfCreatedGames(snapshot.data)),
+        future: context.watch<LocationService>().getUsersCurrentLocation,
+        builder: (context, snapshot) => snapshot.hasData == false
+            ? Loading()
+            : ListOfCreatedGames(snapshot.data),
+      ),
     );
   }
 }
