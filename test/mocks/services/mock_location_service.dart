@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:geolocator/geolocator.dart';
 import 'package:mockito/mockito.dart';
 import 'package:niira/models/game.dart';
+import 'package:niira/models/location.dart';
 import 'package:niira/services/location_service.dart';
 
 class MockLocationService extends Mock implements LocationService {
@@ -9,14 +12,12 @@ class MockLocationService extends Mock implements LocationService {
   Future<Position> get getUsersCurrentLocation =>
       Future.value(Position(longitude: 0, latitude: 0));
 
-  // set distance between user and games and order from nearest to furthest
+  // set distance between user and games
   @override
   List<Game> setDistanceBetweenUserAndGames(
-          List<Game> games, Position userLocation) =>
+          List<Game> games, Location userLocation) =>
       games.map<Game>((game) {
-        // give random different distances
-        final distance = games.indexOf(game) * 100 as double;
-        game.distanceFromUser = distance;
+        // distance is already set when create mockGames
         return game;
       }).toList();
 }

@@ -4,12 +4,13 @@ import 'package:niira/screens/input_password.dart';
 
 class GameTile extends StatelessWidget {
   final Game _game;
-  GameTile(this._game);
+  final int _index;
+  GameTile(this._game, this._index);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      key: Key('created_game_tile_${_game.id}'),
+      key: Key('created_game_tile_${_game.id}_index:${_index}'),
       child: Padding(
         padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
         child: Card(
@@ -34,7 +35,7 @@ class GameTile extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                        padding: EdgeInsets.fromLTRB(0, 2.5, 0, 2.5),
                         child: Text(
                           _game.name, // title of game
                           textAlign: TextAlign.left,
