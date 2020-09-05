@@ -16,6 +16,7 @@ class _NewGameScreen1State extends State<NewGameScreen1> {
   final _formKey = GlobalKey<FormState>();
 
   final _vm = NewGameViewModel1();
+  bool _autoValidateForm = false;
 
   @override
   void initState() {
@@ -31,7 +32,13 @@ class _NewGameScreen1State extends State<NewGameScreen1> {
         title: Text('Create Your Game', style: TextStyle(color: Colors.white)),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.read<Navigation>().navigateTo('/new_game2'),
+        onPressed: () {
+          if (_formKey.currentState.validate()) {
+            context.read<Navigation>().navigateTo('/new_game2');
+          } else {
+            _autoValidateForm = true;
+          }
+        },
         label: Text('Next'),
         icon: Icon(Icons.arrow_forward_ios),
       ),
@@ -39,7 +46,7 @@ class _NewGameScreen1State extends State<NewGameScreen1> {
         child: Container(
           child: Center(
             child: Form(
-              autovalidate: false,
+              autovalidate: _autoValidateForm,
               key: _formKey,
               child: Column(
                 children: <Widget>[GameNameField(_vm), PasswordField(_vm)],

@@ -10,9 +10,6 @@ class GameNameField extends StatefulWidget {
 }
 
 class _GameNameFieldState extends State<GameNameField> {
-  bool _checkingName = true;
-  bool _nameAlreadyExists;
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -28,10 +25,10 @@ class _GameNameFieldState extends State<GameNameField> {
             borderSide: BorderSide(color: Colors.black, width: 2.0),
           ),
         ),
-        validator: (_) => _checkingName
-            ? 'Checking...'
-            : _nameAlreadyExists
-                ? 'Name already exists, please try another.'
+        validator: (value) => value.isEmpty
+            ? 'Please enter at least 1 character'
+            : value.length > 15
+                ? 'Game names can be up to 15 characters.'
                 : null,
         onChanged: (val) => setState(() => widget._vm.gameName = val),
       ),
