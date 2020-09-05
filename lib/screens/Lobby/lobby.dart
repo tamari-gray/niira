@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:niira/loading.dart';
+import 'package:niira/models/location.dart';
 import 'package:niira/screens/Lobby/list_of_created_games.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/navigation/navigation.dart';
@@ -39,7 +40,11 @@ class LobbyScreen extends StatelessWidget {
         future: context.watch<LocationService>().getUsersCurrentLocation,
         builder: (context, snapshot) => snapshot.hasData == false
             ? Loading()
-            : ListOfCreatedGames(snapshot.data),
+            // pass in users location to list of created games
+            : ListOfCreatedGames(Location(
+                latitude: snapshot.data.latitude,
+                longitude: snapshot.data.longitude,
+              )),
       ),
     );
   }

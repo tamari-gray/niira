@@ -4,6 +4,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:niira/models/game.dart';
 import 'dart:math';
 
+import 'package:niira/models/location.dart';
+
 class LocationService {
   final GeolocatorPlatform _geolocator;
   LocationService(this._geolocator);
@@ -28,7 +30,7 @@ class LocationService {
 
   // set distance between user and games and order from nearest to furthest
   List<Game> setDistanceBetweenUserAndGames(
-          List<Game> games, Position userLocation) =>
+          List<Game> games, Location userLocation) =>
       games.map<Game>((game) {
         game.distanceFromUser = distance(
           userLocation.latitude,
