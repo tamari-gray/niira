@@ -29,15 +29,23 @@ class LocationService {
   }
 
   // set distance between user and games and order from nearest to furthest
-  List<Game> setDistanceBetweenUserAndGames(
-          List<Game> games, Location userLocation) =>
-      games.map<Game>((game) {
-        game.distanceFromUser = distance(
-          lat1: userLocation.latitude,
-          lat2: game.location.latitude,
-          lon1: userLocation.longitude,
-          lon2: game.location.longitude,
-        );
-        return game;
-      }).toList();
+  List<Game> setAndOrderGamesByDistance(
+      List<Game> games, Location userLocation) {
+    // calculate and set distanceFromUser property in each game
+    final gamesWithDistance = games.map<Game>((game) {
+      game.distanceFromUser = distance(
+        lat1: userLocation.latitude,
+        lat2: game.location.latitude,
+        lon1: userLocation.longitude,
+        lon2: game.location.longitude,
+      );
+      return game;
+    }).toList();
+
+    // order games by distanceFromUser (nearest to furtherest)
+    gamesWithDistance
+        .sort((a, b) => a.distanceFromUser.compareTo(b.distanceFromUser));
+
+    return gamesWithDistance;
+  }
 }

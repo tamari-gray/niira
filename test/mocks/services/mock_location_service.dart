@@ -14,10 +14,15 @@ class MockLocationService extends Mock implements LocationService {
 
   // set distance between user and games
   @override
-  List<Game> setDistanceBetweenUserAndGames(
-          List<Game> games, Location userLocation) =>
-      games.map<Game>((game) {
-        // distance is already set when create mockGames
-        return game;
-      }).toList();
+  List<Game> setAndOrderGamesByDistance(
+      List<Game> games, Location userLocation) {
+    games.map<Game>((game) {
+      // distance is already set when create mockGames
+      return game;
+    }).toList();
+
+    games.sort((a, b) => a.distanceFromUser.compareTo(b.distanceFromUser));
+
+    return games;
+  }
 }

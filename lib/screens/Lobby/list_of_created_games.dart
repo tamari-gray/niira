@@ -17,11 +17,13 @@ class ListOfCreatedGames extends StatelessWidget {
     final locationService = context.watch<LocationService>();
 
     // get stream of created games and set every game's distanceFromUser property
-    final createdGamesWithDistance =
-        context.watch<DatabaseService>().streamOfCreatedGames.map<List<Game>>(
-              (games) => locationService.setDistanceBetweenUserAndGames(
-                  games, _userLocation),
-            );
+    final createdGamesWithDistance = context
+        .watch<DatabaseService>()
+        .streamOfCreatedGames
+        .map<List<Game>>(
+          (games) =>
+              locationService.setAndOrderGamesByDistance(games, _userLocation),
+        );
 
     // build list of tiles that show a game's info
     return StreamBuilder<List<Game>>(
@@ -33,10 +35,6 @@ class ListOfCreatedGames extends StatelessWidget {
               key: Key('list_of_created_games_empty_screen'),
             );
           } else {
-            // sort games by distance from user (nearest to furtherest)
-            snapshot.data.sort(
-                (a, b) => a.distanceFromUser.compareTo(b.distanceFromUser));
-
             // build that list!
             return Padding(
               padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
