@@ -10,6 +10,8 @@ class GameTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      // key is formatted with index to help with testing,
+      // refer to created_game_tile_widget_test.dart
       key: Key('created_game_tile_${_game.id}_index:${_index}'),
       child: Padding(
         padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
