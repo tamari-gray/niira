@@ -4,7 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:niira/utilities/calc_distance.dart';
 import 'package:test/test.dart';
 
-import '../../mocks/data/mock_games.dart';
+import '../../../mocks/data/mock_games.dart';
 
 void main() {
   test(
@@ -23,19 +23,23 @@ void main() {
         lat1: mockGames[0].location.latitude,
         lon1: mockGames[0].location.longitude,
         lat2: mockUserLocation.latitude,
-        lon2: mockUserLocation.longitude);
+        lon2: mockUserLocation.longitude); // result = 398.0
     final gameTwoExpectedDistance = distance(
         lat1: mockGames[1].location.latitude,
         lon1: mockGames[1].location.longitude,
         lat2: mockUserLocation.latitude,
-        lon2: mockUserLocation.longitude);
+        lon2: mockUserLocation.longitude); // result = 323.0
 
     // call function with mockData
-    final mockGamesWithDistance = locationService
-        .setDistanceBetweenUserAndGames(mockGames, mockUserLocation);
+    final mockGamesWithDistance =
+        locationService.setAndOrderGamesByDistance(mockGames, mockUserLocation);
 
     // check mockGame.distanceFromUser is equal to expected distance
-    expect(mockGamesWithDistance[0].distanceFromUser, gameOneExpectedDistance);
-    expect(mockGamesWithDistance[1].distanceFromUser, gameTwoExpectedDistance);
+    expect(mockGamesWithDistance[1].distanceFromUser, gameOneExpectedDistance);
+    expect(mockGamesWithDistance[0].distanceFromUser, gameTwoExpectedDistance);
+
+    // check mockGames are inorder from nearest to furtherest from user
+    expect(mockGamesWithDistance[0], mockGames[1]);
+    expect(mockGamesWithDistance[1], mockGames[0]);
   });
 }

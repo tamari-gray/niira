@@ -15,11 +15,11 @@ import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/location_service.dart';
 import 'package:provider/provider.dart';
 
-import '../../mocks/mock_user_data.dart';
-import '../../mocks/services/mock_auth_service.dart';
-import '../../mocks/services/mock_database_service.dart';
-import '../../mocks/services/mock_location_service.dart';
-import '../../mocks/services/mock_firebase_platform.dart';
+import '../../../mocks/mock_user_data.dart';
+import '../../../mocks/services/mock_auth_service.dart';
+import '../../../mocks/services/mock_database_service.dart';
+import '../../../mocks/services/mock_location_service.dart';
+import '../../../mocks/services/mock_firebase_platform.dart';
 
 void main() {
   setUp(() {

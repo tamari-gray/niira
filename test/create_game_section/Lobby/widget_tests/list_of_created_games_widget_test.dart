@@ -13,10 +13,10 @@ import 'package:niira/navigation/navigation.dart';
 import 'package:niira/services/location_service.dart';
 import 'package:provider/provider.dart';
 
-import '../../mocks/data/mock_games.dart';
-import '../../mocks/services/mock_database_service.dart';
-import '../../mocks/services/mock_location_service.dart';
-import '../../mocks/services/mock_firebase_platform.dart';
+import '../../../mocks/data/mock_games.dart';
+import '../../../mocks/services/mock_database_service.dart';
+import '../../../mocks/services/mock_location_service.dart';
+import '../../../mocks/services/mock_firebase_platform.dart';
 
 void main() {
   setUp(() {

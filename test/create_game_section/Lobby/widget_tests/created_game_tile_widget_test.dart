@@ -6,8 +6,8 @@ import 'package:niira/screens/Lobby/created_game_tile.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:provider/provider.dart';
 
-import '../../mocks/data/mock_games.dart';
-import '../../mocks/services/mock_firebase_platform.dart';
+import '../../../mocks/data/mock_games.dart';
+import '../../../mocks/services/mock_firebase_platform.dart';
 
 void main() {
   setUp(() {
