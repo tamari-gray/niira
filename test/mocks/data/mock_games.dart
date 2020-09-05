@@ -2,6 +2,28 @@ import 'package:niira/models/game.dart';
 import 'package:niira/models/location.dart';
 
 class MockGames {
+  List<Game> get gamesWithoutDistance => <Game>[
+        Game(
+          name: 'yeet',
+          creatorName: 'tam',
+          id: 'fadsg',
+          sonarIntervals: 5,
+          phase: GamePhase.created,
+          boundarySize: 0,
+          location: Location(latitude: -37.862655, longitude: 144.990368),
+          password: 'password123',
+        ),
+        Game(
+          name: 'fdsaf',
+          creatorName: 'fdsafd',
+          id: 'fadsg',
+          sonarIntervals: 5,
+          phase: GamePhase.created,
+          boundarySize: 0,
+          location: Location(latitude: -37.862655, longitude: 144.990368),
+          password: 'password12345',
+        ),
+      ];
   List<Game> get gamesToJoin => <Game>[
         Game(
           name: 'yeet',
