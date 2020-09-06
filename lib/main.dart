@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/create_account.dart';
+import 'package:niira/screens/input_password.dart';
 import 'package:niira/screens/lobby.dart';
 import 'package:niira/screens/new_game1/new_game_screen1.dart';
 import 'package:niira/screens/new_game2.dart';
@@ -15,6 +16,7 @@ import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/firebase_auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/database/firestore_service.dart';
+import 'package:niira/services/game_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -26,14 +28,17 @@ class MyApp extends StatefulWidget {
   final AuthService _authService;
   final DatabaseService _databaseService;
   final Navigation _navigation;
+  final GameService _gameService;
 
-  MyApp(
-      {AuthService authService,
-      DatabaseService databaseService,
-      Navigation navigation})
-      : _authService = authService,
+  MyApp({
+    AuthService authService,
+    DatabaseService databaseService,
+    Navigation navigation,
+    GameService gameService,
+  })  : _authService = authService,
         _databaseService = databaseService,
-        _navigation = navigation;
+        _navigation = navigation,
+        _gameService = gameService;
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -44,6 +49,7 @@ class _MyAppState extends State<MyApp> {
   AuthService _authService;
   DatabaseService _databaseService;
   Navigation _navigation;
+  GameService _gameService;
 
   @override
   void initState() {
@@ -64,6 +70,7 @@ class _MyAppState extends State<MyApp> {
 
     // create services to pass to app
     _navigation = widget._navigation ?? Navigation();
+    _gameService = widget._gameService ?? GameService();
     _authService = widget._authService ??
         FirebaseAuthService(FirebaseAuth.instance, _navigation);
     _databaseService =
@@ -90,6 +97,7 @@ class _MyAppState extends State<MyApp> {
               Provider<AuthService>.value(value: _authService),
               Provider<DatabaseService>.value(value: _databaseService),
               Provider<Navigation>.value(value: _navigation),
+              Provider<GameService>.value(value: _gameService)
             ],
             child: MaterialApp(
                 title: 'Flutter Demo',
@@ -107,8 +115,7 @@ class _MyAppState extends State<MyApp> {
                   '/sign_in': (context) => SignInScreen(),
                   '/new_game1': (context) => NewGameScreen1(),
                   '/new_game2': (context) => NewGameScreen2(),
-                  // TODO: complete when database strategy for games has been finalised
-                  // '/input_password': (context) => InputPasswordScreen(),
+                  '/input_password': (context) => InputPasswordScreen(),
                 },
                 home: StreamBuilder(
                   stream: _authService.streamOfAuthState,

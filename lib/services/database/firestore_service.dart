@@ -1,9 +1,9 @@
-import 'package:niira/models/boundary.dart';
-import 'package:niira/models/game.dart';
-import 'package:niira/models/player.dart';
-import 'package:niira/services/database/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enum_to_string/enum_to_string.dart';
+import 'package:niira/models/game.dart';
+import 'package:niira/models/location.dart';
+import 'package:niira/models/player.dart';
+import 'package:niira/services/database/database_service.dart';
 
 class FirestoreService implements DatabaseService {
   final FirebaseFirestore _firestore;
@@ -41,19 +41,20 @@ class FirestoreService implements DatabaseService {
       .map((QuerySnapshot snapshot) => snapshot.docs.map((gameDoc) {
             // convert gamephase into enum
             final gamePhase = EnumToString.fromString(
-                GamePhase.values, gameDoc.data()['phase'].toString());
+                GamePhase.values, gameDoc.data()['phase']?.toString());
+
+            // map document to game object
             return Game(
-              id: gameDoc.data()['id'].toString() ?? 'undefined',
-              name: gameDoc.data()['name'].toString() ?? 'undefined',
+              id: gameDoc.data()['id']?.toString() ?? 'undefined',
+              name: gameDoc.data()['name']?.toString() ?? 'undefined',
               creatorName:
-                  gameDoc.data()['creatorName'].toString() ?? 'undefined',
-              password: gameDoc.data()['password'].toString() ?? 'undefined',
+                  gameDoc.data()['creatorName']?.toString() ?? 'undefined',
+              password: gameDoc.data()['password']?.toString() ?? 'undefined',
               sonarIntervals: gameDoc.data()['sonarIntervals'] as int,
               phase: gamePhase ?? GamePhase.created,
-              boundary: Boundary(
-                size: gameDoc.data()['boundary']['position'] as int ?? 0,
-                position: gameDoc.data()['boundary']['position'] as int ?? 0,
-              ),
+              boundarySize: gameDoc.data()['boundarySize'] as int,
+              location: Location.fromMap(
+                  gameDoc.data()['location'] as Map<String, dynamic>),
             );
           }).toList());
 
