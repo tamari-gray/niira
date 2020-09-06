@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:niira/models/view_models/new_game1.dart';
-import 'package:niira/utilities/validators.dart';
+import 'package:niira/utilities/validators.dart' as validators;
 
 class PasswordField extends StatefulWidget {
   final NewGameViewModel1 _vm;
@@ -27,7 +27,7 @@ class _PasswordFieldState extends State<PasswordField> {
               borderSide: BorderSide(color: Colors.black, width: 2.0),
             ),
             suffixIcon: Icon(Icons.visibility)),
-        validator: oneToFifteenChars,
+        validator: validators.oneToFifteenChars,
         onChanged: (val) => setState(() => widget._vm.password = val),
       ),
     );

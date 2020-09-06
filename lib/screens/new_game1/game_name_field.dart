@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:niira/models/view_models/new_game1.dart';
-import 'package:niira/utilities/validators.dart';
+import 'package:niira/utilities/validators.dart' as validators;
 
 class GameNameField extends StatefulWidget {
   final NewGameViewModel1 _vm;
@@ -26,7 +26,7 @@ class _GameNameFieldState extends State<GameNameField> {
             borderSide: BorderSide(color: Colors.black, width: 2.0),
           ),
         ),
-        validator: oneToFifteenChars,
+        validator: validators.oneToFifteenChars,
         onChanged: (val) => setState(() => widget._vm.name = val),
       ),
     );
