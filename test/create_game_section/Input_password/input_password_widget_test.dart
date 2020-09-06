@@ -12,6 +12,7 @@ import 'package:niira/screens/input_password.dart';
 import 'package:niira/screens/waiting_for_game_to_start.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
+import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/services/mock_auth_service.dart';
@@ -24,6 +25,7 @@ void main() {
       final _authController = StreamController<UserData>();
       final _mockAuthService = MockAuthService(controller: _authController);
       final _mockDatabaseService = MockDatabaseService();
+      final _mockGameService = MockGameService();
       final mockGame = Game(
           id: 'mock_game_123',
           name: null,
@@ -39,6 +41,7 @@ void main() {
         providers: [
           Provider<AuthService>.value(value: _mockAuthService),
           Provider<DatabaseService>.value(value: _mockDatabaseService),
+          Provider<GameService>.value(value: _mockGameService),
         ],
         child: MaterialApp(
           home: InputPasswordScreen(
