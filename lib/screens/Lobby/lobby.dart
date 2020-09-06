@@ -37,15 +37,19 @@ class LobbyScreen extends StatelessWidget {
         ],
       ),
       body: FutureBuilder<Position>(
-        future: context.watch<LocationService>().getUsersCurrentLocation,
-        builder: (context, snapshot) => snapshot.hasData == false
-            ? Loading()
-            // pass in users location to list of created games
-            : ListOfCreatedGames(Location(
+          future: context.watch<LocationService>().getUsersCurrentLocation,
+          builder: (context, snapshot) {
+            if (snapshot.hasData == false) {
+              return Loading();
+            } else {
+              // pass in users location to list of created games
+              final userLocation = Location(
                 latitude: snapshot.data.latitude,
                 longitude: snapshot.data.longitude,
-              )),
-      ),
+              );
+              return ListOfCreatedGames(userLocation);
+            }
+          }),
     );
   }
 }
