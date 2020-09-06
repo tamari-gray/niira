@@ -6,6 +6,8 @@ import 'package:niira/screens/new_game1/password_field.dart';
 import 'package:provider/provider.dart';
 
 class NewGameScreen1 extends StatefulWidget {
+  static const routeName = '/new_game1';
+
   const NewGameScreen1({Key key}) : super(key: key);
 
   @override
@@ -32,11 +34,14 @@ class _NewGameScreen1State extends State<NewGameScreen1> {
         title: Text('Create Your Game', style: TextStyle(color: Colors.white)),
       ),
       floatingActionButton: FloatingActionButton.extended(
+        key: Key('new_game1_submit_button'),
         onPressed: () {
           if (_formKey.currentState.validate()) {
             context.read<Navigation>().navigateTo('/new_game2');
           } else {
-            _autoValidateForm = true;
+            setState(() {
+              _autoValidateForm = true;
+            });
           }
         },
         label: Text('Next'),

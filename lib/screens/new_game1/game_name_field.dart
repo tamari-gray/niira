@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:niira/models/view_models/new_game1.dart';
+import 'package:niira/utilities/validators.dart';
 
 class GameNameField extends StatefulWidget {
   final NewGameViewModel1 _vm;
@@ -15,7 +16,7 @@ class _GameNameFieldState extends State<GameNameField> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
       child: TextFormField(
-        key: Key('name_field'),
+        key: Key('new_game1_name_field'),
         decoration: InputDecoration(
           labelText: 'Name',
           focusedBorder: OutlineInputBorder(
@@ -25,11 +26,7 @@ class _GameNameFieldState extends State<GameNameField> {
             borderSide: BorderSide(color: Colors.black, width: 2.0),
           ),
         ),
-        validator: (value) => value.isEmpty
-            ? 'Please enter at least 1 character'
-            : value.length > 15
-                ? 'Game names can be up to 15 characters.'
-                : null,
+        validator: oneToFifteenChars,
         onChanged: (val) => setState(() => widget._vm.gameName = val),
       ),
     );
