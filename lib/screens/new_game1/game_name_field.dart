@@ -27,7 +27,7 @@ class _GameNameFieldState extends State<GameNameField> {
           ),
         ),
         validator: oneToFifteenChars,
-        onChanged: (val) => setState(() => widget._vm.gameName = val),
+        onChanged: (val) => setState(() => widget._vm.name = val),
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:niira/models/view_models/new_game1.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/new_game1/game_name_field.dart';
 import 'package:niira/screens/new_game1/password_field.dart';
+import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 class NewGameScreen1 extends StatefulWidget {
@@ -17,12 +18,13 @@ class NewGameScreen1 extends StatefulWidget {
 class _NewGameScreen1State extends State<NewGameScreen1> {
   final _formKey = GlobalKey<FormState>();
 
-  final _vm = NewGameViewModel1();
+  NewGameViewModel1 _vm;
   bool _autoValidateForm = false;
 
   @override
   void initState() {
     super.initState();
+    _vm = context.read<GameService>().newGameViewModel1;
   }
 
   @override
