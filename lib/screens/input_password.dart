@@ -4,17 +4,23 @@ import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/waiting_for_game_to_start.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
+import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 class InputPasswordScreen extends StatefulWidget {
-  final Game game;
-  InputPasswordScreen({@required this.game});
   @override
   _InputPasswordScreenState createState() => _InputPasswordScreenState();
 }
 
 class _InputPasswordScreenState extends State<InputPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
+  Game _game;
+
+  @override
+  void initState() {
+    _game = context.read<GameService>().currentGame;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +48,7 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
             final userId = await context.read<AuthService>().currentUserId;
 
             // add player to game in database
-            await context
-                .read<DatabaseService>()
-                .joinGame(widget.game.id, userId);
+            await context.read<DatabaseService>().joinGame(_game.id, userId);
 
             await context
                 .read<Navigation>()
@@ -70,7 +74,7 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please enter password';
-                  } else if (value != widget.game.password) {
+                  } else if (value != _game.password) {
                     return 'Password is incorrect';
                   }
                   return null;
