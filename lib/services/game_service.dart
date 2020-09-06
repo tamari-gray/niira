@@ -5,4 +5,6 @@ class GameService {
   GameService({this.currentGame});
 
   void setCurrentGame(Game _selectedGame) => currentGame = _selectedGame;
+
+  Game get getCurrentGame => currentGame;
 }
