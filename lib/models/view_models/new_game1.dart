@@ -1,4 +1,4 @@
 class NewGameViewModel1 {
-  String gameName;
+  String name;
   String password;
 }

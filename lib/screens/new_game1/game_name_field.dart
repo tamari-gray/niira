@@ -30,7 +30,7 @@ class _GameNameFieldState extends State<GameNameField> {
             : value.length > 15
                 ? 'Game names can be up to 15 characters.'
                 : null,
-        onChanged: (val) => setState(() => widget._vm.gameName = val),
+        onChanged: (val) => setState(() => widget._vm.name = val),
       ),
     );
   }
