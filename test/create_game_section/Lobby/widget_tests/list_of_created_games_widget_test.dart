@@ -29,13 +29,13 @@ void main() {
     final navigation = Navigation();
     final mockLocationService = MockLocationService();
     final mockDatabseController = StreamController<List<Game>>();
-    final mockCreatedGames = MockGames().gamesToJoin;
+    final mockCreatedGames = MockGames().gamesInorderOfDistance;
     final mockDatabaseService =
         MockDatabaseService(controller: mockDatabseController);
     final mockUserLocation =
         Location(latitude: -37.865351, longitude: 144.989012);
 
-    // mockDatabseController.add(null);
+    // add mockGames
     mockDatabseController.add(mockCreatedGames);
     await tester.pumpAndSettle();
 
@@ -62,30 +62,22 @@ void main() {
 
     // show correct widgets
     expect(find.byKey(Key('list_of_created_games_empty_screen')), findsNothing);
-    expect(find.byType(GameTile), findsNWidgets(5));
+    expect(find.byType(GameTile), findsNWidgets(3));
 
-    // show list of created games inorder of distance from user.
+    /// show list of created games inorder of distance from user.
     /// when building game tile, we are giving it an 'index' property,
     /// to help test that they are rendered in correct order
     expect(
-        find.byKey(
-            Key('created_game_tile_${mockCreatedGames[3].id}_index:${0}')),
-        findsOneWidget);
+      find.byKey(Key('created_game_tile_${mockCreatedGames[0].id}_index:${0}')),
+      findsOneWidget,
+    );
     expect(
-        find.byKey(
-            Key('created_game_tile_${mockCreatedGames[0].id}_index:${1}')),
-        findsOneWidget);
+      find.byKey(Key('created_game_tile_${mockCreatedGames[1].id}_index:${1}')),
+      findsOneWidget,
+    );
     expect(
-        find.byKey(
-            Key('created_game_tile_${mockCreatedGames[1].id}_index:${2}')),
-        findsOneWidget);
-    expect(
-        find.byKey(
-            Key('created_game_tile_${mockCreatedGames[4].id}_index:${3}')),
-        findsOneWidget);
-    expect(
-        find.byKey(
-            Key('created_game_tile_${mockCreatedGames[2].id}_index:${4}')),
-        findsOneWidget);
+      find.byKey(Key('created_game_tile_${mockCreatedGames[2].id}_index:${2}')),
+      findsOneWidget,
+    );
   });
 }
