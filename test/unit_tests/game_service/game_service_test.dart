@@ -10,11 +10,11 @@ void main() {
 
     // user joins or creates a game
     final _selectedGame = Game(id: 'first_game');
-    _gameService.setCurrentGame(_selectedGame);
+    _gameService.currentGame = _selectedGame;
 
     // user quits previous game, and joins or creates a new game
     final _secondSelectedGame = Game(id: 'second_game');
-    _gameService.setCurrentGame(_secondSelectedGame);
+    _gameService.currentGame = _secondSelectedGame;
 
     // check that second game has been set as current game
     expect(_gameService.currentGame.id, _secondSelectedGame.id);
