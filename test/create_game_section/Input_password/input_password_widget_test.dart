@@ -37,7 +37,7 @@ void main() {
         location: Location(latitude: 0, longitude: 0),
         phase: null,
       );
-      // _mockGameService.setCurrentGame(_mockGame);
+      _mockGameService.currentGame = _mockGame;
       await tester.pumpAndSettle();
 
       // init input password page
@@ -51,6 +51,9 @@ void main() {
           home: InputPasswordScreen(),
         ),
       ));
+
+      // ol reliable
+      await tester.pumpAndSettle();
 
       // tap to join a game
       final passwordFeild = find.byKey(Key('input_password_screen_text_feild'));
@@ -85,14 +88,16 @@ void main() {
           boundarySize: 0,
           location: Location(latitude: 0, longitude: 0),
           phase: null);
-      // _mockGameService.setCurrentGame(_mockGame);
+      _mockGameService.currentGame = _mockGame;
+      await tester.pumpAndSettle();
 
       // init input password page
       await tester.pumpWidget(MultiProvider(
         providers: [
           Provider<AuthService>.value(value: _mockAuthService),
           Provider<DatabaseService>.value(value: _mockDatabaseService),
-          Provider<Navigation>.value(value: navigation)
+          Provider<Navigation>.value(value: navigation),
+          Provider<GameService>.value(value: _mockGameService)
         ],
         child: MaterialApp(
             home: InputPasswordScreen(),
@@ -102,6 +107,9 @@ void main() {
                   WaitingForGameToStartScreen(),
             }),
       ));
+
+      // ol reliable
+      await tester.pumpAndSettle();
 
       // tap and join a game
       await tester.enterText(
