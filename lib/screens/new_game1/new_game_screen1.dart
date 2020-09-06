@@ -1,31 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:niira/models/view_models/new_game1.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/new_game1/game_name_field.dart';
 import 'package:niira/screens/new_game1/password_field.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 class NewGameScreen1 extends StatefulWidget {
   static const routeName = '/new_game1';
-
   const NewGameScreen1({Key key}) : super(key: key);
-
   @override
   _NewGameScreen1State createState() => _NewGameScreen1State();
 }
 
 class _NewGameScreen1State extends State<NewGameScreen1> {
   final _formKey = GlobalKey<FormState>();
-
-  NewGameViewModel1 _vm;
   bool _autoValidateForm = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _vm = context.read<GameService>().newGameViewModel1;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +29,7 @@ class _NewGameScreen1State extends State<NewGameScreen1> {
           if (_formKey.currentState.validate()) {
             context.read<Navigation>().navigateTo('/new_game2');
           } else {
-            setState(() {
-              _autoValidateForm = true;
-            });
+            setState(() => _autoValidateForm = true);
           }
         },
         label: Text('Next'),
@@ -56,7 +42,7 @@ class _NewGameScreen1State extends State<NewGameScreen1> {
               autovalidate: _autoValidateForm,
               key: _formKey,
               child: Column(
-                children: <Widget>[GameNameField(_vm), PasswordField(_vm)],
+                children: <Widget>[GameNameField(), PasswordField()],
               ),
             ),
           ),

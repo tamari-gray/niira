@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:niira/models/view_models/new_game1.dart';
+import 'package:niira/services/game_service.dart';
 import 'package:niira/utilities/validators.dart' as validators;
+import 'package:provider/provider.dart';
 
 class GameNameField extends StatefulWidget {
-  final NewGameViewModel1 _vm;
-  const GameNameField(this._vm, {Key key}) : super(key: key);
+  const GameNameField({Key key}) : super(key: key);
 
   @override
   _GameNameFieldState createState() => _GameNameFieldState();
 }
 
 class _GameNameFieldState extends State<GameNameField> {
+  NewGameViewModel1 _vm;
+
+  @override
+  void initState() {
+    super.initState();
+    _vm = context.read<GameService>().newGameViewModel1;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -27,7 +36,7 @@ class _GameNameFieldState extends State<GameNameField> {
           ),
         ),
         validator: validators.oneToFifteenChars,
-        onChanged: (val) => setState(() => widget._vm.name = val),
+        onChanged: (val) => setState(() => _vm?.name = val),
       ),
     );
   }

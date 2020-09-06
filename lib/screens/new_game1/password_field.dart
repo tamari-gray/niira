@@ -3,14 +3,15 @@ import 'package:niira/models/view_models/new_game1.dart';
 import 'package:niira/utilities/validators.dart' as validators;
 
 class PasswordField extends StatefulWidget {
-  final NewGameViewModel1 _vm;
-  const PasswordField(this._vm, {Key key}) : super(key: key);
+  const PasswordField({Key key}) : super(key: key);
 
   @override
   _PasswordFieldState createState() => _PasswordFieldState();
 }
 
 class _PasswordFieldState extends State<PasswordField> {
+  NewGameViewModel1 _vm;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -28,7 +29,7 @@ class _PasswordFieldState extends State<PasswordField> {
             ),
             suffixIcon: Icon(Icons.visibility)),
         validator: validators.oneToFifteenChars,
-        onChanged: (val) => setState(() => widget._vm.password = val),
+        onChanged: (val) => setState(() => _vm?.password = val),
       ),
     );
   }

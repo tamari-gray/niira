@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/new_game1/new_game_screen1.dart';
+import 'package:niira/screens/new_game2.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
@@ -13,10 +14,17 @@ void main() {
     testWidgets('only navigates with invalid inputs',
         (WidgetTester tester) async {
       // spin up the wut
-      await tester.pumpWidget(MultiProvider(providers: [
-        Provider<GameService>(create: (_) => MockGameService()),
-        Provider<Navigation>(create: (_) => Navigation()),
-      ], child: MaterialApp(home: NewGameScreen1())));
+      final nav = Navigation();
+      await tester.pumpWidget(MultiProvider(
+          providers: [
+            Provider<GameService>(create: (_) => MockGameService()),
+            Provider<Navigation>.value(value: nav),
+          ],
+          child: MaterialApp(
+            navigatorKey: nav.navigatorKey,
+            home: NewGameScreen1(),
+            routes: {'/new_game2': (context) => NewGameScreen2()},
+          )));
 
       // save finders for each UI
       final nameField = find.byKey(Key('new_game1_name_field'));
@@ -55,9 +63,11 @@ void main() {
       // attempt submit
       await tester.tap(submitButton);
 
-      // check input fields are no longer found (due to navigation)
-      expect((nameField), findsNothing);
-      expect((passwordField), findsNothing);
+      // ol reliable
+      await tester.pumpAndSettle();
+
+      // check game screen 2 widget is found (due to navigation)
+      expect(find.text('New Game Screen 2'), findsOneWidget);
     });
   });
 }
