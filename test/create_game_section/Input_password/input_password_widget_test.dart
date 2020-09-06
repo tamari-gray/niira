@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
+import '../../mocks/services/mock_game_service.dart';
 
 void main() {
   group('on unsuccessfull password submission', () {
@@ -26,15 +27,18 @@ void main() {
       final _mockAuthService = MockAuthService(controller: _authController);
       final _mockDatabaseService = MockDatabaseService();
       final _mockGameService = MockGameService();
-      final mockGame = Game(
-          id: 'mock_game_123',
-          name: null,
-          creatorName: null,
-          sonarIntervals: null,
-          password: 'test_password',
-          boundarySize: 0,
-          location: Location(latitude: 0, longitude: 0),
-          phase: null);
+      final _mockGame = Game(
+        id: 'mock_game_123',
+        name: null,
+        creatorName: null,
+        sonarIntervals: null,
+        password: 'test_password',
+        boundarySize: 0,
+        location: Location(latitude: 0, longitude: 0),
+        phase: null,
+      );
+      // _mockGameService.setCurrentGame(_mockGame);
+      await tester.pumpAndSettle();
 
       // init input password page
       await tester.pumpWidget(MultiProvider(
@@ -44,9 +48,7 @@ void main() {
           Provider<GameService>.value(value: _mockGameService),
         ],
         child: MaterialApp(
-          home: InputPasswordScreen(
-            game: mockGame,
-          ),
+          home: InputPasswordScreen(),
         ),
       ));
 
@@ -71,7 +73,10 @@ void main() {
       final _databaseController = StreamController<List<Game>>();
       final _mockDatabaseService =
           MockDatabaseService(controller: _databaseController);
-      final mockGame = Game(
+      final navigation = Navigation();
+      final _mockGameService = MockGameService();
+
+      final _mockGame = Game(
           id: 'mock_game_123',
           name: null,
           creatorName: null,
@@ -80,8 +85,8 @@ void main() {
           boundarySize: 0,
           location: Location(latitude: 0, longitude: 0),
           phase: null);
+      // _mockGameService.setCurrentGame(_mockGame);
 
-      final navigation = Navigation();
       // init input password page
       await tester.pumpWidget(MultiProvider(
         providers: [
@@ -90,9 +95,7 @@ void main() {
           Provider<Navigation>.value(value: navigation)
         ],
         child: MaterialApp(
-            home: InputPasswordScreen(
-              game: mockGame,
-            ),
+            home: InputPasswordScreen(),
             navigatorKey: navigation.navigatorKey,
             routes: {
               '/waiting_for_game_start': (context) =>
