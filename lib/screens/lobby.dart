@@ -4,6 +4,7 @@ import 'package:niira/screens/input_password.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/navigation/navigation.dart';
+import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 class LobbyScreen extends StatelessWidget {
@@ -111,17 +112,13 @@ class GameTile extends StatelessWidget {
                   textColor: Theme.of(context).primaryColor,
                   borderSide: BorderSide(color: Theme.of(context).primaryColor),
                   child: Text('Join'),
-                  onPressed: () {
+                  onPressed: () async {
+                    // make selected game available to all widgets
+                    context.read<GameService>().currentGame = _game;
                     // navigate to input password screen
-                    // TODO: replace with named route + database access for passing Game
-                    Navigator.push<dynamic>(
-                      context,
-                      MaterialPageRoute<dynamic>(
-                        builder: (context) => InputPasswordScreen(
-                          game: _game,
-                        ),
-                      ),
-                    );
+                    await context
+                        .read<Navigation>()
+                        .navigateTo('/input_password');
                   },
                 )
               ],

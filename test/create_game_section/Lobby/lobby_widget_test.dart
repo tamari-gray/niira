@@ -8,16 +8,20 @@ import 'package:mockito/mockito.dart';
 import 'package:niira/main.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/user_data.dart';
+import 'package:niira/screens/input_password.dart';
 import 'package:niira/screens/lobby.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/navigation/navigation.dart';
+import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/data/mock_games.dart';
 import '../../mocks/mock_user_data.dart';
+import '../../mocks/navigation/mock_navigation.dart';
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
 import '../../mocks/services/mock_firebase_platform.dart';
+import '../../mocks/services/mock_game_service.dart';
 
 void main() {
   setUp(() {
@@ -29,15 +33,26 @@ void main() {
         (WidgetTester tester) async {
       final _controller = StreamController<List<Game>>();
       final mockCreatedGames = MockGames().gamesToJoin;
+      final mockGameService = MockGameService();
+      final navigation = Navigation();
+      final mockDatabaseService = MockDatabaseService(controller: _controller);
 
       _controller.add(mockCreatedGames);
-      final mockDatabaseService = MockDatabaseService(controller: _controller);
 
       // init lobby page
       await tester.pumpWidget(
-        MultiProvider(providers: [
-          Provider<DatabaseService>.value(value: mockDatabaseService),
-        ], child: MaterialApp(home: LobbyScreen())),
+        MultiProvider(
+            providers: [
+              Provider<DatabaseService>.value(value: mockDatabaseService),
+              Provider<GameService>.value(value: mockGameService),
+              Provider<Navigation>.value(value: navigation),
+            ],
+            child: MaterialApp(
+                navigatorKey: navigation.navigatorKey,
+                routes: {
+                  '/input_password': (context) => InputPasswordScreen(),
+                },
+                home: LobbyScreen())),
       );
 
       // ol reliable
