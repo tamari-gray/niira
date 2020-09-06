@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:niira/screens/Lobby/lobby.dart';
 import 'package:niira/screens/create_account.dart';
 import 'package:niira/loading.dart';
+import 'package:niira/screens/input_password.dart';
 import 'package:niira/screens/sign_in.dart';
 import 'package:niira/screens/waiting_for_game_to_start.dart';
 import 'package:niira/screens/welcome.dart';
@@ -15,6 +16,7 @@ import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/database/firestore_service.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/services/location_service.dart';
+import 'package:niira/services/game_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -26,17 +28,20 @@ class MyApp extends StatefulWidget {
   final AuthService _authService;
   final DatabaseService _databaseService;
   final Navigation _navigation;
+  final GameService _gameService;
   final LocationService _locationService;
 
-  MyApp(
-      {AuthService authService,
-      DatabaseService databaseService,
-      Navigation navigation,
-      LocationService locationService})
-      : _authService = authService,
+  MyApp({
+    AuthService authService,
+    DatabaseService databaseService,
+    Navigation navigation,
+    LocationService locationService,
+    GameService gameService,
+  })  : _authService = authService,
         _databaseService = databaseService,
         _navigation = navigation,
-        _locationService = locationService;
+        _locationService = locationService,
+        _gameService = gameService;
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -48,6 +53,7 @@ class _MyAppState extends State<MyApp> {
   DatabaseService _databaseService;
   Navigation _navigation;
   LocationService _locationService;
+  GameService _gameService;
 
   @override
   void initState() {
@@ -72,6 +78,7 @@ class _MyAppState extends State<MyApp> {
     final geolocator = GeolocatorPlatform.instance;
     _locationService = widget._locationService ?? LocationService(geolocator);
 
+    _gameService = widget._gameService ?? GameService();
     _authService = widget._authService ??
         FirebaseAuthService(FirebaseAuth.instance, _navigation);
 
@@ -100,6 +107,7 @@ class _MyAppState extends State<MyApp> {
               Provider<DatabaseService>.value(value: _databaseService),
               Provider<Navigation>.value(value: _navigation),
               Provider<LocationService>.value(value: _locationService),
+              Provider<GameService>.value(value: _gameService)
             ],
             child: MaterialApp(
                 title: 'Flutter Demo',
@@ -115,8 +123,7 @@ class _MyAppState extends State<MyApp> {
                       WaitingForGameToStartScreen(),
                   '/create_account': (context) => CreateAccountScreen(),
                   '/sign_in': (context) => SignInScreen(),
-                  // TODO: complete when database strategy for games has been finalised
-                  // '/input_password': (context) => InputPasswordScreen(),
+                  '/input_password': (context) => InputPasswordScreen(),
                 },
                 home: StreamBuilder(
                   stream: _authService.streamOfAuthState,
