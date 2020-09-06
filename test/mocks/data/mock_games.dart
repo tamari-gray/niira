@@ -37,7 +37,28 @@ class MockGames {
           distanceFromUser: 30,
         ),
       ];
-
+  List<Game> get gamesWithoutDistance => <Game>[
+        Game(
+          name: 'teet',
+          creatorName: 'tam',
+          id: 'further_from_user',
+          sonarIntervals: 5,
+          phase: GamePhase.created,
+          boundarySize: 0,
+          location: Location(latitude: -37.872482, longitude: 144.991371),
+          password: 'password123',
+        ),
+        Game(
+          name: 'yeet',
+          creatorName: 'tam',
+          id: 'closer_to_user',
+          sonarIntervals: 5,
+          phase: GamePhase.created,
+          boundarySize: 0,
+          location: Location(latitude: -37.862655, longitude: 144.990368),
+          password: 'password123',
+        ),
+      ];
   List<Game> get gamesToJoin => <Game>[
         Game(
           name: 'yeet',

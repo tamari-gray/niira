@@ -23,7 +23,7 @@ void main() {
         lat1: mockGames[0].location.latitude,
         lon1: mockGames[0].location.longitude,
         lat2: mockUserLocation.latitude,
-        lon2: mockUserLocation.longitude); // result = 398.0
+        lon2: mockUserLocation.longitude); // result = 820.0
     final gameTwoExpectedDistance = distance(
         lat1: mockGames[1].location.latitude,
         lon1: mockGames[1].location.longitude,
@@ -39,7 +39,7 @@ void main() {
     expect(mockGamesWithDistance[0].distanceFromUser, gameTwoExpectedDistance);
 
     // check mockGames are inorder from nearest to furtherest from user
-    expect(mockGamesWithDistance[0], mockGames[1]);
-    expect(mockGamesWithDistance[1], mockGames[0]);
+    expect(mockGamesWithDistance[0].id, mockGames[1].id);
+    expect(mockGamesWithDistance[1].id, mockGames[0].id);
   });
 }
