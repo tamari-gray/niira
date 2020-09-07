@@ -57,7 +57,7 @@ void main() {
       expect((nameField), findsOneWidget);
       expect((passwordField), findsOneWidget);
 
-      // add invalid data
+      // add valid data
       await tester.enterText(nameField, 'valid name');
 
       // attempt submit
