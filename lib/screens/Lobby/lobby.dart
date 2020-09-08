@@ -50,6 +50,11 @@ class LobbyScreen extends StatelessWidget {
               return ListOfCreatedGames(userLocation);
             }
           }),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => context.read<Navigation>().navigateTo('/new_game1'),
+        label: Text('New Game'),
+        icon: Icon(Icons.add),
+      ),
     );
   }
 }
