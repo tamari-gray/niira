@@ -6,7 +6,7 @@ import 'package:niira/loading.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/create_account.dart';
 import 'package:niira/screens/input_password.dart';
-import 'package:niira/screens/lobby.dart';
+import 'package:niira/screens/lobby/lobby.dart';
 import 'package:niira/screens/new_game1/new_game_screen1.dart';
 import 'package:niira/screens/new_game2.dart';
 import 'package:niira/screens/sign_in.dart';
