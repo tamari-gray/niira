@@ -2,12 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:niira/screens/create_account.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/navigation/route_names.dart';
-import 'package:niira/screens/create_account.dart';
 import 'package:niira/screens/input_password.dart';
-import 'package:niira/screens/lobby.dart';
+import 'package:niira/screens/lobby/lobby.dart';
 import 'package:niira/screens/new_game1/new_game_screen1.dart';
 import 'package:niira/screens/new_game2.dart';
 import 'package:niira/screens/sign_in.dart';
@@ -17,6 +18,7 @@ import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/firebase_auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/database/firestore_service.dart';
+import 'package:niira/services/location_service.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -30,15 +32,18 @@ class MyApp extends StatefulWidget {
   final DatabaseService _databaseService;
   final Navigation _navigation;
   final GameService _gameService;
+  final LocationService _locationService;
 
   MyApp({
     AuthService authService,
     DatabaseService databaseService,
     Navigation navigation,
+    LocationService locationService,
     GameService gameService,
   })  : _authService = authService,
         _databaseService = databaseService,
         _navigation = navigation,
+        _locationService = locationService,
         _gameService = gameService;
 
   @override
@@ -50,6 +55,7 @@ class _MyAppState extends State<MyApp> {
   AuthService _authService;
   DatabaseService _databaseService;
   Navigation _navigation;
+  LocationService _locationService;
   GameService _gameService;
 
   @override
@@ -71,9 +77,14 @@ class _MyAppState extends State<MyApp> {
 
     // create services to pass to app
     _navigation = widget._navigation ?? Navigation();
+
+    _locationService =
+        widget._locationService ?? LocationService(GeolocatorPlatform.instance);
+
     _gameService = widget._gameService ?? GameService();
     _authService = widget._authService ??
         FirebaseAuthService(FirebaseAuth.instance, _navigation);
+
     _databaseService =
         widget._databaseService ?? FirestoreService(FirebaseFirestore.instance);
 
@@ -98,6 +109,7 @@ class _MyAppState extends State<MyApp> {
               Provider<AuthService>.value(value: _authService),
               Provider<DatabaseService>.value(value: _databaseService),
               Provider<Navigation>.value(value: _navigation),
+              Provider<LocationService>.value(value: _locationService),
               Provider<GameService>.value(value: _gameService)
             ],
             child: MaterialApp(
