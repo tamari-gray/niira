@@ -8,6 +8,7 @@ import 'package:niira/models/game.dart';
 import 'package:niira/models/location.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/navigation/navigation.dart';
+import 'package:niira/navigation/route_names.dart';
 import 'package:niira/screens/input_password.dart';
 import 'package:niira/screens/waiting_for_game_to_start.dart';
 import 'package:niira/services/auth/auth_service.dart';
@@ -102,7 +103,7 @@ void main() {
             home: InputPasswordScreen(),
             navigatorKey: navigation.navigatorKey,
             routes: {
-              '/waiting_for_game_start': (context) =>
+              waiting_for_game_to_start: (context) =>
                   WaitingForGameToStartScreen(),
             }),
       ));
