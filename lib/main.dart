@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/navigation/navigation.dart';
+import 'package:niira/navigation/route_names.dart';
 import 'package:niira/screens/create_account.dart';
 import 'package:niira/screens/input_password.dart';
 import 'package:niira/screens/lobby.dart';
@@ -109,13 +110,13 @@ class _MyAppState extends State<MyApp> {
                   visualDensity: VisualDensity.adaptivePlatformDensity,
                 ),
                 routes: {
-                  '/waiting_for_game_start': (context) =>
+                  waiting_for_game_to_start: (context) =>
                       WaitingForGameToStartScreen(),
-                  '/create_account': (context) => CreateAccountScreen(),
-                  '/sign_in': (context) => SignInScreen(),
-                  '/new_game1': (context) => NewGameScreen1(),
-                  '/new_game2': (context) => NewGameScreen2(),
-                  '/input_password': (context) => InputPasswordScreen(),
+                  create_account: (context) => CreateAccountScreen(),
+                  sign_in: (context) => SignInScreen(),
+                  new_game1: (context) => NewGameScreen1(),
+                  new_game2: (context) => NewGameScreen2(),
+                  input_password: (context) => InputPasswordScreen(),
                 },
                 home: StreamBuilder(
                   stream: _authService.streamOfAuthState,
