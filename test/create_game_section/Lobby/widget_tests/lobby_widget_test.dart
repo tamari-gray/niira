@@ -13,10 +13,6 @@ import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/location_service.dart';
-import 'package:niira/navigation/navigation.dart';
-import 'package:niira/screens/input_password.dart';
-import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../../mocks/mock_user_data.dart';
