@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:niira/models/game.dart';
-import 'package:niira/screens/input_password.dart';
+import 'package:niira/navigation/navigation.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/navigation/navigation.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
@@ -53,6 +52,11 @@ class LobbyScreen extends StatelessWidget {
                 );
               }
             }),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => context.read<Navigation>().navigateTo('/new_game1'),
+        label: Text('New Game'),
+        icon: Icon(Icons.add),
       ),
     );
   }

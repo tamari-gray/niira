@@ -2,10 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:niira/screens/create_account.dart';
 import 'package:niira/loading.dart';
+import 'package:niira/navigation/navigation.dart';
+import 'package:niira/screens/create_account.dart';
 import 'package:niira/screens/input_password.dart';
 import 'package:niira/screens/lobby.dart';
+import 'package:niira/screens/new_game1/new_game_screen1.dart';
+import 'package:niira/screens/new_game2.dart';
 import 'package:niira/screens/sign_in.dart';
 import 'package:niira/screens/waiting_for_game_to_start.dart';
 import 'package:niira/screens/welcome.dart';
@@ -13,7 +16,6 @@ import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/firebase_auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/database/firestore_service.dart';
-import 'package:niira/navigation/navigation.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -111,6 +113,8 @@ class _MyAppState extends State<MyApp> {
                       WaitingForGameToStartScreen(),
                   '/create_account': (context) => CreateAccountScreen(),
                   '/sign_in': (context) => SignInScreen(),
+                  '/new_game1': (context) => NewGameScreen1(),
+                  '/new_game2': (context) => NewGameScreen2(),
                   '/input_password': (context) => InputPasswordScreen(),
                 },
                 home: StreamBuilder(
