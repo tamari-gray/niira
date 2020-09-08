@@ -7,8 +7,6 @@ import 'package:niira/screens/new_game2.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
-import '../../mocks/services/mock_game_service.dart';
-
 void main() {
   group('NewGameScreen1 ', () {
     testWidgets('only navigates with invalid inputs',
@@ -17,7 +15,7 @@ void main() {
       final nav = Navigation();
       await tester.pumpWidget(MultiProvider(
           providers: [
-            Provider<GameService>(create: (_) => MockGameService()),
+            Provider<GameService>(create: (_) => GameService()),
             Provider<Navigation>.value(value: nav),
           ],
           child: MaterialApp(

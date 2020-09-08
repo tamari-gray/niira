@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:niira/models/game.dart';
-import 'package:niira/models/view_models/new_game1.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:niira/utilities/validators.dart' as validators;
 import 'package:provider/provider.dart';
@@ -24,7 +22,7 @@ class PasswordField extends StatelessWidget {
             suffixIcon: Icon(Icons.visibility)),
         validator: validators.oneToFifteenChars,
         onChanged: (val) =>
-            context.read<GameService>()?.newGameViewModel1?.password = val,
+            context.read<GameService>().newGameViewModel1.password = val,
       ),
     );
   }

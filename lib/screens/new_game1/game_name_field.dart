@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:niira/models/view_models/new_game1.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:niira/utilities/validators.dart' as validators;
 import 'package:provider/provider.dart';
@@ -22,7 +21,7 @@ class GameNameField extends StatelessWidget {
         ),
         validator: validators.oneToFifteenChars,
         onChanged: (val) =>
-            context.read<GameService>()?.newGameViewModel1?.name = val,
+            context.read<GameService>().newGameViewModel1.name = val,
       ),
     );
   }

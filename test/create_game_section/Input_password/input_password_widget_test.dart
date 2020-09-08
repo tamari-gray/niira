@@ -17,7 +17,6 @@ import 'package:provider/provider.dart';
 
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
-import '../../mocks/services/mock_game_service.dart';
 
 void main() {
   group('on unsuccessfull password submission', () {
@@ -26,7 +25,7 @@ void main() {
       final _authController = StreamController<UserData>();
       final _mockAuthService = MockAuthService(controller: _authController);
       final _mockDatabaseService = MockDatabaseService();
-      final _mockGameService = MockGameService();
+      final _gameService = GameService();
       final _mockGame = Game(
         id: 'mock_game_123',
         name: null,
@@ -37,7 +36,7 @@ void main() {
         location: Location(latitude: 0, longitude: 0),
         phase: null,
       );
-      _mockGameService.currentGame = _mockGame;
+      _gameService.currentGame = _mockGame;
       await tester.pumpAndSettle();
 
       // init input password page
@@ -45,7 +44,7 @@ void main() {
         providers: [
           Provider<AuthService>.value(value: _mockAuthService),
           Provider<DatabaseService>.value(value: _mockDatabaseService),
-          Provider<GameService>.value(value: _mockGameService),
+          Provider<GameService>.value(value: _gameService),
         ],
         child: MaterialApp(
           home: InputPasswordScreen(),
@@ -77,7 +76,7 @@ void main() {
       final _mockDatabaseService =
           MockDatabaseService(controller: _databaseController);
       final navigation = Navigation();
-      final _mockGameService = MockGameService();
+      final _gameService = GameService();
 
       final _mockGame = Game(
           id: 'mock_game_123',
@@ -88,7 +87,7 @@ void main() {
           boundarySize: 0,
           location: Location(latitude: 0, longitude: 0),
           phase: null);
-      _mockGameService.currentGame = _mockGame;
+      _gameService.currentGame = _mockGame;
       await tester.pumpAndSettle();
 
       // init input password page
@@ -97,7 +96,7 @@ void main() {
           Provider<AuthService>.value(value: _mockAuthService),
           Provider<DatabaseService>.value(value: _mockDatabaseService),
           Provider<Navigation>.value(value: navigation),
-          Provider<GameService>.value(value: _mockGameService)
+          Provider<GameService>.value(value: _gameService)
         ],
         child: MaterialApp(
             home: InputPasswordScreen(),
