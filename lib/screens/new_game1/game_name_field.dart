@@ -4,22 +4,7 @@ import 'package:niira/services/game_service.dart';
 import 'package:niira/utilities/validators.dart' as validators;
 import 'package:provider/provider.dart';
 
-class GameNameField extends StatefulWidget {
-  const GameNameField({Key key}) : super(key: key);
-
-  @override
-  _GameNameFieldState createState() => _GameNameFieldState();
-}
-
-class _GameNameFieldState extends State<GameNameField> {
-  NewGameViewModel1 _vm;
-
-  @override
-  void initState() {
-    super.initState();
-    _vm = context.read<GameService>().newGameViewModel1;
-  }
-
+class GameNameField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -36,7 +21,8 @@ class _GameNameFieldState extends State<GameNameField> {
           ),
         ),
         validator: validators.oneToFifteenChars,
-        onChanged: (val) => setState(() => _vm?.name = val),
+        onChanged: (val) =>
+            context.read<GameService>()?.newGameViewModel1?.name = val,
       ),
     );
   }
