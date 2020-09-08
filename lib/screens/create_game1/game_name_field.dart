@@ -21,7 +21,7 @@ class GameNameField extends StatelessWidget {
         ),
         validator: validators.oneToFifteenChars,
         onChanged: (val) =>
-            context.read<GameService>().newGameViewModel1.name = val,
+            context.read<GameService>().createGameViewModel1.name = val,
       ),
     );
   }

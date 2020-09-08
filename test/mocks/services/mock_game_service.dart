@@ -4,7 +4,7 @@ import 'package:niira/services/game_service.dart';
 
 class FakeGameService implements GameService {
   @override
-  final newGameViewModel1 = NewGameViewModel1();
+  final createGameViewModel1 = CreateGameViewModel1();
   @override
   Game currentGame;
 }

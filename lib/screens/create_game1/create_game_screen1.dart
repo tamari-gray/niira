@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:niira/navigation/navigation.dart';
-import 'package:niira/screens/new_game1/game_name_field.dart';
-import 'package:niira/screens/new_game1/password_field.dart';
+import 'package:niira/screens/create_game1/game_name_field.dart';
+import 'package:niira/screens/create_game1/password_field.dart';
+import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
-class NewGameScreen1 extends StatefulWidget {
-  static const routeName = '/new_game1';
-  const NewGameScreen1({Key key}) : super(key: key);
+class CreateGameScreen1 extends StatefulWidget {
+  static const routeName = '/create_game1';
+  const CreateGameScreen1({Key key}) : super(key: key);
   @override
-  _NewGameScreen1State createState() => _NewGameScreen1State();
+  _CreateGameScreen1State createState() => _CreateGameScreen1State();
 }
 
-class _NewGameScreen1State extends State<NewGameScreen1> {
+class _CreateGameScreen1State extends State<CreateGameScreen1> {
   final _formKey = GlobalKey<FormState>();
   bool _autoValidateForm = false;
 
@@ -21,7 +22,21 @@ class _NewGameScreen1State extends State<NewGameScreen1> {
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Create Your Game', style: TextStyle(color: Colors.white)),
+        centerTitle: false,
+        title: const Text('Create Game 1/2',
+            style: TextStyle(color: Colors.white)),
+        actions: [
+          FlatButton.icon(
+              onPressed: () {
+                context.read<Navigation>().pop();
+                context.read<GameService>().createGameViewModel1.clear();
+              },
+              icon: Icon(
+                Icons.clear,
+                color: Colors.white,
+              ),
+              label: Text('Cancel', style: TextStyle(color: Colors.white)))
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         key: Key('new_game1_submit_button'),
