@@ -4,7 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:niira/utilities/calc_distance.dart';
 import 'package:test/test.dart';
 
-import '../../../mocks/data/mock_games.dart';
+import '../../mocks/data/mock_games.dart';
 
 void main() {
   test(
