@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:niira/models/game.dart';
-import 'package:niira/screens/input_password.dart';
+import 'package:niira/navigation/navigation.dart';
+import 'package:niira/services/game_service.dart';
+import 'package:provider/provider.dart';
 
 class GameTile extends StatelessWidget {
   final Game _game;
@@ -62,17 +64,13 @@ class GameTile extends StatelessWidget {
                   textColor: Theme.of(context).primaryColor,
                   borderSide: BorderSide(color: Theme.of(context).primaryColor),
                   child: Text('Join'),
-                  onPressed: () {
+                  onPressed: () async {
+                    // make selected game available to all widgets
+                    context.read<GameService>().currentGame = _game;
                     // navigate to input password screen
-                    // TODO: replace with named route + database access for passing Game
-                    Navigator.push<dynamic>(
-                      context,
-                      MaterialPageRoute<dynamic>(
-                        builder: (context) => InputPasswordScreen(
-                          game: _game,
-                        ),
-                      ),
-                    );
+                    await context
+                        .read<Navigation>()
+                        .navigateTo('/input_password');
                   },
                 )
               ],
