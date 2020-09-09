@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/navigation/navigation.dart';
-import 'package:niira/navigation/route_names.dart';
+import 'package:niira/screens/input_password.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
@@ -69,7 +69,9 @@ class GameTile extends StatelessWidget {
                     // make selected game available to all widgets
                     context.read<GameService>().currentGame = _game;
                     // navigate to input password screen
-                    await context.read<Navigation>().navigateTo(input_password);
+                    await context
+                        .read<Navigation>()
+                        .navigateTo(InputPasswordScreen.routeName);
                   },
                 )
               ],

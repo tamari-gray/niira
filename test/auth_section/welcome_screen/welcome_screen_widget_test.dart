@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:niira/navigation/navigation.dart';
-import 'package:niira/navigation/route_names.dart';
 import 'package:niira/screens/create_account.dart';
 import 'package:niira/screens/sign_in.dart';
 import 'package:niira/screens/welcome.dart';
@@ -53,7 +52,8 @@ void main() {
                 mockObserver
               ],
               routes: {
-                create_account: (context) => CreateAccountScreen(),
+                CreateAccountScreen.routeName: (context) =>
+                    CreateAccountScreen(),
               })));
 
       await tester.tap(find.byKey(WelcomeScreen.navigateToCreateAccountBtn));

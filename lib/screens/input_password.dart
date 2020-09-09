@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/navigation/navigation.dart';
-import 'package:niira/navigation/route_names.dart';
 import 'package:niira/screens/waiting_for_game_to_start.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
@@ -9,6 +8,8 @@ import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 class InputPasswordScreen extends StatefulWidget {
+  static const routeName = '/input_pasword';
+
   @override
   _InputPasswordScreenState createState() => _InputPasswordScreenState();
 }
@@ -53,7 +54,7 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
 
             await context
                 .read<Navigation>()
-                .navigateTo(waiting_for_game_to_start);
+                .navigateTo(WaitingForGameToStartScreen.routeName);
           }
         },
       ),

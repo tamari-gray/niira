@@ -33,7 +33,7 @@ void main() {
             navigatorKey: navigation.navigatorKey,
             home: GameTile(mockGame, 0),
             routes: {
-              '/input_password': (context) => InputPasswordScreen(),
+              InputPasswordScreen.routeName: (context) => InputPasswordScreen(),
             },
           ),
         ),

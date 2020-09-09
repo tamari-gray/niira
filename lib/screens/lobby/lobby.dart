@@ -7,6 +7,8 @@ import 'package:niira/services/database/database_service.dart';
 import 'package:provider/provider.dart';
 
 class LobbyScreen extends StatelessWidget {
+  static const routeName = '/lobby';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
