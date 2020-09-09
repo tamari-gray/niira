@@ -22,9 +22,9 @@ class LobbyScreen extends StatelessWidget {
           FlatButton(
             key: Key('signOutBtn'),
             onPressed: () {
-              // create a function to call and sign out on confirmation
+              // create a function to sign out user on dialog confirmation
               final signOut = () async {
-                Navigator.of(context).pop();
+                context.read<Navigation>().pop();
                 await context.read<AuthService>().signOut();
               };
 
