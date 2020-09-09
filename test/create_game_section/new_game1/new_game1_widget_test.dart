@@ -21,7 +21,9 @@ void main() {
           child: MaterialApp(
             navigatorKey: nav.navigatorKey,
             home: CreateGameScreen1(),
-            routes: {'/new_game2': (context) => CreateGameScreen2()},
+            routes: {
+              CreateGameScreen2.routeName: (context) => CreateGameScreen2()
+            },
           )));
 
       // save finders for each UI

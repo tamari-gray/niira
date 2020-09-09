@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/create_game1/game_name_field.dart';
 import 'package:niira/screens/create_game1/password_field.dart';
+import 'package:niira/screens/create_game2.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
@@ -42,7 +43,7 @@ class _CreateGameScreen1State extends State<CreateGameScreen1> {
         key: Key('new_game1_submit_button'),
         onPressed: () {
           if (_formKey.currentState.validate()) {
-            context.read<Navigation>().navigateTo('/new_game2');
+            context.read<Navigation>().navigateTo(CreateGameScreen2.routeName);
           } else {
             setState(() => _autoValidateForm = true);
           }

@@ -52,7 +52,8 @@ void main() {
                 mockObserver
               ],
               routes: {
-                '/create_account': (context) => CreateAccountScreen(),
+                CreateAccountScreen.routeName: (context) =>
+                    CreateAccountScreen(),
               })));
 
       await tester.tap(find.byKey(WelcomeScreen.navigateToCreateAccountBtn));

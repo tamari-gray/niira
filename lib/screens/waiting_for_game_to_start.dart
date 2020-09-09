@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class WaitingForGameToStartScreen extends StatefulWidget {
+  static const routeName = '/waiting_for_game_to_start';
+
   @override
   _WaitingForGameToStartScreenState createState() =>
       _WaitingForGameToStartScreenState();
