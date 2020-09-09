@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:geolocator/geolocator.dart';
+import 'package:niira/models/location.dart';
 
 class LocationService {
   final GeolocatorPlatform _geolocator;
@@ -11,8 +12,13 @@ class LocationService {
       _geolocator.checkPermission();
 
   // get users currentLocation
-  Future<Position> getUsersCurrentLocation() =>
-      _geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  Future<Location> getUsersCurrentLocation() async {
+    final currentPosition = await _geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    return Location(
+        latitude: currentPosition.latitude,
+        longitude: currentPosition.longitude);
+  }
 
   // listen to users location
   Stream<Position> get listenToUsersLocation {
