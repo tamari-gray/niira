@@ -12,6 +12,8 @@ import '../../mocks/mock_user_data.dart';
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
 import '../../mocks/services/mock_firebase_platform.dart';
+import '../../mocks/services/mock_game_service.dart';
+import '../../mocks/services/mock_location_service.dart';
 
 void main() {
   setUp(() {
@@ -29,15 +31,20 @@ void main() {
         MockDatabaseService(controller: createdGamesStreamContoller);
     final mockUserData = MockUser().userData;
 
+    //sign in the user
+    controller.add(mockUserData);
+    await tester.pumpAndSettle();
+
     // create the widget under test
     await tester.pumpWidget(MyApp(
       authService: mockAuthService,
       databaseService: mockDBService,
       navigation: navigation,
+      locationService: MockLocationService(),
+      gameService: FakeGameService(),
     ));
 
-    //sign in the user
-    controller.add(mockUserData);
+    //ol reliable
     await tester.pumpAndSettle();
 
     // tap sign out btn
