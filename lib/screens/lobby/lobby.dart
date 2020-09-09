@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/models/location.dart';
+import 'package:niira/screens/create_game1/create_game_screen1.dart';
 import 'package:niira/screens/lobby/list_of_created_games.dart';
-import 'package:niira/screens/new_game1/new_game_screen1.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/services/location_service.dart';
@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 
 class LobbyScreen extends StatelessWidget {
   // TODO: decide on what happens when user refuses location
+  static const routeName = '/lobby';
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +53,7 @@ class LobbyScreen extends StatelessWidget {
           }),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () =>
-            context.read<Navigation>().navigateTo(NewGameScreen1.routeName),
+            context.read<Navigation>().navigateTo(CreateGameScreen1.routeName),
         label: Text('New Game'),
         icon: Icon(Icons.add),
       ),
