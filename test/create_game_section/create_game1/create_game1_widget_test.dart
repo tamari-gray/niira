@@ -2,13 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:niira/navigation/navigation.dart';
-import 'package:niira/screens/new_game1/new_game_screen1.dart';
-import 'package:niira/screens/new_game2.dart';
+import 'package:niira/screens/create_game1/create_game_screen1.dart';
+import 'package:niira/screens/create_game2.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  group('NewGameScreen1 ', () {
+  group('CreateGameScreen1 ', () {
     testWidgets('only navigates with invalid inputs',
         (WidgetTester tester) async {
       // spin up the wut
@@ -20,8 +20,10 @@ void main() {
           ],
           child: MaterialApp(
             navigatorKey: nav.navigatorKey,
-            home: NewGameScreen1(),
-            routes: {NewGameScreen2.routeName: (context) => NewGameScreen2()},
+            home: CreateGameScreen1(),
+            routes: {
+              CreateGameScreen2.routeName: (context) => CreateGameScreen2()
+            },
           )));
 
       // save finders for each UI

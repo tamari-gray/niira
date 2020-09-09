@@ -20,18 +20,18 @@ void main() {
     expect(_gameService.currentGame.id, _secondSelectedGame.id);
   });
 
-  test('add name + password when submit valid data in newgamescreen1', () {
+  test('add name + password when submit valid data in creategamescreen1', () {
     // init service
     final _gameService = GameService();
 
     // user inputs valid name & password
     final name = 'tims game';
     final password = 'password';
-    _gameService.newGameViewModel1.name = name;
-    _gameService.newGameViewModel1.password = password;
+    _gameService.createGameViewModel1.name = name;
+    _gameService.createGameViewModel1.password = password;
 
-    // check that name + password is saved in service & accessible in newgamescreen2
-    expect(_gameService.newGameViewModel1.name, name);
-    expect(_gameService.newGameViewModel1.password, password);
+    // check that name + password is saved in service & accessible in creategamescreen2
+    expect(_gameService.createGameViewModel1.name, name);
+    expect(_gameService.createGameViewModel1.password, password);
   });
 }
