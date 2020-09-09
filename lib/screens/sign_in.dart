@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:niira/extensions/custom_colors_extension.dart';
 
 class SignInScreen extends StatefulWidget {
+  static const routeName = '/sign_in';
+
   const SignInScreen({Key key}) : super(key: key);
 
   @override

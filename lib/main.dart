@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:niira/screens/Lobby/lobby.dart';
+import 'package:niira/screens/lobby/lobby.dart';
 import 'package:niira/screens/create_account.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/navigation/navigation.dart';
@@ -77,8 +77,8 @@ class _MyAppState extends State<MyApp> {
     // create services to pass to app
     _navigation = widget._navigation ?? Navigation();
 
-    final geolocator = GeolocatorPlatform.instance;
-    _locationService = widget._locationService ?? LocationService(geolocator);
+    _locationService =
+        widget._locationService ?? LocationService(GeolocatorPlatform.instance);
 
     _gameService = widget._gameService ?? GameService();
     _authService = widget._authService ??
@@ -121,13 +121,15 @@ class _MyAppState extends State<MyApp> {
                   visualDensity: VisualDensity.adaptivePlatformDensity,
                 ),
                 routes: {
-                  '/waiting_for_game_start': (context) =>
+                  WaitingForGameToStartScreen.routeName: (context) =>
                       WaitingForGameToStartScreen(),
-                  '/create_account': (context) => CreateAccountScreen(),
-                  '/sign_in': (context) => SignInScreen(),
-                  '/new_game1': (context) => NewGameScreen1(),
-                  '/new_game2': (context) => NewGameScreen2(),
-                  '/input_password': (context) => InputPasswordScreen(),
+                  CreateAccountScreen.routeName: (context) =>
+                      CreateAccountScreen(),
+                  SignInScreen.routeName: (context) => SignInScreen(),
+                  NewGameScreen1.routeName: (context) => NewGameScreen1(),
+                  NewGameScreen2.routeName: (context) => NewGameScreen2(),
+                  InputPasswordScreen.routeName: (context) =>
+                      InputPasswordScreen(),
                 },
                 home: StreamBuilder(
                   stream: _authService.streamOfAuthState,

@@ -7,6 +7,8 @@ import 'package:niira/services/database/database_service.dart';
 import 'package:provider/provider.dart';
 
 class CreateAccountScreen extends StatefulWidget {
+  static const routeName = '/create_account';
+
   const CreateAccountScreen({Key key}) : super(key: key);
 
   @override
