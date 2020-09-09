@@ -34,7 +34,7 @@ void main() {
     final controller = StreamController<UserData>();
     final navigation = Navigation();
     final mockAuthService = MockAuthService(controller: controller);
-    final mockLocationService = MockLocationService();
+    final fakeLocationService = FakeLocationService();
     final mockGameService = FakeGameService();
     final mockDatabseController = StreamController<List<Game>>();
     final mockDatabaseService =
@@ -46,7 +46,7 @@ void main() {
         providers: [
           Provider<AuthService>.value(value: mockAuthService),
           Provider<Navigation>.value(value: navigation),
-          Provider<LocationService>.value(value: mockLocationService),
+          Provider<LocationService>.value(value: fakeLocationService),
           Provider<DatabaseService>.value(value: mockDatabaseService),
           Provider<GameService>.value(value: mockGameService),
         ],
@@ -75,14 +75,14 @@ void main() {
     final createdGamesStreamContoller = StreamController<List<Game>>();
     final mockDBService =
         MockDatabaseService(controller: createdGamesStreamContoller);
-    final mockLocationService = MockLocationService();
+    final fakeLocationService = FakeLocationService();
     final mockUserData = MockUser().userData;
 
     // create the widget under test
     await tester.pumpWidget(MyApp(
       authService: mockAuthService,
       databaseService: mockDBService,
-      locationService: mockLocationService,
+      locationService: fakeLocationService,
       navigation: navigation,
     ));
 

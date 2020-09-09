@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/models/location.dart';
 import 'package:niira/screens/create_game1/create_game_screen1.dart';
@@ -38,16 +37,13 @@ class LobbyScreen extends StatelessWidget {
           )
         ],
       ),
-      body: FutureBuilder<Position>(
-          future: context.watch<LocationService>().getUsersCurrentLocation,
+      body: FutureBuilder<Location>(
+          future: context.watch<LocationService>().getUsersCurrentLocation(),
           builder: (context, snapshot) {
             if (snapshot.hasData == false) {
               return Loading();
             } else {
-              final userLocation = Location(
-                latitude: snapshot.data.latitude,
-                longitude: snapshot.data.longitude,
-              );
+              //TODO: pass location into list of created games #60
               return ListOfCreatedGames();
             }
           }),
