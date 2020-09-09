@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/models/location.dart';
+import 'package:niira/screens/lobby/list_of_created_games.dart';
 import 'package:niira/screens/new_game1/new_game_screen1.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/navigation/navigation.dart';
@@ -42,12 +43,11 @@ class LobbyScreen extends StatelessWidget {
             if (snapshot.hasData == false) {
               return Loading();
             } else {
-              // pass in users location to list of created games
               final userLocation = Location(
                 latitude: snapshot.data.latitude,
                 longitude: snapshot.data.longitude,
               );
-              // return ListOfCreatedGames(userLocation);
+              return ListOfCreatedGames();
             }
           }),
       floatingActionButton: FloatingActionButton.extended(

@@ -8,16 +8,18 @@ import 'package:niira/main.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/screens/lobby/lobby.dart';
-// import 'package:niira/screens/lobby/list_of_created_games.dart';
+import 'package:niira/screens/lobby/list_of_created_games.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/services/database/database_service.dart';
+import 'package:niira/services/game_service.dart';
 import 'package:niira/services/location_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/mock_user_data.dart';
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
+import '../../mocks/services/mock_game_service.dart';
 import '../../mocks/services/mock_location_service.dart';
 import '../../mocks/services/mock_firebase_platform.dart';
 
@@ -33,6 +35,7 @@ void main() {
     final navigation = Navigation();
     final mockAuthService = MockAuthService(controller: controller);
     final mockLocationService = MockLocationService();
+    final mockGameService = FakeGameService();
     final mockDatabseController = StreamController<List<Game>>();
     final mockDatabaseService =
         MockDatabaseService(controller: mockDatabseController);
@@ -44,7 +47,8 @@ void main() {
           Provider<AuthService>.value(value: mockAuthService),
           Provider<Navigation>.value(value: navigation),
           Provider<LocationService>.value(value: mockLocationService),
-          Provider<DatabaseService>.value(value: mockDatabaseService)
+          Provider<DatabaseService>.value(value: mockDatabaseService),
+          Provider<GameService>.value(value: mockGameService),
         ],
         child: MaterialApp(
           home: LobbyScreen(),
@@ -59,7 +63,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // show list of created games
-    // expect(find.byType(ListOfCreatedGames), findsOneWidget);
+    expect(find.byType(ListOfCreatedGames), findsOneWidget);
   });
   testWidgets(
       'shows loading icon + redirects to welcome screen on successfull logout',
