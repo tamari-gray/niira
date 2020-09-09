@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/models/location.dart';
+import 'package:niira/screens/create_game1/create_game_screen1.dart';
 import 'package:niira/screens/lobby/list_of_created_games.dart';
-import 'package:niira/screens/new_game1/new_game_screen1.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/services/location_service.dart';
@@ -11,6 +10,7 @@ import 'package:provider/provider.dart';
 
 class LobbyScreen extends StatelessWidget {
   // TODO: decide on what happens when user refuses location
+  static const routeName = '/lobby';
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +21,9 @@ class LobbyScreen extends StatelessWidget {
           FlatButton(
             key: Key('signOutBtn'),
             onPressed: () {
-              // create a function to call and sign out on confirmation
+              // create a function to sign out user on dialog confirmation
               final signOut = () async {
-                Navigator.of(context).pop();
+                context.read<Navigation>().pop();
                 await context.read<AuthService>().signOut();
               };
 
@@ -37,23 +37,18 @@ class LobbyScreen extends StatelessWidget {
           )
         ],
       ),
-      body: FutureBuilder<Position>(
-          future: context.watch<LocationService>().getUsersCurrentLocation,
+      body: FutureBuilder<Location>(
+          future: context.watch<LocationService>().getUsersCurrentLocation(),
           builder: (context, snapshot) {
             if (snapshot.hasData == false) {
               return Loading();
             } else {
-              // pass in users location to list of created games
-              final userLocation = Location(
-                latitude: snapshot.data.latitude,
-                longitude: snapshot.data.longitude,
-              );
-              return ListOfCreatedGames(userLocation);
+              return ListOfCreatedGames(snapshot.data);
             }
           }),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () =>
-            context.read<Navigation>().navigateTo(NewGameScreen1.routeName),
+            context.read<Navigation>().navigateTo(CreateGameScreen1.routeName),
         label: Text('New Game'),
         icon: Icon(Icons.add),
       ),

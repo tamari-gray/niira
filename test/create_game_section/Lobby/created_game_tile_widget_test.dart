@@ -8,8 +8,8 @@ import 'package:niira/screens/input_password.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
-import '../../../mocks/data/mock_games.dart';
-import '../../../mocks/services/mock_firebase_platform.dart';
+import '../../mocks/data/mock_games.dart';
+import '../../mocks/services/mock_firebase_platform.dart';
 
 void main() {
   setUp(() {

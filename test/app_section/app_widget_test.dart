@@ -24,7 +24,6 @@ void main() {
       // create mock services
       final controller = StreamController<UserData>();
       final mockUserData = MockUser().userData;
-      final mockLocationService = MockLocationService();
 
       final mockNavigation = MockNavigation();
       final mockAuthService = MockAuthService(
