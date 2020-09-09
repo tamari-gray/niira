@@ -121,13 +121,15 @@ class _MyAppState extends State<MyApp> {
                   visualDensity: VisualDensity.adaptivePlatformDensity,
                 ),
                 routes: {
-                  '/waiting_for_game_start': (context) =>
+                  WaitingForGameToStartScreen.routeName: (context) =>
                       WaitingForGameToStartScreen(),
-                  '/create_account': (context) => CreateAccountScreen(),
-                  '/sign_in': (context) => SignInScreen(),
-                  '/new_game1': (context) => NewGameScreen1(),
-                  '/new_game2': (context) => NewGameScreen2(),
-                  '/input_password': (context) => InputPasswordScreen(),
+                  CreateAccountScreen.routeName: (context) =>
+                      CreateAccountScreen(),
+                  SignInScreen.routeName: (context) => SignInScreen(),
+                  NewGameScreen1.routeName: (context) => NewGameScreen1(),
+                  NewGameScreen2.routeName: (context) => NewGameScreen2(),
+                  InputPasswordScreen.routeName: (context) =>
+                      InputPasswordScreen(),
                 },
                 home: StreamBuilder(
                   stream: _authService.streamOfAuthState,
