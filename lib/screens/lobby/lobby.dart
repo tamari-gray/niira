@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:niira/models/game.dart';
-import 'package:niira/navigation/navigation.dart';
-import 'package:niira/screens/lobby/created_game_tile.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:niira/loading.dart';
+import 'package:niira/models/location.dart';
+import 'package:niira/screens/new_game1/new_game_screen1.dart';
 import 'package:niira/services/auth/auth_service.dart';
-import 'package:niira/services/database/database_service.dart';
+import 'package:niira/navigation/navigation.dart';
+import 'package:niira/services/location_service.dart';
 import 'package:provider/provider.dart';
 
 class LobbyScreen extends StatelessWidget {
-  static const routeName = '/lobby';
+  // TODO: decide on what happens when user refuses location
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +20,9 @@ class LobbyScreen extends StatelessWidget {
           FlatButton(
             key: Key('signOutBtn'),
             onPressed: () {
-              // create a function to call on confirmation
+              // create a function to call and sign out on confirmation
               final signOut = () async {
-                context.read<Navigation>().pop();
+                Navigator.of(context).pop();
                 await context.read<AuthService>().signOut();
               };
 
@@ -34,27 +36,23 @@ class LobbyScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Container(
-        child: StreamBuilder<List<Game>>(
-            stream: context.watch<DatabaseService>().streamOfCreatedGames,
-            builder: (context, snapshot) {
-              if (snapshot.data == null) {
-                return Container();
-              } else {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                  child: ListView.builder(
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) {
-                      return GameTile(snapshot.data[index], index);
-                    },
-                  ),
-                );
-              }
-            }),
-      ),
+      body: FutureBuilder<Position>(
+          future: context.watch<LocationService>().getUsersCurrentLocation,
+          builder: (context, snapshot) {
+            if (snapshot.hasData == false) {
+              return Loading();
+            } else {
+              // pass in users location to list of created games
+              final userLocation = Location(
+                latitude: snapshot.data.latitude,
+                longitude: snapshot.data.longitude,
+              );
+              // return ListOfCreatedGames(userLocation);
+            }
+          }),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.read<Navigation>().navigateTo('/new_game1'),
+        onPressed: () =>
+            context.read<Navigation>().navigateTo(NewGameScreen1.routeName),
         label: Text('New Game'),
         icon: Icon(Icons.add),
       ),

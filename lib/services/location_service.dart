@@ -11,7 +11,7 @@ class LocationService {
       _geolocator.checkPermission();
 
   // get users currentLocation
-  Future<Position> getUsersCurrentLocation() =>
+  Future<Position> get getUsersCurrentLocation =>
       _geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
   // listen to users location
