@@ -1,16 +1,15 @@
 import 'dart:async';
 
-import 'package:geolocator/geolocator.dart';
 import 'package:mockito/mockito.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/location.dart';
 import 'package:niira/services/location_service.dart';
 
-class MockLocationService extends Mock implements LocationService {
+class FakeLocationService extends Fake implements LocationService {
   // get users currentLocation
   @override
-  Future<Position> get getUsersCurrentLocation =>
-      Future.value(Position(longitude: 0, latitude: 0));
+  Future<Location> getUsersCurrentLocation() =>
+      Future.value(Location(longitude: 0, latitude: 0));
 
   // set distance between user and games
   @override

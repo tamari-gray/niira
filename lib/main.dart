@@ -3,13 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:niira/screens/lobby/lobby.dart';
-import 'package:niira/screens/create_account.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/navigation/navigation.dart';
+import 'package:niira/screens/create_account.dart';
+import 'package:niira/screens/create_game1/create_game_screen1.dart';
+import 'package:niira/screens/create_game2.dart';
 import 'package:niira/screens/input_password.dart';
-import 'package:niira/screens/new_game1/new_game_screen1.dart';
-import 'package:niira/screens/new_game2.dart';
+import 'package:niira/screens/lobby/lobby.dart';
 import 'package:niira/screens/sign_in.dart';
 import 'package:niira/screens/waiting_for_game_to_start.dart';
 import 'package:niira/screens/welcome.dart';
@@ -17,8 +17,8 @@ import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/firebase_auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/database/firestore_service.dart';
-import 'package:niira/services/location_service.dart';
 import 'package:niira/services/game_service.dart';
+import 'package:niira/services/location_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -123,11 +123,12 @@ class _MyAppState extends State<MyApp> {
                 routes: {
                   WaitingForGameToStartScreen.routeName: (context) =>
                       WaitingForGameToStartScreen(),
+                  LobbyScreen.routeName: (context) => LobbyScreen(),
                   CreateAccountScreen.routeName: (context) =>
                       CreateAccountScreen(),
                   SignInScreen.routeName: (context) => SignInScreen(),
-                  NewGameScreen1.routeName: (context) => NewGameScreen1(),
-                  NewGameScreen2.routeName: (context) => NewGameScreen2(),
+                  CreateGameScreen1.routeName: (context) => CreateGameScreen1(),
+                  CreateGameScreen2.routeName: (context) => CreateGameScreen2(),
                   InputPasswordScreen.routeName: (context) =>
                       InputPasswordScreen(),
                 },
