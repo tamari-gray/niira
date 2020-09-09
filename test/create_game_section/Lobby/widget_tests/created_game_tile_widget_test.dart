@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:niira/screens/Lobby/created_game_tile.dart';
+import 'package:niira/screens/lobby/created_game_tile.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/input_password.dart';
 import 'package:niira/services/game_service.dart';
