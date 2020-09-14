@@ -13,7 +13,7 @@ class FakeLocationService extends Fake implements LocationService {
 
   // set distance between user and games
   @override
-  List<Game> setAndOrderGamesByDistance(
+  List<Game> updateAndOrderGamesByDistance(
           List<Game> games, Location userLocation) =>
       games;
 }
