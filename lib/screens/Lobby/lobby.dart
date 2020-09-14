@@ -43,8 +43,7 @@ class LobbyScreen extends StatelessWidget {
             if (snapshot.hasData == false) {
               return Loading();
             } else {
-              //TODO: pass location into list of created games #60
-              return ListOfCreatedGames();
+              return ListOfCreatedGames(snapshot.data);
             }
           }),
       floatingActionButton: FloatingActionButton.extended(

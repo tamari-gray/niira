@@ -7,7 +7,6 @@ import 'package:niira/services/database/database_service.dart';
 
 class FirestoreService implements DatabaseService {
   final FirebaseFirestore _firestore;
-  // final String _userId;
 
   FirestoreService(this._firestore);
 

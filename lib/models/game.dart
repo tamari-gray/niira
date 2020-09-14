@@ -13,6 +13,8 @@ class Game {
   final int boundarySize;
   final GamePhase phase;
 
+  double distanceFromUser;
+
   Game({
     @required this.id,
     @required this.name,
@@ -22,5 +24,6 @@ class Game {
     @required this.location,
     @required this.boundarySize,
     @required this.phase,
+    this.distanceFromUser,
   });
 }
