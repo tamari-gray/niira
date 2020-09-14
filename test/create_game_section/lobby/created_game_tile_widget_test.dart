@@ -21,7 +21,7 @@ void main() {
       // init services
       final navigation = Navigation();
       final gameService = GameService();
-      final mockGame = MockGames().gamesToJoin[0];
+      final mockGame = gamesToJoin[0];
       // create the widget under test
       await tester.pumpWidget(
         MultiProvider(

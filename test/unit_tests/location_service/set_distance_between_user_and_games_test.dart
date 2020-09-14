@@ -10,13 +10,13 @@ void main() {
   test(
       'locationService.setDistanceBetweenUserAndGames returns list of games with distanceFromUser set',
       () {
-    // init mock service
+    // init location service
     final geolocator = GeolocatorPlatform.instance;
     final locationService = LocationService(geolocator);
     // init mock data
     final mockUserLocation =
         Location(latitude: -37.865351, longitude: 144.989012);
-    final mockGames = MockGames().gamesWithoutDistance;
+    final mockGames = gamesWithoutDistance;
 
     // generate expected outcome
     final gameOneExpectedDistance = distance(
@@ -31,8 +31,8 @@ void main() {
         lon2: mockUserLocation.longitude); // result = 323.0
 
     // call function with mockData
-    final mockGamesWithDistance =
-        locationService.setAndOrderGamesByDistance(mockGames, mockUserLocation);
+    final mockGamesWithDistance = locationService.updateAndOrderGamesByDistance(
+        mockGames, mockUserLocation);
 
     // check mockGame.distanceFromUser is equal to expected distance
     expect(mockGamesWithDistance[1].distanceFromUser, gameOneExpectedDistance);

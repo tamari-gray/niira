@@ -32,8 +32,8 @@ class LocationService {
     );
   }
 
-  // set distance between user and games and order from nearest to furthest
-  List<Game> setAndOrderGamesByDistance(
+  // update distance between user and games and order from nearest to furthest
+  List<Game> updateAndOrderGamesByDistance(
       List<Game> games, Location userLocation) {
     // calculate and set distanceFromUser property in each game
     final gamesWithDistance = games.map<Game>((game) {
