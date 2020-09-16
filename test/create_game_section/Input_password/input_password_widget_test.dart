@@ -102,7 +102,7 @@ void main() {
             home: InputPasswordScreen(),
             navigatorKey: navigation.navigatorKey,
             routes: {
-              '/waiting_for_game_start': (context) =>
+              WaitingForGameToStartScreen.routeName: (context) =>
                   WaitingForGameToStartScreen(),
             }),
       ));

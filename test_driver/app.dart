@@ -8,6 +8,7 @@ import 'package:niira/models/user_data.dart';
 import 'mocks/mock_user_data.dart';
 import 'mocks/services/mock_auth_service.dart';
 import 'mocks/services/mock_database_service.dart';
+import 'mocks/services/mock_location_service.dart';
 import 'mocks/navigation/mock_navigation.dart';
 
 void main() {
@@ -20,6 +21,7 @@ void main() {
     mockUserData: mockUserData,
     mockNavigation: mockNavigation,
   );
+  final mockLocationService = MockLocationService();
   final mockDBService = MockDatabaseService();
   mockAuthService.signInWithEmail('email', 'password');
 
