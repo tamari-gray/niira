@@ -17,13 +17,11 @@ class ListOfCreatedGames extends StatelessWidget {
     final locationService = context.watch<LocationService>();
 
     // get stream of created games in order of distanceFromUser, (nearest to furtherest)
-    final createdGamesInOrderOfDistance = context
-        .watch<DatabaseService>()
-        .streamOfCreatedGames
-        .map<List<Game>>(
-          (games) =>
-              locationService.setAndOrderGamesByDistance(games, _userLocation),
-        );
+    final createdGamesInOrderOfDistance =
+        context.watch<DatabaseService>().streamOfCreatedGames.map<List<Game>>(
+              (games) => locationService.updateAndOrderGamesByDistance(
+                  games, _userLocation),
+            );
 
     // build list of tiles that show a game's info
     return StreamBuilder<List<Game>>(

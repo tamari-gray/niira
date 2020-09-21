@@ -5,7 +5,6 @@ import 'package:niira/models/game.dart';
 
 import 'package:niira/models/location.dart';
 import 'package:niira/utilities/calc_distance.dart';
-import 'package:niira/models/location.dart';
 
 class LocationService {
   final GeolocatorPlatform _geolocator;
