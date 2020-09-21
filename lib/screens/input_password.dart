@@ -70,7 +70,13 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Input password',
-                  prefixIcon: Icon(Icons.visibility),
+                  suffixIcon: Icon(Icons.visibility),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black, width: 2.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black, width: 2.0),
+                  ),
                 ),
                 // check if password is correct
                 validator: (value) {
