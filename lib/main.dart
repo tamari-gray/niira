@@ -9,7 +9,7 @@ import 'package:niira/screens/create_account.dart';
 import 'package:niira/screens/create_game1/create_game_screen1.dart';
 import 'package:niira/screens/create_game2.dart';
 import 'package:niira/screens/input_password.dart';
-import 'package:niira/screens/lobby/lobby.dart';
+import 'package:niira/screens/Lobby/lobby.dart';
 import 'package:niira/screens/sign_in.dart';
 import 'package:niira/screens/waiting_for_game_to_start.dart';
 import 'package:niira/screens/welcome.dart';
