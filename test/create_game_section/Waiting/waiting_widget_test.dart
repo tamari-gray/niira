@@ -4,14 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:niira/models/player.dart';
+import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/waiting_screen/waiting_for_game_to_start.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/navigation_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/data/mock_games.dart';
 import '../../mocks/services/mock_database_service.dart';
-import '../../mocks/services/mock_nav_service.dart';
 
 void main() {
   testWidgets('show player current tagger when its selected',
@@ -28,15 +27,15 @@ void main() {
     // setup dependant services
     final _mockDatabaseService =
         MockDatabaseService(playerStreamController: _controller);
-    final _mockNavigationService = MockNavService();
+    final _navigation = Navigation();
 
     // init waiting for game to start screen
-    final mockGame = MockGames().gamesToJoin[0];
+    final mockGame = gamesToJoin[0];
     await tester.pumpWidget(
       MultiProvider(
           providers: [
             Provider<DatabaseService>.value(value: _mockDatabaseService),
-            Provider<NavigationService>.value(value: _mockNavigationService),
+            Provider<Navigation>.value(value: _navigation),
           ],
           child: MaterialApp(
               home: WaitingForGameToStartScreen(
@@ -74,14 +73,14 @@ void main() {
     final _controller = StreamController<List<Player>>();
     final _mockDatabaseService =
         MockDatabaseService(playerStreamController: _controller);
-    final _mockNavigationService = MockNavService();
+    final _navigation = Navigation();
 
     // init waiting for game to start screen
-    final mockGame = MockGames().gamesToJoin[0];
+    final mockGame = gamesToJoin[0];
     await tester.pumpWidget(
       MultiProvider(providers: [
         Provider<DatabaseService>.value(value: _mockDatabaseService),
-        Provider<NavigationService>.value(value: _mockNavigationService),
+        Provider<Navigation>.value(value: _navigation),
       ], child: MaterialApp(home: WaitingForGameToStartScreen(game: mockGame))),
     );
 

@@ -9,7 +9,7 @@ import 'package:niira/models/location.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/input_password.dart';
-import 'package:niira/screens/waiting_for_game_to_start.dart';
+import 'package:niira/screens/waiting_screen/waiting_for_game_to_start.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/game_service.dart';

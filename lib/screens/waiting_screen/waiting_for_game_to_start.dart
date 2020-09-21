@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/player.dart';
-import 'package:niira/screens/lobby.dart';
+import 'package:niira/navigation/navigation.dart';
+import 'package:niira/screens/lobby/lobby.dart';
 import 'package:niira/screens/waiting_screen/joined_players_list.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/navigation_service.dart';
 import 'package:provider/provider.dart';
 
 class WaitingForGameToStartScreen extends StatefulWidget {
+  static const routeName = '/waiting_for_game_to_start';
+
   final Game game;
   WaitingForGameToStartScreen({@required this.game});
   @override
@@ -39,7 +41,7 @@ class _WaitingForGameToStartScreenState
               );
 
               // TODO: use navigation service to pop until lobby screen
-              context.read<NavigationService>().showConfirmationDialog(
+              context.read<Navigation>().showConfirmationDialog(
                     onConfirmed: () => Navigator.of(context).popUntil(
                       (route) => route == lobbyRoute,
                     ),
