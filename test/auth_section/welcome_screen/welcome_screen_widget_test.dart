@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/create_account.dart';
 import 'package:niira/screens/sign_in.dart';
 import 'package:niira/screens/welcome.dart';
+import 'package:provider/provider.dart';
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
@@ -16,9 +18,18 @@ void main() {
     });
 
     testWidgets('navigates to sign in screen', (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(
-        home: WelcomeScreen(),
-        navigatorObservers: [mockObserver],
+      final navigation = Navigation();
+      await tester.pumpWidget(Provider.value(
+        value: navigation,
+        child: MaterialApp(
+            home: WelcomeScreen(),
+            navigatorKey: navigation.navigatorKey,
+            navigatorObservers: [
+              mockObserver
+            ],
+            routes: {
+              '/sign_in': (context) => SignInScreen(),
+            }),
       ));
 
       await tester.tap(find.byKey(WelcomeScreen.navigateToSignInBtn));
@@ -28,12 +39,22 @@ void main() {
 
       expect(find.byType(SignInScreen), findsOneWidget);
     });
+
     testWidgets('navigates to create account screen',
         (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(
-        home: WelcomeScreen(),
-        navigatorObservers: [mockObserver],
-      ));
+      final navigation = Navigation();
+      await tester.pumpWidget(Provider.value(
+          value: navigation,
+          child: MaterialApp(
+              home: WelcomeScreen(),
+              navigatorKey: navigation.navigatorKey,
+              navigatorObservers: [
+                mockObserver
+              ],
+              routes: {
+                CreateAccountScreen.routeName: (context) =>
+                    CreateAccountScreen(),
+              })));
 
       await tester.tap(find.byKey(WelcomeScreen.navigateToCreateAccountBtn));
       await tester.pumpAndSettle();

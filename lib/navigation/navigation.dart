@@ -1,11 +1,35 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:niira/screens/create_account.dart';
+import 'package:niira/screens/sign_in.dart';
 
-class NavigationService {
+class Navigation {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+  void pop() {
+    navigatorKey.currentState.pop();
+  }
 
   Future<dynamic> navigateTo(String routeName) {
     return navigatorKey.currentState.pushNamed(routeName);
+  }
+
+  Future<dynamic> switchToSignIn() {
+    return navigatorKey.currentState
+        .pushReplacement<SignInScreen, CreateAccountScreen>(
+      MaterialPageRoute<SignInScreen>(
+        builder: (context) => SignInScreen(),
+      ),
+    );
+  }
+
+  Future<dynamic> switchToCreateAccount() {
+    return navigatorKey.currentState
+        .pushReplacement<CreateAccountScreen, SignInScreen>(
+      MaterialPageRoute<CreateAccountScreen>(
+        builder: (context) => CreateAccountScreen(),
+      ),
+    );
   }
 
   void displayError(dynamic error) {
