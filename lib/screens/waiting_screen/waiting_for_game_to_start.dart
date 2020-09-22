@@ -4,14 +4,14 @@ import 'package:niira/models/player.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/lobby/lobby.dart';
 import 'package:niira/screens/waiting_screen/joined_players_list.dart';
+import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
+import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 class WaitingForGameToStartScreen extends StatefulWidget {
   static const routeName = '/waiting_for_game_to_start';
 
-  final Game game;
-  WaitingForGameToStartScreen({@required this.game});
   @override
   _WaitingForGameToStartScreenState createState() =>
       _WaitingForGameToStartScreenState();
@@ -19,6 +19,15 @@ class WaitingForGameToStartScreen extends StatefulWidget {
 
 class _WaitingForGameToStartScreenState
     extends State<WaitingForGameToStartScreen> {
+  Game _game;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _game = context.read<GameService>().currentGame;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,22 +41,27 @@ class _WaitingForGameToStartScreenState
             label: Text('leave'),
             icon: Icon(Icons.exit_to_app),
             onPressed: () {
-              // handle player leaving gamec
+              // handle player leaving game
               // TODO: if admin leaving, force all players to quit and redirect to lobby
 
-              // navigate to lobby route
-              final lobbyRoute = MaterialPageRoute<dynamic>(
-                builder: (context) => LobbyScreen(),
-              );
+              final _navigation = context.read<Navigation>();
 
-              // TODO: use navigation service to pop until lobby screen
-              context.read<Navigation>().showConfirmationDialog(
-                    onConfirmed: () => Navigator.of(context).popUntil(
-                      (route) => route == lobbyRoute,
-                    ),
-                    confirmText: 'Leave game',
-                    cancelText: 'Return',
-                  );
+              // remove user from game and navigate to lobby
+              void leaveGame() async {
+                final userId = await context.read<AuthService>().currentUserId;
+
+                await context
+                    .read<DatabaseService>()
+                    .leaveGame(_game.id, userId);
+
+                _navigation.popUntilLobby();
+              }
+
+              _navigation.showConfirmationDialog(
+                onConfirmed: () => leaveGame(),
+                confirmText: 'Leave game',
+                cancelText: 'Return',
+              );
             },
           )
         ],
@@ -57,7 +71,7 @@ class _WaitingForGameToStartScreenState
             // get stream of players that have joined this game
             stream: context
                 .watch<DatabaseService>()
-                .streamOfJoinedPlayers(widget.game.id),
+                .streamOfJoinedPlayers(_game.id),
             builder: (context, snapshot) {
               if (snapshot.data == null) {
                 return Container();

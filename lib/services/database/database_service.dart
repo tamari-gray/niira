@@ -8,4 +8,5 @@ abstract class DatabaseService {
   Stream<List<Game>> get streamOfCreatedGames;
   Stream<List<Player>> streamOfJoinedPlayers(String gameId);
   Future<void> joinGame(String gameId, String userId);
+  Future<void> leaveGame(String gameId, String userId);
 }

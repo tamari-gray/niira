@@ -28,7 +28,7 @@ class FirestoreService implements DatabaseService {
 
   @override
   Future<String> getUserName(String userId) async {
-    return _firestore.doc('players/$userId').get().then(
+    return await _firestore.doc('players/$userId').get().then(
           (doc) => doc.data()['username'].toString() ?? 'undefined',
         );
   }
@@ -78,6 +78,11 @@ class FirestoreService implements DatabaseService {
   }
 
   @override
+  Future<void> leaveGame(String gameId, String playerId) async {
+    return await _firestore.doc('games/$gameId/players/${playerId}').delete();
+  }
+
+  @override
   Future<void> joinGame(String gameId, String userId) async {
     // create player object
     final username = await getUserName(userId);
@@ -91,7 +96,7 @@ class FirestoreService implements DatabaseService {
     );
 
     // add player to game in db
-    return _firestore
+    return await _firestore
         .doc('games/$gameId/players/${player.id}')
         .set(<String, dynamic>{
       'username': player.username,

@@ -10,6 +10,10 @@ class Navigation {
     navigatorKey.currentState.pop();
   }
 
+  void popUntilLobby() {
+    navigatorKey.currentState.popUntil((route) => route.isFirst);
+  }
+
   Future<dynamic> navigateTo(String routeName) {
     return navigatorKey.currentState.pushNamed(routeName);
   }
