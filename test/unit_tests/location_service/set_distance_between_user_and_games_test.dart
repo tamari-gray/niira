@@ -16,7 +16,7 @@ void main() {
     // init mock data
     final mockUserLocation =
         Location(latitude: -37.865351, longitude: 144.989012);
-    final mockGames = gamesWithoutDistance;
+    final mockGames = MockGames().gamesWithoutDistance;
 
     // generate expected outcome
     final gameOneExpectedDistance = distance(

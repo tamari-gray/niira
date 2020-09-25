@@ -29,7 +29,7 @@ void main() {
     final navigation = Navigation();
     final mockLocationService = FakeLocationService();
     final mockDatabseController = StreamController<List<Game>>();
-    final mockCreatedGames = gamesInorderOfDistance;
+    final mockCreatedGames = MockGames().gamesInorderOfDistance;
     final mockDatabaseService =
         MockDatabaseService(controller: mockDatabseController);
     final mockUserLocation =

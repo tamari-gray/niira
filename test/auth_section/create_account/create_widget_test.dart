@@ -82,14 +82,14 @@ void main() {
     testWidgets('show error messages on empty text feilds',
         (WidgetTester tester) async {
       //set up for testing
-      final _mockNavigation = MockNavigation();
+      final _fakeNavigation = FakeNavigation();
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
       final _mockAuthService = MockAuthService(
           controller: _controller,
           mockUserData: _mockUserData,
-          mockNavigation: _mockNavigation);
+          fakeNavigation: _fakeNavigation);
       final _mockDBService = MockDatabaseService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
         _mockAuthService,
@@ -110,14 +110,14 @@ void main() {
         'show error messages on invalid email + re-enter password feilds',
         (WidgetTester tester) async {
       //set up for testing
-      final _mockNavigation = MockNavigation();
+      final _fakeNavigation = FakeNavigation();
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
       final _mockAuthService = MockAuthService(
           controller: _controller,
           mockUserData: _mockUserData,
-          mockNavigation: _mockNavigation);
+          fakeNavigation: _fakeNavigation);
       final _mockDBService = MockDatabaseService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
         _mockAuthService,
@@ -152,14 +152,14 @@ void main() {
     testWidgets('show loading animation on successfull validation + submit',
         (WidgetTester tester) async {
       //set up for testing
-      final _mockNavigation = MockNavigation();
+      final _fakeNavigation = FakeNavigation();
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
       final _mockAuthService = MockAuthService(
           controller: _controller,
           mockUserData: _mockUserData,
-          mockNavigation: _mockNavigation);
+          fakeNavigation: _fakeNavigation);
       final _mockDBService = MockDatabaseService();
       await tester.pumpWidget(makeTestableCreateAccountWidget(
         _mockAuthService,

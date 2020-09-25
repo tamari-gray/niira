@@ -8,17 +8,17 @@ import 'package:meta/meta.dart';
 class MockAuthService implements AuthService {
   final StreamController<UserData> _controller;
   final UserData _mockUserData;
-  final MockNavigation _mockNavigation;
+  final FakeNavigation _fakeNavigation;
   final bool _successfulAuth;
 
   MockAuthService({
     @required StreamController<UserData> controller,
     UserData mockUserData,
-    MockNavigation mockNavigation,
+    FakeNavigation fakeNavigation,
     bool successfulAuth = true,
   })  : _controller = controller,
         _mockUserData = mockUserData,
-        _mockNavigation = mockNavigation,
+        _fakeNavigation = fakeNavigation,
         _successfulAuth = successfulAuth = true;
 
   @override
@@ -33,7 +33,7 @@ class MockAuthService implements AuthService {
       return Future.value(_mockUserData);
     } else {
       final errors = ['email in use', 'wronf password'];
-      _mockNavigation.displayError(errors[0]);
+      _fakeNavigation.displayError(errors[0]);
       return Future.value(null);
     }
   }
@@ -45,7 +45,7 @@ class MockAuthService implements AuthService {
       return Future.value(_mockUserData);
     } else {
       final errors = ['user not found', 'wronf password'];
-      _mockNavigation.displayError(errors[0]);
+      _fakeNavigation.displayError(errors[0]);
       return Future.value(null);
     }
   }
