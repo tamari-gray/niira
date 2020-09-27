@@ -62,7 +62,7 @@ void main() {
     testWidgets('navigate to lobby on successfull login',
         (WidgetTester tester) async {
       //set up for testing
-      final _mockNavigation = MockNavigation();
+      final _fakeNavigation = FakeNavigation();
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
@@ -71,7 +71,7 @@ void main() {
       final _mockAuthService = MockAuthService(
         controller: _controller,
         mockUserData: _mockUserData,
-        mockNavigation: _mockNavigation,
+        fakeNavigation: _fakeNavigation,
       );
       await tester.pumpWidget(
         makeTestableSignInWidget(
@@ -94,14 +94,14 @@ void main() {
     testWidgets('show error messages on empty text feilds',
         (WidgetTester tester) async {
       //set up for testing
-      final _mockNavigation = MockNavigation();
+      final _fakeNavigation = FakeNavigation();
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
       final _mockAuthService = MockAuthService(
         controller: _controller,
         mockUserData: _mockUserData,
-        mockNavigation: _mockNavigation,
+        fakeNavigation: _fakeNavigation,
         successfulAuth: true,
       );
       await tester.pumpWidget(makeTestableSignInWidget(_mockAuthService));
@@ -117,14 +117,14 @@ void main() {
     testWidgets('show error messages on invalid email ',
         (WidgetTester tester) async {
       //set up for testing
-      final _mockNavigation = MockNavigation();
+      final _fakeNavigation = FakeNavigation();
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
       final _mockAuthService = MockAuthService(
         controller: _controller,
         mockUserData: _mockUserData,
-        mockNavigation: _mockNavigation,
+        fakeNavigation: _fakeNavigation,
         successfulAuth: true,
       );
       await tester.pumpWidget(makeTestableSignInWidget(_mockAuthService));
@@ -142,14 +142,14 @@ void main() {
     testWidgets('show loading animation on successfull validation + submit',
         (WidgetTester tester) async {
       //set up for testing
-      final _mockNavigation = MockNavigation();
+      final _fakeNavigation = FakeNavigation();
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<UserData>();
 
       final _mockAuthService = MockAuthService(
         controller: _controller,
         mockUserData: _mockUserData,
-        mockNavigation: _mockNavigation,
+        fakeNavigation: _fakeNavigation,
         successfulAuth: true,
       );
       await tester.pumpWidget(makeTestableSignInWidget(_mockAuthService));

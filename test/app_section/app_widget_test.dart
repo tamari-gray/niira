@@ -24,11 +24,11 @@ void main() {
       final controller = StreamController<UserData>();
       final mockUserData = MockUser().userData;
 
-      final mockNavigation = MockNavigation();
+      final fakeNavigation = FakeNavigation();
       final mockAuthService = MockAuthService(
         controller: controller,
         mockUserData: mockUserData,
-        mockNavigation: mockNavigation,
+        fakeNavigation: fakeNavigation,
         successfulAuth: true,
       );
       final mockDatabaseStreamController = StreamController<List<Game>>();
@@ -39,7 +39,7 @@ void main() {
       await tester.pumpWidget(MyApp(
         authService: mockAuthService,
         databaseService: mockDatabaseService,
-        navigation: mockNavigation,
+        navigation: fakeNavigation,
       ));
 
       // check for loading widget
@@ -52,11 +52,11 @@ void main() {
       // create a controller that the mock auth servive will hold
       final controller = StreamController<UserData>();
       final mockUserData = MockUser().userData;
-      final mockNavigation = MockNavigation();
+      final fakeNavigation = FakeNavigation();
       final mockAuthService = MockAuthService(
         controller: controller,
         mockUserData: mockUserData,
-        mockNavigation: mockNavigation,
+        fakeNavigation: fakeNavigation,
         successfulAuth: true,
       );
       final mockDatabaseStreamController = StreamController<List<Game>>();
@@ -67,7 +67,7 @@ void main() {
       await tester.pumpWidget(MyApp(
         authService: mockAuthService,
         databaseService: mockDatabaseService,
-        navigation: mockNavigation,
+        navigation: fakeNavigation,
       ));
 
       // update auth stream to have no signed in user

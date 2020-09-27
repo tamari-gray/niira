@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:niira/models/game.dart';
-import 'package:niira/models/location.dart';
 import 'package:niira/models/player.dart';
+import 'package:niira/models/location.dart';
 import 'package:niira/services/database/database_service.dart';
 
 class FirestoreService implements DatabaseService {
@@ -28,7 +28,7 @@ class FirestoreService implements DatabaseService {
 
   @override
   Future<String> getUserName(String userId) async {
-    return _firestore.doc('players/$userId').get().then(
+    return await _firestore.doc('players/$userId').get().then(
           (doc) => doc.data()['username'].toString() ?? 'undefined',
         );
   }
@@ -58,6 +58,31 @@ class FirestoreService implements DatabaseService {
           }).toList());
 
   @override
+  Stream<List<Player>> streamOfJoinedPlayers(String gameId) {
+    return _firestore.collection('games/$gameId/players').snapshots().map(
+          (QuerySnapshot snapshot) => snapshot.docs
+              .map(
+                (playerDoc) => Player(
+                  id: playerDoc.data()['id'].toString() ?? 'undefined',
+                  username:
+                      playerDoc.data()['username'].toString() ?? 'undefined',
+                  isTagger: playerDoc.data()['isTagger'] as bool ?? false,
+                  hasBeenTagged:
+                      playerDoc.data()['hasBeenTagged'] as bool ?? false,
+                  hasItem: playerDoc.data()['hasItem'] as bool ?? false,
+                  isAdmin: playerDoc.data()['isAdmin'] as bool ?? false,
+                ),
+              )
+              .toList(),
+        );
+  }
+
+  @override
+  Future<void> leaveGame(String gameId, String playerId) async {
+    return await _firestore.doc('games/$gameId/players/${playerId}').delete();
+  }
+
+  @override
   Future<void> joinGame(String gameId, String userId) async {
     // create player object
     final username = await getUserName(userId);
@@ -71,7 +96,7 @@ class FirestoreService implements DatabaseService {
     );
 
     // add player to game in db
-    return _firestore
+    return await _firestore
         .doc('games/$gameId/players/${player.id}')
         .set(<String, dynamic>{
       'username': player.username,

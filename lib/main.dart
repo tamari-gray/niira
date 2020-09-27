@@ -11,7 +11,7 @@ import 'package:niira/screens/create_game2.dart';
 import 'package:niira/screens/input_password.dart';
 import 'package:niira/screens/lobby/lobby.dart';
 import 'package:niira/screens/sign_in.dart';
-import 'package:niira/screens/waiting_for_game_to_start.dart';
+import 'package:niira/screens/waiting_screen/waiting_for_game_to_start.dart';
 import 'package:niira/screens/welcome.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/firebase_auth_service.dart';

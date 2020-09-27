@@ -10,6 +10,10 @@ class Navigation {
     navigatorKey.currentState.pop();
   }
 
+  void popUntilLobby() {
+    navigatorKey.currentState.popUntil((route) => route.isFirst);
+  }
+
   Future<dynamic> navigateTo(String routeName) {
     return navigatorKey.currentState.pushNamed(routeName);
   }
@@ -78,7 +82,7 @@ class Navigation {
               textColor: Theme.of(context).primaryColor,
               key: Key('confirmBtn'),
               child: Text(confirmText),
-              onPressed: onConfirmed,
+              onPressed: () async => await onConfirmed(),
             ),
             FlatButton(
               color: Colors.white,
