@@ -6,3 +6,5 @@ class FakeNavigation extends Fake implements Navigation {
   @override
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 }
+
+class MockNavigation extends Mock implements Navigation {}

@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/location.dart';
+import 'package:niira/models/player.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/input_password.dart';
@@ -73,8 +74,10 @@ void main() {
       final _authController = StreamController<UserData>();
       final _mockAuthService = MockAuthService(controller: _authController);
       final _databaseController = StreamController<List<Game>>();
-      final _mockDatabaseService =
-          MockDatabaseService(controller: _databaseController);
+      final _playerStreamController = StreamController<List<Player>>();
+      final _mockDatabaseService = MockDatabaseService(
+          controller: _databaseController,
+          playerStreamController: _playerStreamController);
       final navigation = Navigation();
       final _gameService = GameService();
 
