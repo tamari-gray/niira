@@ -23,6 +23,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
@@ -56,13 +57,16 @@ class _MyAppState extends State<MyApp> {
   Navigation _navigation;
   LocationService _locationService;
   GameService _gameService;
+  dynamic _firebaseInitError;
+  bool _initializedFirebase;
 
   @override
   void initState() {
-    _requestPermissions();
     super.initState();
     // show loading icon
     _loadingServices = true;
+    _firebaseInitError = null;
+    _initializedFirebase = false;
     initServices();
   }
 
@@ -70,8 +74,14 @@ class _MyAppState extends State<MyApp> {
     // init firebase
     try {
       await Firebase.initializeApp();
+      setState(() {
+        _initializedFirebase = true;
+      });
     } catch (e) {
       // show user an error message
+      setState(() {
+        _firebaseInitError = e;
+      });
     }
 
     // create services to pass to app
@@ -93,57 +103,95 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void _requestPermissions() async {
-    if (await Permission.location.request().isGranted) {
-      // Either the permission was already granted before or the user just granted it.
-    }
-  }
+  // void _requestPermissions() async {
+  //   if (await Permission.location.request().isGranted) {
+  //     // Either the permission was already granted before or the user just granted it.
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return _loadingServices
-        ? Loading()
-        : MultiProvider(
-            providers: [
-              Provider<AuthService>.value(value: _authService),
-              Provider<DatabaseService>.value(value: _databaseService),
-              Provider<Navigation>.value(value: _navigation),
-              Provider<LocationService>.value(value: _locationService),
-              Provider<GameService>.value(value: _gameService)
-            ],
-            child: MaterialApp(
-                title: 'Flutter Demo',
-                navigatorKey: _navigation.navigatorKey,
-                theme: ThemeData(
-                  brightness: Brightness.light,
-                  primaryColor: Color.fromRGBO(247, 152, 0, 1),
-                  accentColor: Color.fromRGBO(130, 250, 184, 1),
-                  visualDensity: VisualDensity.adaptivePlatformDensity,
-                ),
-                routes: {
-                  WaitingForGameToStartScreen.routeName: (context) =>
-                      WaitingForGameToStartScreen(),
-                  LobbyScreen.routeName: (context) => LobbyScreen(),
-                  CreateAccountScreen.routeName: (context) =>
-                      CreateAccountScreen(),
-                  SignInScreen.routeName: (context) => SignInScreen(),
-                  CreateGameScreen1.routeName: (context) => CreateGameScreen1(),
-                  CreateGameScreen2.routeName: (context) => CreateGameScreen2(),
-                  InputPasswordScreen.routeName: (context) =>
-                      InputPasswordScreen(),
-                },
-                home: StreamBuilder(
-                  stream: _authService.streamOfAuthState,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      context.read<Navigation>().displayError(snapshot.error);
-                    }
+    if (_firebaseInitError != null) {
+      return ErrorPage(error: _firebaseInitError, trace: StackTrace.current);
+    } else if (!_initializedFirebase || _loadingServices) {
+      // Show a loader until FlutterFire is initialized
+      return Loading();
+    } else {
+      return MultiProvider(
+        providers: [
+          Provider<AuthService>.value(value: _authService),
+          Provider<DatabaseService>.value(value: _databaseService),
+          Provider<Navigation>.value(value: _navigation),
+          Provider<LocationService>.value(value: _locationService),
+          Provider<GameService>.value(value: _gameService)
+        ],
+        child: MaterialApp(
+            title: 'Niira',
+            navigatorKey: _navigation.navigatorKey,
+            theme: ThemeData(
+              brightness: Brightness.light,
+              primaryColor: Color.fromRGBO(247, 152, 0, 1),
+              accentColor: Color.fromRGBO(130, 250, 184, 1),
+              visualDensity: VisualDensity.adaptivePlatformDensity,
+            ),
+            routes: {
+              WaitingForGameToStartScreen.routeName: (context) =>
+                  WaitingForGameToStartScreen(),
+              LobbyScreen.routeName: (context) => LobbyScreen(),
+              CreateAccountScreen.routeName: (context) => CreateAccountScreen(),
+              SignInScreen.routeName: (context) => SignInScreen(),
+              CreateGameScreen1.routeName: (context) => CreateGameScreen1(),
+              CreateGameScreen2.routeName: (context) => CreateGameScreen2(),
+              InputPasswordScreen.routeName: (context) => InputPasswordScreen(),
+            },
+            home: StreamBuilder(
+              stream: _authService.streamOfAuthState,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  context.read<Navigation>().displayError(snapshot.error);
+                }
 
-                    return (snapshot.data == null)
-                        ? WelcomeScreen()
-                        : LobbyScreen();
-                  },
-                )),
-          );
+                return (snapshot.data == null)
+                    ? WelcomeScreen()
+                    : LobbyScreen();
+              },
+            )),
+      );
+    }
+  }
+}
+
+/// This widget just displays the available info if there is an error during
+/// intialization.
+///
+/// It's not particularly pretty but it shouldn't ever be seen and if it is,
+/// we just need to view the available info.
+class ErrorPage extends StatelessWidget {
+  final dynamic _error;
+  final StackTrace _trace;
+  const ErrorPage({
+    @required dynamic error,
+    @required StackTrace trace,
+    Key key,
+  })  : _error = error,
+        _trace = trace,
+        super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: SingleChildScrollView(
+        child: ListBody(
+          children: <Widget>[
+            SizedBox(height: 50),
+            Text('Looks like there was a problem.',
+                textDirection: TextDirection.ltr),
+            SizedBox(height: 20),
+            Text(_error.toString(), textDirection: TextDirection.ltr),
+            SizedBox(height: 50),
+            Text(_trace.toString(), textDirection: TextDirection.ltr),
+          ],
+        ),
+      ),
+    );
   }
 }

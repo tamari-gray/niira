@@ -78,6 +78,10 @@ void main() {
     final fakeLocationService = FakeLocationService();
     final mockUserData = MockUser().userData;
 
+    //sign in the user
+    controller.add(mockUserData);
+    await tester.pumpAndSettle();
+
     // create the widget under test
     await tester.pumpWidget(MyApp(
       authService: mockAuthService,
@@ -86,8 +90,6 @@ void main() {
       navigation: navigation,
     ));
 
-    //sign in the user
-    controller.add(mockUserData);
     await tester.pumpAndSettle();
 
     // tap sign out btn
