@@ -31,7 +31,7 @@ class GameTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        '${_game.distanceFromUser}m away',
+                        '${_game.distanceFromUser} km away',
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 14,
