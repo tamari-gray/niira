@@ -19,7 +19,7 @@ class GameNameField extends StatelessWidget {
             borderSide: BorderSide(color: Colors.black, width: 2.0),
           ),
         ),
-        validator: validators.oneToFifteenChars,
+        validator: validators.gameName,
         onChanged: (val) =>
             context.read<GameService>().createGameViewModel1.name = val,
       ),

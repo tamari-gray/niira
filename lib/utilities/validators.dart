@@ -1,3 +1,11 @@
-final oneToFifteenChars = (String value) => value.isEmpty
+final gameName = (String value) => value.isEmpty
     ? 'Please enter at least 1 character'
-    : value.length > 15 ? 'Game names can be up to 15 characters.' : null;
+    : value.length > 8
+        ? 'Game names must be less then 8 characters.'
+        : null;
+
+final gamePassword = (String value) => value.isEmpty
+    ? 'Please enter at least 1 character'
+    : value.length > 8
+        ? 'Passwords must be less then 8 characters.'
+        : null;
