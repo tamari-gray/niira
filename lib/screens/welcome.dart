@@ -64,7 +64,7 @@ class WelcomeScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(0, 150, 0, 0),
+                padding: const EdgeInsets.fromLTRB(0, 120, 0, 0),
                 child: Container(
                   child: Column(
                     children: <Widget>[

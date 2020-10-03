@@ -38,7 +38,7 @@ class _PasswordFieldState extends State<PasswordField> {
                 }
               }),
             )),
-        validator: validators.oneToFifteenChars,
+        validator: validators.gamePassword,
         onChanged: (val) =>
             context.read<GameService>().createGameViewModel1.password = val,
       ),

@@ -23,11 +23,10 @@ class GameTile extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.all(20),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.fromLTRB(0, 0, 100, 0),
+                  padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -49,14 +48,6 @@ class GameTile extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Text(
-                        'created by ${_game.creatorName}',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black.withOpacity(0.6),
-                        ),
-                      )
                     ],
                   ),
                 ),
