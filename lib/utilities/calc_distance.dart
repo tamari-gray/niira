@@ -21,9 +21,8 @@ double distance({double lat1, double lat2, double lon1, double lon2}) {
 
   // returns result in km
   final resultInKm = (c * r);
-  final resultInMetresRounded =
-      double.parse((resultInKm * 1000).toStringAsFixed(0));
-  return resultInMetresRounded;
+  final resultInKmRounded = double.parse((resultInKm).toStringAsFixed(1));
+  return resultInKmRounded;
 }
 
 double degreesToRads(double deg) {
