@@ -23,20 +23,53 @@ void main() {
       }
     });
 
-    test('opens on Welcome Screen when not signed in', () async {
-      expect(
-        driver.waitFor(createAccountFinder),
-        completes,
-      );
-    }, skip: 'Integration tests are currently incomplete');
+    test(
+      'opens on Welcome Screen when not signed in',
+      () async {
+        expect(
+          driver.waitFor(createAccountFinder),
+          completes,
+        );
+      },
+    );
 
-    test('opens on Lobby when signed in', () async {
-      // await driver.tap(createAccountFinder);
+    // test('opens on Lobby when signed in', () async {
+    //   // await driver.tap(createAccountFinder);
 
-      // expect(
-      //   driver.waitFor(lobbyTextFinder),
-      //   completes,
-      // );
+    //   expect(
+    //     driver.waitFor(lobbyTextFinder),
+    //     completes,
+    //   );
+    // });
+
+    test('joins game and quits when on waiting screen', () async {
+      // allow location
+      final allowLocationButton = find.text('While');
+      await driver.waitFor(allowLocationButton);
+      await driver.tap(allowLocationButton);
+
+      // join game in lobbyScreen
+      final gameToJoin = find.text('pullo');
+      await driver.waitFor(gameToJoin);
+      await driver.tap(gameToJoin);
+
+      // input correct password in inputPasswordScreen
+      final passwordField = find.byValueKey('input_password_screen_text_feild');
+      await driver.waitFor(passwordField);
+      await driver.tap(passwordField);
+      await driver.enterText('password12345');
+
+      // leave game in waitingScreen
+      final waitingScreenQuitButton =
+          find.byValueKey('waiting_screen_quit_btn');
+      await driver.waitFor(waitingScreenQuitButton);
+      await driver.tap(waitingScreenQuitButton);
+
+      final confirmQuitButton = find.byValueKey('confirmBtn');
+      await driver.waitFor(confirmQuitButton);
+      await driver.tap(confirmQuitButton);
+
+      await driver.waitFor(gameToJoin);
     });
   });
 }

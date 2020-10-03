@@ -3,8 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_driver/driver_extension.dart';
 import 'package:niira/main.dart';
+import 'package:niira/models/game.dart';
 import 'package:niira/models/user_data.dart';
+import 'package:niira/services/game_service.dart';
 
+import 'mocks/data/mock_games.dart';
 import 'mocks/mock_user_data.dart';
 import 'mocks/services/mock_auth_service.dart';
 import 'mocks/services/mock_database_service.dart';
@@ -22,12 +25,21 @@ void main() {
     mockNavigation: mockNavigation,
   );
   final mockLocationService = MockLocationService();
-  final mockDBService = MockDatabaseService();
+
+  final dbController = StreamController<List<Game>>();
+  final mockGamesToJoin = MockGames().gamesInorderOfDistance;
+  dbController.add(mockGamesToJoin);
+  final mockDBService = MockDatabaseService(controller: dbController);
+
+  final mockGameService = GameService();
+
   mockAuthService.signInWithEmail('email', 'password');
 
   runApp(MyApp(
     authService: mockAuthService,
     databaseService: mockDBService,
     navigation: mockNavigation,
+    locationService: mockLocationService,
+    gameService: mockGameService,
   ));
 }
