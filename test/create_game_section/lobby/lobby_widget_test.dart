@@ -22,12 +22,8 @@ import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
 import '../../mocks/services/mock_game_service.dart';
 import '../../mocks/services/mock_location_service.dart';
-import '../../mocks/services/mock_firebase_platform.dart';
 
 void main() {
-  setUp(() {
-    Firebase.delegatePackingProperty = MockFirebasePlatform();
-  });
   testWidgets(
       'show loading icon until have users location, then show list of created games ',
       (WidgetTester tester) async {
@@ -96,6 +92,7 @@ void main() {
       firebase: firebase,
     ));
 
+    // init firebase
     firebaseCompleter.complete();
     await tester.pumpAndSettle();
 
