@@ -16,6 +16,7 @@ import 'package:niira/services/game_service.dart';
 import 'package:niira/services/location_service.dart';
 import 'package:provider/provider.dart';
 
+import '../../mocks/firebase_wrapper_mocks.dart';
 import '../../mocks/mock_user_data.dart';
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
@@ -78,6 +79,10 @@ void main() {
     final fakeLocationService = FakeLocationService();
     final mockUserData = MockUser().userData;
 
+    // create a fake firebase wrapper with a supplied completer
+    final firebaseCompleter = Completer<FirebaseApp>();
+    final firebase = FakeFirebaseWrapper(completer: firebaseCompleter);
+
     //sign in the user
     controller.add(mockUserData);
     await tester.pumpAndSettle();
@@ -88,8 +93,10 @@ void main() {
       databaseService: mockDBService,
       locationService: fakeLocationService,
       navigation: navigation,
+      firebase: firebase,
     ));
 
+    firebaseCompleter.complete();
     await tester.pumpAndSettle();
 
     // tap sign out btn

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:niira/loading.dart';
@@ -19,11 +18,11 @@ import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/database/firestore_service.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:niira/services/location_service.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
+import 'utilities/firebase_wrapper.dart';
+
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
@@ -33,6 +32,7 @@ class MyApp extends StatefulWidget {
   final Navigation _navigation;
   final GameService _gameService;
   final LocationService _locationService;
+  final FirebaseWrapper _firebase;
 
   MyApp({
     AuthService authService,
@@ -40,11 +40,13 @@ class MyApp extends StatefulWidget {
     Navigation navigation,
     LocationService locationService,
     GameService gameService,
+    FirebaseWrapper firebase,
   })  : _authService = authService,
         _databaseService = databaseService,
         _navigation = navigation,
         _locationService = locationService,
-        _gameService = gameService;
+        _gameService = gameService,
+        _firebase = firebase ?? FirebaseWrapper();
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -73,7 +75,7 @@ class _MyAppState extends State<MyApp> {
   void initServices() async {
     // init firebase
     try {
-      await Firebase.initializeApp();
+      await widget._firebase.init();
       setState(() {
         _initializedFirebase = true;
       });
@@ -102,12 +104,6 @@ class _MyAppState extends State<MyApp> {
       _loadingServices = false;
     });
   }
-
-  // void _requestPermissions() async {
-  //   if (await Permission.location.request().isGranted) {
-  //     // Either the permission was already granted before or the user just granted it.
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
