@@ -27,7 +27,7 @@ class GameTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.fromLTRB(0, 0, 100, 0),
+                  padding: EdgeInsets.fromLTRB(0, 0, 50, 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
