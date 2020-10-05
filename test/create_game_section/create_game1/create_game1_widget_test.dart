@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/create_game1/create_game_screen1.dart';
-import 'package:niira/screens/create_game2.dart';
+import 'package:niira/screens/create_game2/create_game_screen2.dart';
 import 'package:niira/services/game_service.dart';
+import 'package:niira/services/location_service.dart';
 import 'package:provider/provider.dart';
+
+import '../../mocks/services/mock_location_service.dart';
 
 void main() {
   group('CreateGameScreen1 ', () {
@@ -16,6 +19,7 @@ void main() {
       await tester.pumpWidget(MultiProvider(
           providers: [
             Provider<GameService>(create: (_) => GameService()),
+            Provider<LocationService>(create: (_) => FakeLocationService()),
             Provider<Navigation>.value(value: nav),
           ],
           child: MaterialApp(
@@ -67,7 +71,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // check game screen 2 widget is found (due to navigation)
-      expect(find.text('New Game Screen 2'), findsOneWidget);
+      expect(find.text('Create Game 2/2'), findsOneWidget);
     });
   });
 }
