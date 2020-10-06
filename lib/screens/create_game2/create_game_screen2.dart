@@ -21,6 +21,7 @@ class _CreateGameScreen2State extends State<CreateGameScreen2> {
       body: Container(
         child: Column(
           children: [
+            // TODO: make map responsive in #57
             Container(
               height: 300,
               child: CreateGameMap(),

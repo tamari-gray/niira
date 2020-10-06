@@ -29,15 +29,15 @@ void main() {
       final map = find.byType(GoogleMap);
 
       // check loading is showing
-      expect((loadingIcon), findsOneWidget);
-      expect((map), findsNothing);
+      expect(loadingIcon, findsOneWidget);
+      expect(map, findsNothing);
 
       // wait for service to get users location
       await tester.pumpAndSettle();
 
       // check map is showing
-      expect((loadingIcon), findsNothing);
-      expect((map), findsOneWidget);
+      expect(loadingIcon, findsNothing);
+      expect(map, findsOneWidget);
     });
   });
 }
