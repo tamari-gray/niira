@@ -7,10 +7,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:niira/main.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/user_data.dart';
-import 'package:niira/screens/lobby/lobby.dart';
-import 'package:niira/screens/lobby/list_of_created_games.dart';
-import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/navigation/navigation.dart';
+import 'package:niira/screens/lobby/list_of_created_games.dart';
+import 'package:niira/screens/lobby/lobby.dart';
+import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:niira/services/location_service.dart';
@@ -19,9 +19,9 @@ import 'package:provider/provider.dart';
 import '../../mocks/mock_user_data.dart';
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
+import '../../mocks/services/mock_firebase_platform.dart';
 import '../../mocks/services/mock_game_service.dart';
 import '../../mocks/services/mock_location_service.dart';
-import '../../mocks/services/mock_firebase_platform.dart';
 
 void main() {
   setUp(() {
@@ -51,7 +51,7 @@ void main() {
           Provider<GameService>.value(value: mockGameService),
         ],
         child: MaterialApp(
-          home: LobbyScreen(),
+          home: LobbyScreen(true),
         ),
       ),
     );

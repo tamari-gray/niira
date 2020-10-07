@@ -56,6 +56,7 @@ class _MyAppState extends State<MyApp> {
   Navigation _navigation;
   LocationService _locationService;
   GameService _gameService;
+  bool _hasLocationPermission;
 
   @override
   void initState() {
@@ -94,9 +95,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _requestPermissions() async {
-    if (await Permission.location.request().isGranted) {
-      // Either the permission was already granted before or the user just granted it.
-    }
+    _hasLocationPermission = await Permission.location.request().isGranted;
+    // Either the permission was already granted before or the user just granted it.
   }
 
   @override
@@ -123,7 +123,8 @@ class _MyAppState extends State<MyApp> {
                 routes: {
                   WaitingForGameToStartScreen.routeName: (context) =>
                       WaitingForGameToStartScreen(),
-                  LobbyScreen.routeName: (context) => LobbyScreen(),
+                  LobbyScreen.routeName: (context) =>
+                      LobbyScreen(_hasLocationPermission),
                   CreateAccountScreen.routeName: (context) =>
                       CreateAccountScreen(),
                   SignInScreen.routeName: (context) => SignInScreen(),
@@ -141,7 +142,7 @@ class _MyAppState extends State<MyApp> {
 
                     return (snapshot.data == null)
                         ? WelcomeScreen()
-                        : LobbyScreen();
+                        : LobbyScreen(_hasLocationPermission);
                   },
                 )),
           );

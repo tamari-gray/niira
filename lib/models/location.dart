@@ -6,7 +6,7 @@ class Location {
 
   Location({@required this.latitude, @required this.longitude});
 
-  // convert from firebase doc feild (map) to location object
+  // convert from firebase doc field (map) to location object
   Location.fromMap(Map<String, dynamic> map)
       : latitude = (map ?? const <String, double>{})['latitude'] as double,
         longitude = (map ?? const <String, double>{})['longitude'] as double;

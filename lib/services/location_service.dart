@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:niira/models/game.dart';
-
 import 'package:niira/models/location.dart';
 import 'package:niira/utilities/calc_distance.dart';
 
@@ -13,6 +12,10 @@ class LocationService {
   // check if location services are enabled
   Future<LocationPermission> checkForLocationPermission() =>
       _geolocator.checkPermission();
+
+  // ask for location permission
+  Future<LocationPermission> askForLocationPermission() =>
+      _geolocator.requestPermission();
 
   // get users currentLocation
   Future<Location> getUsersCurrentLocation() async {
