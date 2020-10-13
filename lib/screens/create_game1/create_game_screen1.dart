@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/create_game1/game_name_field.dart';
 import 'package:niira/screens/create_game1/password_field.dart';
-import 'package:niira/screens/create_game2.dart';
+import 'package:niira/screens/create_game2/create_game_screen2.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
