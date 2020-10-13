@@ -32,15 +32,15 @@ class CreateGameMapState extends State<CreateGameMap> {
             // create and set the boundary and player location icons
             final circles = <Circle>{
               Circle(
-                circleId: CircleId('boundary_icon'),
+                circleId: CircleId('boundary'),
                 center: snapshot.data.toLatLng(),
                 radius: 100,
                 strokeWidth: 3,
                 strokeColor: Color.fromRGBO(247, 153, 0, 1),
-                fillColor: Color.fromRGBO(247, 153, 0, 0.3),
+                fillColor: Color.fromRGBO(247, 153, 0, 0.2),
               ),
               Circle(
-                circleId: CircleId('player_position_icon'),
+                circleId: CircleId('player_position'),
                 center: snapshot.data.toLatLng(),
                 radius: 8,
                 strokeWidth: 2,
