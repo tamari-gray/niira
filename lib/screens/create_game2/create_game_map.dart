@@ -53,7 +53,7 @@ class CreateGameMapState extends State<CreateGameMap> {
             return Stack(children: [
               GoogleMap(
                 zoomControlsEnabled: false,
-                initialCameraPosition: snapshot.data.toUserLocation(),
+                initialCameraPosition: snapshot.data.toShowUserLocation(),
                 onMapCreated: (GoogleMapController controller) {
                   controller.setMapStyle(createGameMapStyle);
                   _controller.complete(controller);
@@ -63,7 +63,7 @@ class CreateGameMapState extends State<CreateGameMap> {
               // custom fab type button to show users location
               ShowLocationButton(
                 controller: _controller,
-                userPosition: snapshot.data.toUserLocation(),
+                userPosition: snapshot.data.toShowUserLocation(),
               )
             ]);
           }
