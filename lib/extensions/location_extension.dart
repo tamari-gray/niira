@@ -4,7 +4,7 @@ import 'package:niira/models/location.dart';
 extension LocationExt on Location {
   LatLng toLatLng() => LatLng(latitude, longitude);
 
-  CameraPosition toCreateGameInitialCameraPosition() => CameraPosition(
+  CameraPosition toUserLocation() => CameraPosition(
         target: toLatLng(),
         zoom: 17,
       );

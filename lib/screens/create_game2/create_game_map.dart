@@ -23,7 +23,12 @@ class CreateGameMapState extends State<CreateGameMap> {
       body: FutureBuilder<Location>(
         future: context.watch<LocationService>().getUsersCurrentLocation(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          if (!snapshot.hasData) {
+            // if no map, we wait for map
+            return Loading(
+              message: 'loading map...',
+            );
+          } else {
             // create and set the boundary and player location icons
             final circles = <Circle>{
               Circle(
@@ -45,20 +50,64 @@ class CreateGameMapState extends State<CreateGameMap> {
             };
 
             // create the map!
-            return GoogleMap(
-              initialCameraPosition:
-                  snapshot.data.toCreateGameInitialCameraPosition(),
-              onMapCreated: (GoogleMapController controller) {
-                controller.setMapStyle(createGameMapStyle);
-                _controller.complete(controller);
-              },
-              circles: circles,
-            );
-          } else {
-            // if no map, we wait for map :(
-            return Loading();
+            return Stack(children: [
+              GoogleMap(
+                zoomControlsEnabled: false,
+                initialCameraPosition: snapshot.data.toUserLocation(),
+                onMapCreated: (GoogleMapController controller) {
+                  controller.setMapStyle(createGameMapStyle);
+                  _controller.complete(controller);
+                },
+                circles: circles,
+              ),
+              // custom fab type button to show users location
+              ShowLocationButton(
+                controller: _controller,
+                userPosition: snapshot.data.toUserLocation(),
+              )
+            ]);
           }
         },
+      ),
+    );
+  }
+}
+
+class ShowLocationButton extends StatelessWidget {
+  const ShowLocationButton(
+      {Key key,
+      @required Completer<GoogleMapController> controller,
+      @required CameraPosition userPosition})
+      : _controller = controller,
+        _userPosition = userPosition,
+        super(key: key);
+
+  final Completer<GoogleMapController> _controller;
+  final CameraPosition _userPosition;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.bottomRight,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+        child: RawMaterialButton(
+          onPressed: () async {
+            // animate camera over users location
+            final controller = await _controller.future;
+            await controller
+                .animateCamera(CameraUpdate.newCameraPosition(_userPosition));
+          },
+          elevation: 2.0,
+          fillColor: Colors.white,
+          child: Icon(
+            Icons.my_location,
+            size: 25.0,
+            color: Colors.grey,
+          ),
+          padding: EdgeInsets.all(15.0),
+          shape: CircleBorder(),
+        ),
       ),
     );
   }
