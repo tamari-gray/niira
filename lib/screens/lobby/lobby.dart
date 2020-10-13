@@ -40,11 +40,11 @@ class LobbyScreen extends StatelessWidget {
       body: FutureBuilder<Location>(
           future: context.watch<LocationService>().getUsersCurrentLocation(),
           builder: (context, snapshot) {
-            if (snapshot.hasData == false) {
-              return Loading();
-            } else {
-              return ListOfCreatedGames(snapshot.data);
-            }
+            return snapshot.hasData
+                ? ListOfCreatedGames(snapshot.data)
+                : Loading(
+                    message: 'Searching for games...',
+                  );
           }),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () =>
