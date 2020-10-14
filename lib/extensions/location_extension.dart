@@ -5,16 +5,18 @@ import 'package:niira/models/location.dart';
 extension LocationExt on Location {
   LatLng toLatLng() => LatLng(latitude, longitude);
 
-  CameraPosition toShowUserLocation() => CameraPosition(
-        target: toLatLng(),
-        zoom: 17,
-      );
+  CameraPosition toShowUserLocation({@required double boundarySize}) {
+    return CameraPosition(
+      target: toLatLng(),
+      zoom: 17,
+    );
+  }
 
-  Set<Circle> toCircles() => <Circle>{
+  Set<Circle> toCircles({double boundarySize = 100}) => <Circle>{
         Circle(
           circleId: CircleId('boundary'),
           center: toLatLng(),
-          radius: 100,
+          radius: boundarySize,
           strokeWidth: 3,
           strokeColor: Color.fromRGBO(247, 153, 0, 1),
           fillColor: Color.fromRGBO(247, 153, 0, 0.2),
