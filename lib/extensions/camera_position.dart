@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:niira/models/location.dart';
 import 'package:niira/utilities/calc_player_icon_size.dart';
 
 extension CameraPositionExt on CameraPosition {
   LatLng toLatLng() => LatLng(target.latitude, target.longitude);
+  Location toLocation() =>
+      Location(latitude: target.latitude, longitude: target.longitude);
   Set<Circle> toCircles(
       {@required double boundarySize, @required LatLng userLocation}) {
     return <Circle>{

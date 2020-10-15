@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:niira/loading.dart';
-import 'package:niira/models/location.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/create_game2/create_game_map.dart';
+import 'package:niira/screens/create_game2/sonar_intervals_slider.dart';
 import 'package:niira/screens/waiting_screen/waiting_for_game_to_start.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
+
+import 'boundary_size_slider.dart';
 
 class CreateGameScreen2 extends StatefulWidget {
   static const routeName = '/create_game2';
@@ -15,15 +17,10 @@ class CreateGameScreen2 extends StatefulWidget {
 }
 
 class _CreateGameScreen2State extends State<CreateGameScreen2> {
-  double _boundarySize;
-  Location _boundaryLocation;
-  double _sonarIntervals;
   bool _loadingMap;
 
   @override
   void initState() {
-    _boundarySize = 100;
-    _sonarIntervals = 120;
     _loadingMap = true;
     super.initState();
   }
@@ -63,12 +60,6 @@ class _CreateGameScreen2State extends State<CreateGameScreen2> {
           : FloatingActionButton.extended(
               key: Key('create_game_screen_2_submit_button'),
               onPressed: () {
-                // put all data in global state
-                final vm = context.read<GameService>().createGameViewModel2;
-                vm.boundarySize = _boundarySize;
-                vm.location = _boundaryLocation;
-                vm.sonarIntervals = _sonarIntervals.toInt();
-
                 /// prompt user to confirm navigation
                 navigation.showConfirmationDialog(
                   message: 'Are you ready?',
@@ -87,10 +78,13 @@ class _CreateGameScreen2State extends State<CreateGameScreen2> {
           children: [
             Container(
               height: 250,
-              child: CreateGameMap(
-                boundarySize: _boundarySize,
-                loadedMap: _loadedMap,
-              ),
+              child: Consumer<GameService>(builder: (context, game, child) {
+                return CreateGameMap(
+                  boundarySize: game.createGameViewModel2.boundarySize,
+                  boundaryPosition: game.createGameViewModel2.boundaryPosition,
+                  loadedMap: _loadedMap,
+                );
+              }),
             ),
             _loadingMap
                 ? Expanded(
@@ -109,54 +103,8 @@ class _CreateGameScreen2State extends State<CreateGameScreen2> {
                             'Move map to reposition boundary',
                             style: TextStyle(fontSize: 18),
                           ),
-                          Container(
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Set boundary size: ',
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                  Slider(
-                                    value: _boundarySize,
-                                    min: 50,
-                                    max: 500,
-                                    divisions: 9,
-                                    label:
-                                        '${_boundarySize.round().toString()} metres  ',
-                                    activeColor: Theme.of(context).accentColor,
-                                    onChanged: (double value) {
-                                      setState(() {
-                                        _boundarySize = value;
-                                      });
-                                    },
-                                  ),
-                                ]),
-                          ),
-                          Container(
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Set sonar intervals: ',
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                  Slider(
-                                    value: _sonarIntervals,
-                                    min: 30,
-                                    max: 300,
-                                    divisions: 9,
-                                    label:
-                                        '${(_sonarIntervals).round().toString()} seconds',
-                                    activeColor: Theme.of(context).accentColor,
-                                    onChanged: (double value) {
-                                      setState(() {
-                                        _sonarIntervals = value;
-                                      });
-                                    },
-                                  ),
-                                ]),
-                          ),
+                          BoundarySizeSlider(),
+                          SonarIntervalsSlider(),
                         ],
                       ),
                     ),

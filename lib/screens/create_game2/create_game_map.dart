@@ -7,6 +7,7 @@ import 'package:niira/extensions/location_extension.dart';
 import 'package:niira/extensions/circle_extension.dart';
 import 'package:niira/extensions/camera_position.dart';
 import 'package:niira/screens/create_game2/show_location_btn.dart';
+import 'package:niira/services/game_service.dart';
 import 'package:niira/services/location_service.dart';
 import 'package:niira/utilities/map_styles/create_game_map.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +16,12 @@ import 'package:provider/provider.dart';
 class CreateGameMap extends StatefulWidget {
   final double boundarySize;
   final Function loadedMap;
-  CreateGameMap({@required this.boundarySize, @required this.loadedMap});
+  final Location boundaryPosition;
+
+  CreateGameMap(
+      {@required this.boundarySize,
+      @required this.boundaryPosition,
+      @required this.loadedMap});
   @override
   State<CreateGameMap> createState() => CreateGameMapState();
 }
@@ -24,7 +30,6 @@ class CreateGameMapState extends State<CreateGameMap> {
   final Completer<GoogleMapController> _controller = Completer();
   Set<Circle> _circles;
   Location _userLocation;
-  LatLng _boundaryPosition;
 
   @override
   void initState() {
@@ -34,9 +39,13 @@ class CreateGameMapState extends State<CreateGameMap> {
 
   @override
   void didUpdateWidget(covariant CreateGameMap oldWidget) {
-    /// boundarySize is passed down from slider in `createGameScreen2`
-    /// we catch it here and update the map
-    if (_userLocation != null) _updateBoundarySize(widget.boundarySize);
+    // update boundary when size or position is changed
+    // if user location == null then we want initMap to be called
+    if (_userLocation != null &&
+        widget.boundarySize != null &&
+        widget.boundaryPosition != null) {
+      _updateBoundary(widget.boundarySize, widget.boundaryPosition);
+    }
     super.didUpdateWidget(oldWidget);
   }
 
@@ -46,10 +55,12 @@ class CreateGameMapState extends State<CreateGameMap> {
     final userLocationFromService =
         await context.read<LocationService>().getUsersCurrentLocation();
 
+    context.read<GameService>().createGameViewModel2.boundaryPosition =
+        userLocationFromService;
+
     setState(() {
-      _boundaryPosition = userLocationFromService.toLatLng();
       _userLocation = userLocationFromService;
-      _circles = _userLocation.toCircles(boundarySize: widget.boundarySize);
+      _circles = _userLocation.toCircles();
     });
   }
 
@@ -70,7 +81,7 @@ class CreateGameMapState extends State<CreateGameMap> {
                 // tell `createGameScreen2` that the map is loaded
                 widget.loadedMap();
               },
-              // update boundary position when user moves the map
+              // update boundary position and user icon size when user moves map
               onCameraMove: (cameraPosition) => _updateMap(cameraPosition),
               circles: _circles,
             ),
@@ -83,26 +94,29 @@ class CreateGameMapState extends State<CreateGameMap> {
           ]);
   }
 
-  /// Update boundary and user location icons. Also set
-  /// `_boundaryPosition` in local state so `updateBoundarySize`
-  /// can access it
+  /// Update boundary and user location icons in map.
+  /// Also update boundaryPosition and boundarySize in vm.
   void _updateMap(CameraPosition cameraPosition) {
     setState(() {
       _circles = cameraPosition.toCircles(
         boundarySize: widget.boundarySize,
         userLocation: _userLocation.toLatLng(),
       );
-      _boundaryPosition = cameraPosition.toLatLng();
     });
+    context.read<GameService>().createGameViewModel2.boundaryPosition =
+        cameraPosition.toLocation();
   }
 
-  void _updateBoundarySize(double size) {
+  /// whenever boundary size is changed in `boundarySizeSlider`
+  /// or boundary position is changed when the user moves the map in `onCameraMove`
+  /// update ui
+  void _updateBoundary(double size, Location position) {
     setState(() {
       _circles = _circles
           .map((circle) => circle.circleId == CircleId('boundary')
               // required parameter 'circleId' will be added in toBoundary function
               // ignore: missing_required_param
-              ? Circle().toBoundary(size: size, position: _boundaryPosition)
+              ? Circle().toBoundary(size: size, position: position)
               : circle)
           .toSet();
     });
