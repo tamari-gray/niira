@@ -12,8 +12,17 @@ class _BoundarySizeSliderState extends State<BoundarySizeSlider> {
 
   @override
   void initState() {
-    _boundarySize = 50;
+    _setDefaultBoundarySize();
     super.initState();
+  }
+
+  void _setDefaultBoundarySize() {
+    final vm =
+        Provider.of<GameService>(context, listen: false).createGameViewModel2;
+
+    vm.boundarySize != null
+        ? _boundarySize = vm.boundarySize
+        : _boundarySize = vm.defaultBoundarySize;
   }
 
   @override
@@ -21,16 +30,13 @@ class _BoundarySizeSliderState extends State<BoundarySizeSlider> {
     return Container(
       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         Text(
-          'Set boundary size: ',
+          'Boundary size: ',
           style: TextStyle(fontSize: 18),
         ),
         Slider(
             value: _boundarySize,
-            min: context
-                .read<GameService>()
-                .createGameViewModel2
-                .defaultBoundarySize,
-            max: 500,
+            min: 25,
+            max: 250,
             divisions: 9,
             label: '${_boundarySize.round().toString()} metres  ',
             activeColor: Theme.of(context).accentColor,

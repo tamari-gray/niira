@@ -7,6 +7,6 @@ class CreateGameViewModel2 {
   int sonarIntervals;
   Location boundaryPosition;
 
-  // constructs vm with default boundary size
+  // constructs vm with default boundary size, must be a multiple of 50
   CreateGameViewModel2({@required this.defaultBoundarySize});
 }

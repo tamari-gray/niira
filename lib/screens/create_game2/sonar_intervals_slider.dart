@@ -12,7 +12,7 @@ class _SonarIntervalsSliderState extends State<SonarIntervalsSlider> {
 
   @override
   void initState() {
-    _sonarIntervals = 30;
+    _sonarIntervals = 120;
     super.initState();
   }
 
@@ -21,7 +21,7 @@ class _SonarIntervalsSliderState extends State<SonarIntervalsSlider> {
     return Container(
       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         Text(
-          'Set sonar intervals: ',
+          'Sonar intervals: ',
           style: TextStyle(fontSize: 18),
         ),
         Slider(

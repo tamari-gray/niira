@@ -7,7 +7,7 @@ import 'package:niira/models/view_models/create_game2.dart';
 class GameService extends ChangeNotifier {
   Game currentGame;
   final createGameViewModel1 = CreateGameViewModel1();
-  final createGameViewModel2 = CreateGameViewModel2(defaultBoundarySize: 50);
+  final createGameViewModel2 = CreateGameViewModel2(defaultBoundarySize: 100);
 
   GameService({this.currentGame});
 
