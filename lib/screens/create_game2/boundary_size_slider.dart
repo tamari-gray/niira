@@ -26,7 +26,10 @@ class _BoundarySizeSliderState extends State<BoundarySizeSlider> {
         ),
         Slider(
             value: _boundarySize,
-            min: 50,
+            min: context
+                .read<GameService>()
+                .createGameViewModel2
+                .defaultBoundarySize,
             max: 500,
             divisions: 9,
             label: '${_boundarySize.round().toString()} metres  ',

@@ -58,9 +58,12 @@ class CreateGameMapState extends State<CreateGameMap> {
     context.read<GameService>().createGameViewModel2.boundaryPosition =
         userLocationFromService;
 
+    final defaultBoundarySize =
+        context.read<GameService>().createGameViewModel2.defaultBoundarySize;
+
     setState(() {
       _userLocation = userLocationFromService;
-      _circles = _userLocation.toCircles();
+      _circles = _userLocation.toCircles(boundarySize: defaultBoundarySize);
     });
   }
 

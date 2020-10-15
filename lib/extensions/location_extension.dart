@@ -14,11 +14,11 @@ extension LocationExt on Location {
 
   /// this will only be called from init map
   /// so we want the radius to be the default value
-  Set<Circle> toCircles() => <Circle>{
+  Set<Circle> toCircles({@required double boundarySize}) => <Circle>{
         Circle(
           circleId: CircleId('boundary'),
           center: toLatLng(),
-          radius: 50,
+          radius: boundarySize,
           strokeWidth: 3,
           strokeColor: Color.fromRGBO(247, 153, 0, 1),
           fillColor: Color.fromRGBO(247, 153, 0, 0.2),
