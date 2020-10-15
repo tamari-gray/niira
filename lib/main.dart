@@ -146,10 +146,9 @@ class _MyAppState extends State<MyApp> {
                 if (snapshot.hasError) {
                   context.read<Navigation>().displayError(snapshot.error);
                 }
-                return CreateGameScreen2();
-                // return (snapshot.data == null)
-                //     ? WelcomeScreen()
-                //     : LobbyScreen();
+                return (snapshot.data == null)
+                    ? WelcomeScreen()
+                    : LobbyScreen();
               },
             )),
       );
