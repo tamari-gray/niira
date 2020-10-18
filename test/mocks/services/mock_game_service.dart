@@ -10,4 +10,4 @@ class FakeGameService extends Fake implements GameService {
   Game currentGame;
 }
 
-// class MockGameService
+class MockGameService extends Mock implements GameService {}

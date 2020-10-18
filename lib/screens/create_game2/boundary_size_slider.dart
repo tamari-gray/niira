@@ -16,6 +16,7 @@ class _BoundarySizeSliderState extends State<BoundarySizeSlider> {
     super.initState();
   }
 
+  // sets boundary size in vm if not already set (boundarySize == null)
   void _setDefaultBoundarySize() {
     final vm =
         Provider.of<GameService>(context, listen: false).createGameViewModel2;
