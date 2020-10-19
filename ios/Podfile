@@ -28,6 +28,9 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 flutter_ios_podfile_setup
 
 target 'Runner' do
+  # Firestore iOS SDK depends on some 500k lines of mostly C++ code which can take upwards of 5 minutes to build so we use a pre-compiled version
+  pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '6.26.0'
+ 
   use_frameworks!
   use_modular_headers!
 
