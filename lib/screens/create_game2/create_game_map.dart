@@ -55,9 +55,11 @@ class CreateGameMapState extends State<CreateGameMap> {
     final userLocationFromService =
         await context.read<LocationService>().getUsersCurrentLocation();
 
+    // update boundary position in vm
     context.read<GameService>().createGameViewModel2.boundaryPosition =
         userLocationFromService;
 
+    // get default boundary size from vm
     final defaultBoundarySize =
         context.read<GameService>().createGameViewModel2.defaultBoundarySize;
 
@@ -74,8 +76,9 @@ class CreateGameMapState extends State<CreateGameMap> {
         : Stack(children: [
             // create the map!
             GoogleMap(
-              zoomGesturesEnabled: true,
+              myLocationButtonEnabled: false,
               zoomControlsEnabled: false,
+              zoomGesturesEnabled: true,
               initialCameraPosition: _userLocation.toShowUserLocation(
                   boundarySize: widget.boundarySize),
               onMapCreated: (GoogleMapController controller) {

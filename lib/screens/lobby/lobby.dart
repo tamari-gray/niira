@@ -9,7 +9,6 @@ import 'package:niira/services/location_service.dart';
 import 'package:provider/provider.dart';
 
 class LobbyScreen extends StatelessWidget {
-  // TODO: decide on what happens when user refuses location
   static const routeName = '/lobby';
 
   @override
