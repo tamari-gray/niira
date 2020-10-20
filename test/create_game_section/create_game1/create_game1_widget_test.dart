@@ -18,7 +18,7 @@ void main() {
       final nav = Navigation();
       await tester.pumpWidget(MultiProvider(
           providers: [
-            Provider<GameService>(create: (_) => GameService()),
+            ChangeNotifierProvider<GameService>(create: (_) => GameService()),
             Provider<LocationService>(create: (_) => FakeLocationService()),
             Provider<Navigation>.value(value: nav),
           ],
@@ -68,10 +68,10 @@ void main() {
       await tester.tap(submitButton);
 
       // ol reliable
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       // check game screen 2 widget is found (due to navigation)
-      expect(find.text('Create Game 2/2'), findsOneWidget);
+      expect(find.byWidget(CreateGameScreen2()), findsOneWidget);
     });
   });
 }

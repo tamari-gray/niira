@@ -25,9 +25,10 @@ class Loading extends StatelessWidget {
               child: Text(
                 '$message',
                 style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25,
-                    color: Theme.of(context).primaryColor),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
             ),
           )
