@@ -8,7 +8,8 @@ void main() {
   test('returns in km to nearest 100m e.g 1.5km', () {
     // init data
     final _userLocation = Location(latitude: -37.8654, longitude: 144.9814);
-    final _gameLocation = MockGames().gamesInorderOfDistance[1].location;
+    final _gameLocation =
+        MockGames().gamesInorderOfDistance[1].boundaryPosition;
 
     // calc distance
     final _distance = distance(

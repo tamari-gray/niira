@@ -34,7 +34,7 @@ void main() {
         sonarIntervals: null,
         password: 'test_password',
         boundarySize: 0,
-        location: Location(latitude: 0, longitude: 0),
+        boundaryPosition: Location(latitude: 0, longitude: 0),
         phase: null,
       );
       _gameService.currentGame = _mockGame;
@@ -88,7 +88,7 @@ void main() {
           sonarIntervals: null,
           password: 'test_password',
           boundarySize: 0,
-          location: Location(latitude: 0, longitude: 0),
+          boundaryPosition: Location(latitude: 0, longitude: 0),
           phase: null);
       _gameService.currentGame = _mockGame;
       await tester.pumpAndSettle();

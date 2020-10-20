@@ -119,7 +119,7 @@ class _MyAppState extends State<MyApp> {
           Provider<DatabaseService>.value(value: _databaseService),
           Provider<Navigation>.value(value: _navigation),
           Provider<LocationService>.value(value: _locationService),
-          Provider<GameService>.value(value: _gameService)
+          ChangeNotifierProvider<GameService>.value(value: _gameService)
         ],
         child: MaterialApp(
             title: 'Niira',
@@ -146,7 +146,6 @@ class _MyAppState extends State<MyApp> {
                 if (snapshot.hasError) {
                   context.read<Navigation>().displayError(snapshot.error);
                 }
-
                 return (snapshot.data == null)
                     ? WelcomeScreen()
                     : LobbyScreen();

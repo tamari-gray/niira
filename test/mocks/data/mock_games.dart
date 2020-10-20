@@ -10,7 +10,7 @@ class MockGames {
       sonarIntervals: 5,
       phase: GamePhase.created,
       boundarySize: 0,
-      location: Location(latitude: -37.861844, longitude: 144.989905),
+      boundaryPosition: Location(latitude: -37.861844, longitude: 144.989905),
       password: 'password12345',
       distanceFromUser: 10,
     ),
@@ -21,7 +21,7 @@ class MockGames {
       sonarIntervals: 5,
       phase: GamePhase.created,
       boundarySize: 0,
-      location: Location(latitude: -37.862655, longitude: 144.990368),
+      boundaryPosition: Location(latitude: -37.862655, longitude: 144.990368),
       password: 'password123',
       distanceFromUser: 20,
     ),
@@ -32,7 +32,7 @@ class MockGames {
       sonarIntervals: 5,
       phase: GamePhase.created,
       boundarySize: 0,
-      location: Location(latitude: -37.862655, longitude: 144.990368),
+      boundaryPosition: Location(latitude: -37.862655, longitude: 144.990368),
       password: 'password123',
       distanceFromUser: 30,
     ),
@@ -45,7 +45,7 @@ class MockGames {
       sonarIntervals: 5,
       phase: GamePhase.created,
       boundarySize: 0,
-      location: Location(latitude: -37.872482, longitude: 144.991371),
+      boundaryPosition: Location(latitude: -37.872482, longitude: 144.991371),
       password: 'password123',
     ),
     Game(
@@ -55,7 +55,7 @@ class MockGames {
       sonarIntervals: 5,
       phase: GamePhase.created,
       boundarySize: 0,
-      location: Location(latitude: -37.862655, longitude: 144.990368),
+      boundaryPosition: Location(latitude: -37.862655, longitude: 144.990368),
       password: 'password123',
     ),
   ];
@@ -67,7 +67,7 @@ class MockGames {
       sonarIntervals: 5,
       phase: GamePhase.created,
       boundarySize: 0,
-      location: Location(latitude: -37.862655, longitude: 144.990368),
+      boundaryPosition: Location(latitude: -37.862655, longitude: 144.990368),
       password: 'password123',
     ),
     Game(
@@ -77,7 +77,7 @@ class MockGames {
       sonarIntervals: 5,
       phase: GamePhase.created,
       boundarySize: 0,
-      location: Location(latitude: -37.859845, longitude: 144.981232),
+      boundaryPosition: Location(latitude: -37.859845, longitude: 144.981232),
       password: 'password345',
     ),
     Game(
@@ -87,7 +87,7 @@ class MockGames {
       sonarIntervals: 5,
       phase: GamePhase.created,
       boundarySize: 0,
-      location: Location(latitude: -37.854898, longitude: 144.989121),
+      boundaryPosition: Location(latitude: -37.854898, longitude: 144.989121),
       password: 'password678',
     ),
     Game(
@@ -97,7 +97,7 @@ class MockGames {
       sonarIntervals: 5,
       phase: GamePhase.created,
       boundarySize: 0,
-      location: Location(latitude: -37.872482, longitude: 144.991371),
+      boundaryPosition: Location(latitude: -37.872482, longitude: 144.991371),
       password: 'password910',
     ),
     Game(
@@ -107,7 +107,7 @@ class MockGames {
       sonarIntervals: 5,
       phase: GamePhase.created,
       boundarySize: 0,
-      location: Location(latitude: -37.870585, longitude: 144.986638),
+      boundaryPosition: Location(latitude: -37.870585, longitude: 144.986638),
       password: 'password583490',
     )
   ].toList();

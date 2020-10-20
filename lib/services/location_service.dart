@@ -38,9 +38,9 @@ class LocationService {
     final gamesWithDistance = games.map<Game>((game) {
       game.distanceFromUser = distance(
         lat1: userLocation.latitude,
-        lat2: game.location.latitude,
+        lat2: game.boundaryPosition.latitude,
         lon1: userLocation.longitude,
-        lon2: game.location.longitude,
+        lon2: game.boundaryPosition.longitude,
       );
       return game;
     }).toList();

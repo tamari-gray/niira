@@ -20,13 +20,13 @@ void main() {
 
     // generate expected outcome
     final gameOneExpectedDistance = distance(
-        lat1: mockGames[0].location.latitude,
-        lon1: mockGames[0].location.longitude,
+        lat1: mockGames[0].boundaryPosition.latitude,
+        lon1: mockGames[0].boundaryPosition.longitude,
         lat2: mockUserLocation.latitude,
         lon2: mockUserLocation.longitude); // result = 820.0
     final gameTwoExpectedDistance = distance(
-        lat1: mockGames[1].location.latitude,
-        lon1: mockGames[1].location.longitude,
+        lat1: mockGames[1].boundaryPosition.latitude,
+        lon1: mockGames[1].boundaryPosition.longitude,
         lat2: mockUserLocation.latitude,
         lon2: mockUserLocation.longitude); // result = 323.0
 

@@ -67,6 +67,7 @@ class Navigation {
   /// cancel options.
   Future<void> showConfirmationDialog(
       {@required void Function() onConfirmed,
+      String message = 'Are you sure?',
       String confirmText = 'OK',
       String cancelText = 'Cancel'}) async {
     final keyContext = navigatorKey.currentState.overlay.context;
@@ -74,7 +75,7 @@ class Navigation {
       context: keyContext,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Are you sure?'),
+          title: Text('$message'),
           actions: <Widget>[
             OutlineButton(
               color: Theme.of(context).primaryColor,

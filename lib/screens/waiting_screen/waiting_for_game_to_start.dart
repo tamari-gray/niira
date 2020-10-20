@@ -23,8 +23,7 @@ class _WaitingForGameToStartScreenState
 
   @override
   void initState() {
-    // TODO: implement initState
-    _game = context.read<GameService>().currentGame;
+    _game = Provider.of<GameService>(context, listen: false).currentGame;
     super.initState();
   }
 

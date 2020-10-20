@@ -46,7 +46,7 @@ void main() {
       MultiProvider(providers: [
         Provider<DatabaseService>.value(value: _mockDatabaseService),
         Provider<Navigation>.value(value: _navigation),
-        Provider<GameService>.value(value: _fakeGameService)
+        ChangeNotifierProvider<GameService>.value(value: _fakeGameService)
       ], child: MaterialApp(home: WaitingForGameToStartScreen())),
     );
 

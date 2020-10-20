@@ -52,7 +52,7 @@ class FirestoreService implements DatabaseService {
               sonarIntervals: gameDoc.data()['sonarIntervals'] as int,
               phase: gamePhase ?? GamePhase.created,
               boundarySize: gameDoc.data()['boundarySize'] as int,
-              location: Location.fromMap(
+              boundaryPosition: Location.fromMap(
                   gameDoc.data()['location'] as Map<String, dynamic>),
             );
           }).toList());
