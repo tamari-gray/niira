@@ -10,6 +10,16 @@ class CreateGameViewModel2 extends ChangeNotifier {
   // constructs vm with default boundary size, must be a multiple of 50
   CreateGameViewModel2({@required this.defaultBoundarySize});
 
+  void updateBoundarySize(double size) {
+    boundarySize = size;
+    notifyListeners();
+  }
+
+  void updateBoundaryPosition(Location position) {
+    boundaryPosition = position;
+    notifyListeners();
+  }
+
   void reset() {
     boundarySize = null;
     defaultBoundarySize = 100;

@@ -109,8 +109,11 @@ class CreateGameMapState extends State<CreateGameMap> {
         userLocation: _userLocation.toLatLng(),
       );
     });
-    context.read<CreateGameViewModel2>().boundaryPosition =
-        cameraPosition.toLocation();
+    final boundaryPosition = cameraPosition.toLocation();
+    context
+        .read<CreateGameViewModel2>()
+        .updateBoundaryPosition(boundaryPosition);
+    ;
   }
 
   /// whenever boundary size is changed in `boundarySizeSlider`

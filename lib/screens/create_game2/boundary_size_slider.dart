@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:niira/models/view_models/create_game2.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 class BoundarySizeSlider extends StatefulWidget {
@@ -46,7 +45,7 @@ class _BoundarySizeSliderState extends State<BoundarySizeSlider> {
                 _boundarySize = value;
               });
 
-              context.read<CreateGameViewModel2>().boundarySize = value;
+              context.read<CreateGameViewModel2>().updateBoundarySize(value);
             }),
       ]),
     );
