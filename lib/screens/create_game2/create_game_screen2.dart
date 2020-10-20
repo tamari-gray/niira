@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:niira/loading.dart';
+import 'package:niira/models/view_models/create_game2.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/create_game2/create_game_map.dart';
 import 'package:niira/screens/create_game2/sonar_intervals_slider.dart';
 import 'package:niira/screens/waiting_screen/waiting_for_game_to_start.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import 'boundary_size_slider.dart';
@@ -78,10 +78,11 @@ class _CreateGameScreen2State extends State<CreateGameScreen2> {
           children: [
             Container(
               height: 250,
-              child: Consumer<GameService>(builder: (context, game, child) {
+              child:
+                  Consumer<CreateGameViewModel2>(builder: (context, vm, child) {
                 return CreateGameMap(
-                  boundarySize: game.createGameViewModel2.boundarySize,
-                  boundaryPosition: game.createGameViewModel2.boundaryPosition,
+                  boundarySize: vm.boundarySize,
+                  boundaryPosition: vm.boundaryPosition,
                   loadedMap: _loadedMap,
                 );
               }),

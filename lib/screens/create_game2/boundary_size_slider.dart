@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:niira/models/view_models/create_game2.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
@@ -18,8 +19,7 @@ class _BoundarySizeSliderState extends State<BoundarySizeSlider> {
 
   // sets boundary size in vm if not already set (boundarySize == null)
   void _setDefaultBoundarySize() {
-    final vm =
-        Provider.of<GameService>(context, listen: false).createGameViewModel2;
+    final vm = Provider.of<CreateGameViewModel2>(context, listen: false);
 
     vm.boundarySize != null
         ? _boundarySize = vm.boundarySize
@@ -45,7 +45,8 @@ class _BoundarySizeSliderState extends State<BoundarySizeSlider> {
               setState(() {
                 _boundarySize = value;
               });
-              context.read<GameService>().updateBoundarySize(value);
+
+              context.read<CreateGameViewModel2>().boundarySize = value;
             }),
       ]),
     );

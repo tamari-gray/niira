@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:niira/models/view_models/create_game2.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/create_game1/create_game_screen1.dart';
 import 'package:niira/screens/create_game2/create_game_screen2.dart';
@@ -18,7 +19,9 @@ void main() {
       final nav = Navigation();
       await tester.pumpWidget(MultiProvider(
           providers: [
-            ChangeNotifierProvider<GameService>(create: (_) => GameService()),
+            Provider<GameService>(create: (_) => GameService()),
+            ChangeNotifierProvider<CreateGameViewModel2>(
+                create: (_) => CreateGameViewModel2(defaultBoundarySize: 100)),
             Provider<LocationService>(create: (_) => FakeLocationService()),
             Provider<Navigation>.value(value: nav),
           ],
@@ -69,9 +72,18 @@ void main() {
 
       // ol reliable
       await tester.pump();
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
 
       // check game screen 2 widget is found (due to navigation)
-      expect(find.byWidget(CreateGameScreen2()), findsOneWidget);
+      expect(find.text('loading map...'), findsOneWidget);
     });
   });
 }

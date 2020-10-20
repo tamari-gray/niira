@@ -6,8 +6,8 @@ import 'package:niira/models/location.dart';
 import 'package:niira/extensions/location_extension.dart';
 import 'package:niira/extensions/circle_extension.dart';
 import 'package:niira/extensions/camera_position.dart';
+import 'package:niira/models/view_models/create_game2.dart';
 import 'package:niira/screens/create_game2/show_location_btn.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:niira/services/location_service.dart';
 import 'package:niira/utilities/map_styles/create_game_map.dart';
 import 'package:provider/provider.dart';
@@ -56,12 +56,12 @@ class CreateGameMapState extends State<CreateGameMap> {
         await context.read<LocationService>().getUsersCurrentLocation();
 
     // update boundary position in vm
-    context.read<GameService>().createGameViewModel2.boundaryPosition =
+    context.read<CreateGameViewModel2>().boundaryPosition =
         userLocationFromService;
 
     // get default boundary size from vm
     final defaultBoundarySize =
-        context.read<GameService>().createGameViewModel2.defaultBoundarySize;
+        context.read<CreateGameViewModel2>().defaultBoundarySize;
 
     setState(() {
       _userLocation = userLocationFromService;
@@ -109,7 +109,7 @@ class CreateGameMapState extends State<CreateGameMap> {
         userLocation: _userLocation.toLatLng(),
       );
     });
-    context.read<GameService>().createGameViewModel2.boundaryPosition =
+    context.read<CreateGameViewModel2>().boundaryPosition =
         cameraPosition.toLocation();
   }
 
