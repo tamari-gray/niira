@@ -25,6 +25,13 @@ class _BoundarySizeSliderState extends State<BoundarySizeSlider> {
         : _boundarySize = vm.defaultBoundarySize;
   }
 
+  void _updateBoundarySize(double size) {
+    setState(() {
+      _boundarySize = size;
+    });
+    context.read<CreateGameViewModel2>().updateBoundarySize(size);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,19 +41,14 @@ class _BoundarySizeSliderState extends State<BoundarySizeSlider> {
           style: TextStyle(fontSize: 18),
         ),
         Slider(
-            value: _boundarySize,
-            min: 25,
-            max: 250,
-            divisions: 9,
-            label: '${_boundarySize.round().toString()} metres  ',
-            activeColor: Theme.of(context).accentColor,
-            onChanged: (double value) {
-              setState(() {
-                _boundarySize = value;
-              });
-
-              context.read<CreateGameViewModel2>().updateBoundarySize(value);
-            }),
+          value: _boundarySize,
+          min: 25,
+          max: 250,
+          divisions: 9,
+          label: '${_boundarySize.round().toString()} metres  ',
+          activeColor: Theme.of(context).accentColor,
+          onChanged: (double value) => _updateBoundarySize(value),
+        ),
       ]),
     );
   }
