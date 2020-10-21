@@ -56,8 +56,9 @@ class CreateGameMapState extends State<CreateGameMap> {
         await context.read<LocationService>().getUsersCurrentLocation();
 
     // update boundary position in vm
-    context.read<CreateGameViewModel2>().boundaryPosition =
-        userLocationFromService;
+    context
+        .read<CreateGameViewModel2>()
+        .updateBoundaryPosition(userLocationFromService);
 
     // get default boundary size from vm
     final defaultBoundarySize =
