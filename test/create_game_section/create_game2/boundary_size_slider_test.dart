@@ -5,35 +5,41 @@ import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/create_game2/boundary_size_slider.dart';
 import 'package:provider/provider.dart';
 
-import '../../mocks/create_game_vm_2_mocks.dart';
-
 void main() {
   group('BoundarySizeSlider', () {
-    testWidgets('when user changes dslider value, update vm.boundarySize',
+    testWidgets('when user changes slider value, update vm.boundarySize',
         (WidgetTester tester) async {
-      // spin up the wut
+      // init services
       final nav = Navigation();
+      final vm = CreateGameViewModel2();
+
+      // spin up the wut
+      final wut = BoundarySizeSlider();
+      expect(vm.boundarySize, 100);
+
       await tester.pumpWidget(
         MultiProvider(
           providers: [
-            ChangeNotifierProvider<CreateGameViewModel2>(
-              create: (_) => MockcreateGameVm2(),
-            ),
+            ChangeNotifierProvider<CreateGameViewModel2>.value(value: vm)
           ],
           child: MaterialApp(
             navigatorKey: nav.navigatorKey,
-            home: BoundarySizeSlider(),
+            home: Scaffold(body: wut),
           ),
         ),
       );
 
+      // ol reliable
       await tester.pumpAndSettle();
 
       // mock user interacting with slider
-      //TODO: how to mock user using a slider?? => may need to do integration test
+      await tester.tap(find.byType(Slider));
+
+      // ol reliable again
+      await tester.pumpAndSettle();
 
       // check that vm was updated
-      // verify(MockCreateGameVm2.updateBoundarySize(any)).called(1);
+      expect(vm.boundarySize, 150);
     });
   });
 }
