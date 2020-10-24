@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:niira/loading.dart';
+import 'package:niira/models/view_models/create_game2.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/create_account.dart';
 import 'package:niira/screens/create_game1/create_game_screen1.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatefulWidget {
   final DatabaseService _databaseService;
   final Navigation _navigation;
   final GameService _gameService;
+  final CreateGameViewModel2 _createGameVM2;
   final LocationService _locationService;
   final FirebaseWrapper _firebase;
 
@@ -40,12 +42,14 @@ class MyApp extends StatefulWidget {
     Navigation navigation,
     LocationService locationService,
     GameService gameService,
+    CreateGameViewModel2 createGameVM2,
     FirebaseWrapper firebase,
   })  : _authService = authService,
         _databaseService = databaseService,
         _navigation = navigation,
         _locationService = locationService,
         _gameService = gameService,
+        _createGameVM2 = createGameVM2,
         _firebase = firebase ?? FirebaseWrapper();
 
   @override
@@ -59,6 +63,7 @@ class _MyAppState extends State<MyApp> {
   Navigation _navigation;
   LocationService _locationService;
   GameService _gameService;
+  CreateGameViewModel2 _createGameVM2;
   dynamic _firebaseInitError;
   bool _initializedFirebase;
 
@@ -93,6 +98,8 @@ class _MyAppState extends State<MyApp> {
         widget._locationService ?? LocationService(GeolocatorPlatform.instance);
 
     _gameService = widget._gameService ?? GameService();
+    _createGameVM2 = widget._createGameVM2 ?? CreateGameViewModel2();
+
     _authService = widget._authService ??
         FirebaseAuthService(FirebaseAuth.instance, _navigation);
 
@@ -119,7 +126,10 @@ class _MyAppState extends State<MyApp> {
           Provider<DatabaseService>.value(value: _databaseService),
           Provider<Navigation>.value(value: _navigation),
           Provider<LocationService>.value(value: _locationService),
-          ChangeNotifierProvider<GameService>.value(value: _gameService)
+          Provider<GameService>.value(value: _gameService),
+          ChangeNotifierProvider<CreateGameViewModel2>.value(
+            value: _createGameVM2,
+          )
         ],
         child: MaterialApp(
             title: 'Niira',

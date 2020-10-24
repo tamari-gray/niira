@@ -6,8 +6,8 @@ import 'package:niira/models/location.dart';
 import 'package:niira/extensions/location_extension.dart';
 import 'package:niira/extensions/circle_extension.dart';
 import 'package:niira/extensions/camera_position.dart';
+import 'package:niira/models/view_models/create_game2.dart';
 import 'package:niira/screens/create_game2/show_location_btn.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:niira/services/location_service.dart';
 import 'package:niira/utilities/map_styles/create_game_map.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +28,7 @@ class CreateGameMap extends StatefulWidget {
 
 class CreateGameMapState extends State<CreateGameMap> {
   final Completer<GoogleMapController> _controller = Completer();
-  Set<Circle> _circles;
+  Set<Circle> _mapIcons;
   Location _userLocation;
 
   @override
@@ -50,22 +50,22 @@ class CreateGameMapState extends State<CreateGameMap> {
   }
 
   /// get users location from `LocationService`
-  /// and set user icon + boundary icon
+  /// and set user + boundary icons on map
   void _initMap() async {
     final userLocationFromService =
         await context.read<LocationService>().getUsersCurrentLocation();
 
     // update boundary position in vm
-    context.read<GameService>().createGameViewModel2.boundaryPosition =
-        userLocationFromService;
+    context
+        .read<CreateGameViewModel2>()
+        .updateBoundaryPosition(userLocationFromService);
 
-    // get default boundary size from vm
-    final defaultBoundarySize =
-        context.read<GameService>().createGameViewModel2.defaultBoundarySize;
+    // get initial boundary size from vm
+    final vmBoundarySize = context.read<CreateGameViewModel2>().boundarySize;
 
     setState(() {
       _userLocation = userLocationFromService;
-      _circles = _userLocation.toCircles(boundarySize: defaultBoundarySize);
+      _mapIcons = _userLocation.toMapIcons(boundarySize: vmBoundarySize);
     });
   }
 
@@ -89,7 +89,7 @@ class CreateGameMapState extends State<CreateGameMap> {
               },
               // update boundary position and user icon size when user moves map
               onCameraMove: (cameraPosition) => _updateMap(cameraPosition),
-              circles: _circles,
+              circles: _mapIcons,
             ),
             // custom fab type button to show users location
             ShowLocationButton(
@@ -104,13 +104,16 @@ class CreateGameMapState extends State<CreateGameMap> {
   /// Also update boundaryPosition and boundarySize in vm.
   void _updateMap(CameraPosition cameraPosition) {
     setState(() {
-      _circles = cameraPosition.toCircles(
+      _mapIcons = cameraPosition.toMapIcons(
         boundarySize: widget.boundarySize,
         userLocation: _userLocation.toLatLng(),
       );
     });
-    context.read<GameService>().createGameViewModel2.boundaryPosition =
-        cameraPosition.toLocation();
+    final boundaryPosition = cameraPosition.toLocation();
+    context
+        .read<CreateGameViewModel2>()
+        .updateBoundaryPosition(boundaryPosition);
+    ;
   }
 
   /// whenever boundary size is changed in `boundarySizeSlider`
@@ -118,7 +121,7 @@ class CreateGameMapState extends State<CreateGameMap> {
   /// update ui
   void _updateBoundary(double size, Location position) {
     setState(() {
-      _circles = _circles
+      _mapIcons = _mapIcons
           .map((circle) => circle.circleId == CircleId('boundary')
               // required parameter 'circleId' will be added in toBoundary function
               // ignore: missing_required_param

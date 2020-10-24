@@ -3,12 +3,9 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/player.dart';
 import 'package:niira/navigation/navigation.dart';
-import 'package:niira/screens/input_password.dart';
-import 'package:niira/screens/lobby/lobby.dart';
 import 'package:niira/screens/waiting_screen/waiting_for_game_to_start.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
@@ -16,7 +13,6 @@ import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/data/mock_games.dart';
-import '../../mocks/navigation/mock_navigation.dart';
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
 import '../../mocks/services/mock_game_service.dart';
@@ -46,7 +42,7 @@ void main() {
       MultiProvider(providers: [
         Provider<DatabaseService>.value(value: _mockDatabaseService),
         Provider<Navigation>.value(value: _navigation),
-        ChangeNotifierProvider<GameService>.value(value: _fakeGameService)
+        Provider<GameService>.value(value: _fakeGameService)
       ], child: MaterialApp(home: WaitingForGameToStartScreen())),
     );
 

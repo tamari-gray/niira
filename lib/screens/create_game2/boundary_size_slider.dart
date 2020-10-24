@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:niira/services/game_service.dart';
+import 'package:niira/models/view_models/create_game2.dart';
 import 'package:provider/provider.dart';
 
 class BoundarySizeSlider extends StatefulWidget {
@@ -18,12 +18,10 @@ class _BoundarySizeSliderState extends State<BoundarySizeSlider> {
 
   // sets boundary size in vm if not already set (boundarySize == null)
   void _setDefaultBoundarySize() {
-    final vm =
-        Provider.of<GameService>(context, listen: false).createGameViewModel2;
-
-    vm.boundarySize != null
-        ? _boundarySize = vm.boundarySize
-        : _boundarySize = vm.defaultBoundarySize;
+    final vm = Provider.of<CreateGameViewModel2>(context, listen: false);
+    setState(() {
+      _boundarySize = vm.boundarySize;
+    });
   }
 
   @override
@@ -35,19 +33,22 @@ class _BoundarySizeSliderState extends State<BoundarySizeSlider> {
           style: TextStyle(fontSize: 18),
         ),
         Slider(
-            value: _boundarySize,
-            min: 25,
-            max: 250,
-            divisions: 9,
-            label: '${_boundarySize.round().toString()} metres  ',
-            activeColor: Theme.of(context).accentColor,
-            onChanged: (double value) {
-              setState(() {
-                _boundarySize = value;
-              });
-              context.read<GameService>().updateBoundarySize(value);
-            }),
+          value: _boundarySize,
+          min: 25,
+          max: 250,
+          divisions: 9,
+          label: '${_boundarySize.round().toString()} metres  ',
+          activeColor: Theme.of(context).accentColor,
+          onChanged: (double value) => _updateBoundarySize(value),
+        ),
       ]),
     );
+  }
+
+  void _updateBoundarySize(double size) {
+    setState(() {
+      _boundarySize = size;
+    });
+    context.read<CreateGameViewModel2>().updateBoundarySize(size);
   }
 }

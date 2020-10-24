@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
 import '../location.dart';
 
-class CreateGameViewModel2 {
-  double boundarySize;
-  final double defaultBoundarySize;
+/// set initial [boundarySize] value by manualy changing it here
+class CreateGameViewModel2 extends ChangeNotifier {
+  double boundarySize = 100;
   int sonarIntervals;
   Location boundaryPosition;
 
-  // constructs vm with default boundary size, must be a multiple of 50
-  CreateGameViewModel2({@required this.defaultBoundarySize});
+  void updateBoundarySize(double size) {
+    boundarySize = size;
+    notifyListeners();
+  }
+
+  void updateBoundaryPosition(Location position) {
+    boundaryPosition = position;
+    notifyListeners();
+  }
+
+  void reset() {
+    boundarySize = 100;
+    sonarIntervals = null;
+    boundaryPosition = null;
+  }
 }

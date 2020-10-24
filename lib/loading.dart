@@ -3,7 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Loading extends StatelessWidget {
   final String message;
-  Loading({Key key, this.message}) : super(key: key);
+  Loading({Key key, this.message = 'loading...'}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

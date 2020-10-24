@@ -7,7 +7,7 @@ extension CameraPositionExt on CameraPosition {
   LatLng toLatLng() => LatLng(target.latitude, target.longitude);
   Location toLocation() =>
       Location(latitude: target.latitude, longitude: target.longitude);
-  Set<Circle> toCircles(
+  Set<Circle> toMapIcons(
       {@required double boundarySize, @required LatLng userLocation}) {
     return <Circle>{
       Circle(

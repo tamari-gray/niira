@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:niira/services/game_service.dart';
+import 'package:niira/models/view_models/create_game2.dart';
 import 'package:provider/provider.dart';
 
 class SonarIntervalsSlider extends StatefulWidget {
@@ -35,8 +35,7 @@ class _SonarIntervalsSliderState extends State<SonarIntervalsSlider> {
             setState(() {
               _sonarIntervals = value;
             });
-            context.read<GameService>().createGameViewModel2.sonarIntervals =
-                value.round();
+            context.read<CreateGameViewModel2>().sonarIntervals = value.round();
           },
         ),
       ]),
