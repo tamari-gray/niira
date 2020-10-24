@@ -21,7 +21,7 @@ void main() {
           providers: [
             Provider<GameService>(create: (_) => GameService()),
             ChangeNotifierProvider<CreateGameViewModel2>(
-                create: (_) => CreateGameViewModel2(defaultBoundarySize: 100)),
+                create: (_) => CreateGameViewModel2()),
             Provider<LocationService>(create: (_) => FakeLocationService()),
             Provider<Navigation>.value(value: nav),
           ],

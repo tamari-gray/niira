@@ -14,7 +14,7 @@ extension LocationExt on Location {
 
   /// this will only be called from init map
   /// so we want the radius to be the default value
-  Set<Circle> toCircles({@required double boundarySize}) => <Circle>{
+  Set<Circle> toMapIcons({@required double boundarySize}) => <Circle>{
         Circle(
           circleId: CircleId('boundary'),
           center: toLatLng(),

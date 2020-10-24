@@ -28,7 +28,7 @@ class CreateGameMap extends StatefulWidget {
 
 class CreateGameMapState extends State<CreateGameMap> {
   final Completer<GoogleMapController> _controller = Completer();
-  Set<Circle> _circles;
+  Set<Circle> _mapIcons;
   Location _userLocation;
 
   @override
@@ -50,7 +50,7 @@ class CreateGameMapState extends State<CreateGameMap> {
   }
 
   /// get users location from `LocationService`
-  /// and set user icon + boundary icon
+  /// and set user + boundary icons on map
   void _initMap() async {
     final userLocationFromService =
         await context.read<LocationService>().getUsersCurrentLocation();
@@ -60,13 +60,12 @@ class CreateGameMapState extends State<CreateGameMap> {
         .read<CreateGameViewModel2>()
         .updateBoundaryPosition(userLocationFromService);
 
-    // get default boundary size from vm
-    final defaultBoundarySize =
-        context.read<CreateGameViewModel2>().defaultBoundarySize;
+    // get initial boundary size from vm
+    final vmBoundarySize = context.read<CreateGameViewModel2>().boundarySize;
 
     setState(() {
       _userLocation = userLocationFromService;
-      _circles = _userLocation.toCircles(boundarySize: defaultBoundarySize);
+      _mapIcons = _userLocation.toMapIcons(boundarySize: vmBoundarySize);
     });
   }
 
@@ -90,7 +89,7 @@ class CreateGameMapState extends State<CreateGameMap> {
               },
               // update boundary position and user icon size when user moves map
               onCameraMove: (cameraPosition) => _updateMap(cameraPosition),
-              circles: _circles,
+              circles: _mapIcons,
             ),
             // custom fab type button to show users location
             ShowLocationButton(
@@ -105,7 +104,7 @@ class CreateGameMapState extends State<CreateGameMap> {
   /// Also update boundaryPosition and boundarySize in vm.
   void _updateMap(CameraPosition cameraPosition) {
     setState(() {
-      _circles = cameraPosition.toCircles(
+      _mapIcons = cameraPosition.toMapIcons(
         boundarySize: widget.boundarySize,
         userLocation: _userLocation.toLatLng(),
       );
@@ -122,7 +121,7 @@ class CreateGameMapState extends State<CreateGameMap> {
   /// update ui
   void _updateBoundary(double size, Location position) {
     setState(() {
-      _circles = _circles
+      _mapIcons = _mapIcons
           .map((circle) => circle.circleId == CircleId('boundary')
               // required parameter 'circleId' will be added in toBoundary function
               // ignore: missing_required_param

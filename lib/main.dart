@@ -98,8 +98,7 @@ class _MyAppState extends State<MyApp> {
         widget._locationService ?? LocationService(GeolocatorPlatform.instance);
 
     _gameService = widget._gameService ?? GameService();
-    _createGameVM2 =
-        widget._createGameVM2 ?? CreateGameViewModel2(defaultBoundarySize: 150);
+    _createGameVM2 = widget._createGameVM2 ?? CreateGameViewModel2();
 
     _authService = widget._authService ??
         FirebaseAuthService(FirebaseAuth.instance, _navigation);

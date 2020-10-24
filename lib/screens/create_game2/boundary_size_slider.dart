@@ -19,17 +19,9 @@ class _BoundarySizeSliderState extends State<BoundarySizeSlider> {
   // sets boundary size in vm if not already set (boundarySize == null)
   void _setDefaultBoundarySize() {
     final vm = Provider.of<CreateGameViewModel2>(context, listen: false);
-
-    vm.boundarySize != null
-        ? _boundarySize = vm.boundarySize
-        : _boundarySize = vm.defaultBoundarySize;
-  }
-
-  void _updateBoundarySize(double size) {
     setState(() {
-      _boundarySize = size;
+      _boundarySize = vm.boundarySize;
     });
-    context.read<CreateGameViewModel2>().updateBoundarySize(size);
   }
 
   @override
@@ -51,5 +43,12 @@ class _BoundarySizeSliderState extends State<BoundarySizeSlider> {
         ),
       ]),
     );
+  }
+
+  void _updateBoundarySize(double size) {
+    setState(() {
+      _boundarySize = size;
+    });
+    context.read<CreateGameViewModel2>().updateBoundarySize(size);
   }
 }
