@@ -103,17 +103,19 @@ class CreateGameMapState extends State<CreateGameMap> {
   /// Update boundary and user location icons in map.
   /// Also update boundaryPosition and boundarySize in vm.
   void _updateMap(CameraPosition cameraPosition) {
+    // update local state
     setState(() {
       _mapIcons = cameraPosition.toMapIcons(
         boundarySize: widget.boundarySize,
         userLocation: _userLocation.toLatLng(),
       );
     });
+
+    // update vm
     final boundaryPosition = cameraPosition.toLocation();
     context
         .read<CreateGameViewModel2>()
         .updateBoundaryPosition(boundaryPosition);
-    ;
   }
 
   /// whenever boundary size is changed in `boundarySizeSlider`

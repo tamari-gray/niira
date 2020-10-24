@@ -12,8 +12,16 @@ class _SonarIntervalsSliderState extends State<SonarIntervalsSlider> {
 
   @override
   void initState() {
-    _sonarIntervals = 120;
+    _setInitialSonarIntervals();
     super.initState();
+  }
+
+  // get initial sonar interval value from vm
+  void _setInitialSonarIntervals() {
+    final vm = Provider.of<CreateGameViewModel2>(context, listen: false);
+    setState(() {
+      _sonarIntervals = vm.sonarIntervals;
+    });
   }
 
   @override
@@ -35,7 +43,7 @@ class _SonarIntervalsSliderState extends State<SonarIntervalsSlider> {
             setState(() {
               _sonarIntervals = value;
             });
-            context.read<CreateGameViewModel2>().sonarIntervals = value.round();
+            context.read<CreateGameViewModel2>().sonarIntervals = value;
           },
         ),
       ]),

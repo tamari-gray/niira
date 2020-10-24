@@ -4,7 +4,7 @@ import '../location.dart';
 /// set initial [boundarySize] value by manualy changing it here
 class CreateGameViewModel2 extends ChangeNotifier {
   double boundarySize = 100;
-  int sonarIntervals;
+  double sonarIntervals = 300;
   Location boundaryPosition;
 
   void updateBoundarySize(double size) {
@@ -19,7 +19,7 @@ class CreateGameViewModel2 extends ChangeNotifier {
 
   void reset() {
     boundarySize = 100;
-    sonarIntervals = null;
+    sonarIntervals = 300;
     boundaryPosition = null;
   }
 }
