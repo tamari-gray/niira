@@ -6,11 +6,12 @@ enum GamePhase { created, initialising, playing, finished }
 class Game {
   final String id;
   final String name;
-  final String creatorName;
+  final String adminName;
+  final String adminId;
   final String password;
-  final int sonarIntervals;
+  final double sonarIntervals;
   final Location boundaryPosition;
-  final int boundarySize;
+  final double boundarySize;
   final GamePhase phase;
 
   double distanceFromUser;
@@ -18,7 +19,8 @@ class Game {
   Game({
     @required this.id,
     @required this.name,
-    @required this.creatorName,
+    @required this.adminName,
+    @required this.adminId,
     @required this.sonarIntervals,
     @required this.password,
     @required this.boundaryPosition,

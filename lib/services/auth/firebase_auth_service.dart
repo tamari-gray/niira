@@ -17,14 +17,14 @@ class FirebaseAuthService implements AuthService {
   @override
   Stream<UserData> get streamOfAuthState => _firebaseAuth
       .authStateChanges()
-      .map((firebaseUser) => firebaseUser.toData());
+      .map((firebaseUser) => firebaseUser.toUserData());
 
   @override
   Future<UserData> createUserAccount(String email, String password) async {
     try {
       final result = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
-      return result.user.toData();
+      return result.user.toUserData();
     } on FirebaseAuthException catch (error) {
       String customErrorMessage;
       switch (error.code) {
@@ -58,7 +58,7 @@ class FirebaseAuthService implements AuthService {
     try {
       final result = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
-      return result.user.toData();
+      return result.user.toUserData();
     } on FirebaseAuthException catch (error) {
       String customErrorMessage;
       switch (error.code) {

@@ -3,6 +3,7 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/player.dart';
 import 'package:niira/models/location.dart';
+import 'package:niira/extensions/game_extension.dart';
 import 'package:niira/services/database/database_service.dart';
 
 class FirestoreService implements DatabaseService {
@@ -46,12 +47,13 @@ class FirestoreService implements DatabaseService {
             return Game(
               id: gameDoc.data()['id']?.toString() ?? 'undefined',
               name: gameDoc.data()['name']?.toString() ?? 'undefined',
-              creatorName:
+              adminName:
                   gameDoc.data()['creatorName']?.toString() ?? 'undefined',
+              adminId: gameDoc.data()['creatorName']?.toString() ?? 'undefined',
               password: gameDoc.data()['password']?.toString() ?? 'undefined',
-              sonarIntervals: gameDoc.data()['sonarIntervals'] as int,
+              sonarIntervals: gameDoc.data()['sonarIntervals'] as double,
               phase: gamePhase ?? GamePhase.created,
-              boundarySize: gameDoc.data()['boundarySize'] as int,
+              boundarySize: gameDoc.data()['boundarySize'] as double,
               boundaryPosition: Location.fromMap(
                   gameDoc.data()['location'] as Map<String, dynamic>),
             );
@@ -105,5 +107,17 @@ class FirestoreService implements DatabaseService {
       'is_tagger': player.isTagger,
       'is_admin': player.isAdmin
     }, SetOptions(merge: true));
+  }
+
+  @override
+  Future<void> createGame(Game game, String userId) async {
+    try {
+      final gameRef = await _firestore.collection('games').add(game.toMap());
+
+      await joinGame(gameRef.id, userId);
+    } catch (e) {
+      // do something
+      print('error creating game');
+    }
   }
 }

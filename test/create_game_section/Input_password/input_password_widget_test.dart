@@ -30,7 +30,8 @@ void main() {
       final _mockGame = Game(
         id: 'mock_game_123',
         name: null,
-        creatorName: null,
+        adminId: null,
+        adminName: null,
         sonarIntervals: null,
         password: 'test_password',
         boundarySize: 0,
@@ -84,7 +85,8 @@ void main() {
       final _mockGame = Game(
           id: 'mock_game_123',
           name: null,
-          creatorName: null,
+          adminId: null,
+          adminName: null,
           sonarIntervals: null,
           password: 'test_password',
           boundarySize: 0,

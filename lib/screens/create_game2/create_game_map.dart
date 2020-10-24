@@ -15,13 +15,12 @@ import 'package:provider/provider.dart';
 /// google map with draggable boundary and custom userlocation icon + btn
 class CreateGameMap extends StatefulWidget {
   final double boundarySize;
-  final Function loadedMap;
   final Location boundaryPosition;
 
-  CreateGameMap(
-      {@required this.boundarySize,
-      @required this.boundaryPosition,
-      @required this.loadedMap});
+  CreateGameMap({
+    @required this.boundarySize,
+    @required this.boundaryPosition,
+  });
   @override
   State<CreateGameMap> createState() => CreateGameMapState();
 }
@@ -85,7 +84,7 @@ class CreateGameMapState extends State<CreateGameMap> {
                 controller.setMapStyle(createGameMapStyle);
                 _controller.complete(controller);
                 // tell `createGameScreen2` that the map is loaded
-                widget.loadedMap();
+                context.read<CreateGameViewModel2>().loadedMap();
               },
               // update boundary position and user icon size when user moves map
               onCameraMove: (cameraPosition) => _updateMap(cameraPosition),

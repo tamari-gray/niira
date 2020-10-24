@@ -124,7 +124,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                 .read<AuthService>()
                                 .signInWithEmail(_email, _password);
 
-                            // go to lobby if successfull login
+                            // if successfull login,
+                            // go to lobby and set userId in local state
                             if (authResult is UserData) {
                               context.read<Navigation>().pop();
                             } else if (authResult == null) {

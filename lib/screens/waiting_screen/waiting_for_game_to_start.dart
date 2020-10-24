@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:niira/loading.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/player.dart';
 import 'package:niira/navigation/navigation.dart';
-import 'package:niira/screens/lobby/lobby.dart';
 import 'package:niira/screens/waiting_screen/joined_players_list.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
@@ -73,7 +73,9 @@ class _WaitingForGameToStartScreenState
                 .streamOfJoinedPlayers(_game.id),
             builder: (context, snapshot) {
               if (snapshot.data == null) {
-                return Container();
+                return Loading(
+                  message: 'waiting for players to join...',
+                );
               } else {
                 //render list of joined players
                 return JoinedPlayersList(joinedPlayers: snapshot.data);

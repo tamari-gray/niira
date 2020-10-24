@@ -6,6 +6,7 @@ class CreateGameViewModel2 extends ChangeNotifier {
   double boundarySize = 100;
   double sonarIntervals = 300;
   Location boundaryPosition;
+  bool loadingMap = true;
 
   void updateBoundarySize(double size) {
     boundarySize = size;
@@ -17,9 +18,15 @@ class CreateGameViewModel2 extends ChangeNotifier {
     notifyListeners();
   }
 
+  void loadedMap() {
+    loadingMap = false;
+    notifyListeners();
+  }
+
   void reset() {
     boundarySize = 100;
     sonarIntervals = 300;
     boundaryPosition = null;
+    loadingMap = false;
   }
 }

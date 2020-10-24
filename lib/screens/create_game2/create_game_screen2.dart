@@ -5,6 +5,9 @@ import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/create_game2/create_game_map.dart';
 import 'package:niira/screens/create_game2/sonar_intervals_slider.dart';
 import 'package:niira/screens/waiting_screen/waiting_for_game_to_start.dart';
+import 'package:niira/services/auth/auth_service.dart';
+import 'package:niira/services/database/database_service.dart';
+import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import 'boundary_size_slider.dart';
@@ -17,102 +20,116 @@ class CreateGameScreen2 extends StatefulWidget {
 }
 
 class _CreateGameScreen2State extends State<CreateGameScreen2> {
-  bool _loadingMap;
+  String _userId;
+  String _username;
 
   @override
   void initState() {
-    _loadingMap = true;
     super.initState();
+    _getUserInfo();
   }
 
-  void _loadedMap() {
+  void _getUserInfo() async {
+    final id = context.read<AuthService>().currentUserId;
+    final name = await context.read<DatabaseService>().getUserName(_userId);
+
     setState(() {
-      _loadingMap = false;
+      _userId = id;
+      _username = name;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final navigation = context.watch<Navigation>();
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        centerTitle: false,
-        title: const Text('Create Game 2/2',
-            style: TextStyle(color: Colors.white)),
-        actions: [
-          FlatButton.icon(
-              onPressed: () {
-                // navigate back to lobby
-                navigation.showConfirmationDialog(
-                  onConfirmed: navigation.popUntilLobby,
-                );
-              },
-              icon: Icon(
-                Icons.clear,
-                color: Colors.white,
-              ),
-              label: Text('Cancel', style: TextStyle(color: Colors.white)))
-        ],
-      ),
-      floatingActionButton: _loadingMap
-          ? Container()
-          : FloatingActionButton.extended(
-              key: Key('create_game_screen_2_submit_button'),
-              onPressed: () {
-                /// prompt user to confirm navigation
-                navigation.showConfirmationDialog(
-                  message: 'Are you ready?',
-                  confirmText: 'Yes',
-                  cancelText: 'No',
-                  onConfirmed: () => navigation
-                      .navigateTo(WaitingForGameToStartScreen.routeName),
-                );
-              },
-              label: Text('Next'),
-              icon: Icon(Icons.arrow_forward_ios),
-            ),
-      body: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              height: 250,
-              child:
-                  Consumer<CreateGameViewModel2>(builder: (context, vm, child) {
-                return CreateGameMap(
-                  boundarySize: vm.boundarySize,
-                  boundaryPosition: vm.boundaryPosition,
-                  loadedMap: _loadedMap,
-                );
-              }),
-            ),
-            _loadingMap
-                ? Expanded(
-                    child: Loading(
-                      message: 'loading map...',
-                    ),
-                  )
-                : Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 50, 0, 50),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Move map to reposition boundary',
-                            style: TextStyle(fontSize: 18),
-                          ),
-                          BoundarySizeSlider(),
-                          SonarIntervalsSlider(),
-                        ],
-                      ),
-                    ),
-                  ),
+    return Consumer<CreateGameViewModel2>(builder: (context, vm, child) {
+      return Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          centerTitle: false,
+          title: const Text('Create Game 2/2',
+              style: TextStyle(color: Colors.white)),
+          actions: [
+            FlatButton.icon(
+                onPressed: () {
+                  // navigate back to lobby
+                  navigation.showConfirmationDialog(
+                    onConfirmed: navigation.popUntilLobby,
+                  );
+                },
+                icon: Icon(
+                  Icons.clear,
+                  color: Colors.white,
+                ),
+                label: Text('Cancel', style: TextStyle(color: Colors.white)))
           ],
         ),
-      ),
-    );
+        floatingActionButton: vm.loadingMap && _username == null
+            ? Container()
+            : FloatingActionButton.extended(
+                key: Key('create_game_screen_2_submit_button'),
+                onPressed: () {
+                  /// prompt user to confirm navigation
+                  navigation.showConfirmationDialog(
+                      message: 'Are you ready?',
+                      confirmText: 'Yes',
+                      cancelText: 'No',
+                      onConfirmed: () async {
+                        // create game data
+                        final game = context
+                            .read<GameService>()
+                            .createGameData(vm, _userId, _username);
+
+                        // create game in db
+                        await context
+                            .read<DatabaseService>()
+                            .createGame(game, _userId);
+
+                        await navigation
+                            .navigateTo(WaitingForGameToStartScreen.routeName);
+                      });
+                },
+                label: Text('Next'),
+                icon: Icon(Icons.arrow_forward_ios),
+              ),
+        body: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                height: 250,
+                child: CreateGameMap(
+                  boundarySize: vm.boundarySize,
+                  boundaryPosition: vm.boundaryPosition,
+                ),
+              ),
+              vm.loadingMap
+                  ? Expanded(
+                      child: Loading(
+                        message: 'loading map...',
+                      ),
+                    )
+                  : Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 50, 0, 50),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Move map to reposition boundary',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            BoundarySizeSlider(),
+                            SonarIntervalsSlider(),
+                          ],
+                        ),
+                      ),
+                    ),
+            ],
+          ),
+        ),
+      );
+    });
   }
 }
