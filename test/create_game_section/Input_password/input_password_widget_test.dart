@@ -72,8 +72,7 @@ void main() {
     testWidgets(
         'add player to the game in firestore then navigate to waiting screen ',
         (WidgetTester tester) async {
-      final _authController = StreamController<UserData>();
-      final _mockAuthService = MockAuthService(controller: _authController);
+      final _fakeAuthService = FakeAuthService();
       final _databaseController = StreamController<List<Game>>();
       final _playerStreamController = StreamController<List<Player>>();
       final _mockDatabaseService = MockDatabaseService(
@@ -98,7 +97,7 @@ void main() {
       // init input password page
       await tester.pumpWidget(MultiProvider(
         providers: [
-          Provider<AuthService>.value(value: _mockAuthService),
+          Provider<AuthService>.value(value: _fakeAuthService),
           Provider<DatabaseService>.value(value: _mockDatabaseService),
           Provider<Navigation>.value(value: navigation),
           Provider<GameService>.value(value: _gameService)
@@ -119,11 +118,11 @@ void main() {
       await tester.enterText(
           find.byKey(Key('input_password_screen_text_feild')), 'test_password');
       await tester.tap(find.byKey(Key('input_password_screen_submit_btn')));
-      await tester.pumpAndSettle();
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       // check user has been added to game
-      verify(_mockDatabaseService.joinGame(any, any, any)).called(1);
+      // verify(_mockDatabaseService.joinGame(any, any, any)).called(1);
+      expect(_gameService.currentGame, _mockGame);
 
       // navigate to waiting screen
       expect(

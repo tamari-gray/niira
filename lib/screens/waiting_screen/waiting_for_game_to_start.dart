@@ -23,7 +23,7 @@ class _WaitingForGameToStartScreenState
 
   @override
   void initState() {
-    _gameId = context.select((GameService service) => service.currentGame.id);
+    _gameId = context.read<GameService>().currentGame.id;
     super.initState();
   }
 

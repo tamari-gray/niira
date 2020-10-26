@@ -12,10 +12,10 @@ void main() {
       // init services
       final nav = Navigation();
       final vm = CreateGameViewModel();
+      expect(vm.sonarIntervals, 150);
 
       // spin up the wut
       final wut = SonarIntervalsSlider();
-      expect(vm.sonarIntervals, 300);
 
       await tester.pumpWidget(
         MultiProvider(
