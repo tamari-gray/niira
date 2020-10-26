@@ -7,9 +7,9 @@ extension GameExt on Game {
         'admin_name': adminName,
         'admin_id': adminId,
         'password': password,
-        'sonarIntervals': sonarIntervals,
-        'boundarySize': boundarySize,
-        'boundaryPosition': <String, double>{
+        'sonar_intervals': sonarIntervals,
+        'boundary_size': boundarySize,
+        'boundary_position': <String, double>{
           'latitude': boundaryPosition.latitude,
           'longitude': boundaryPosition.longitude
         },

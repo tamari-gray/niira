@@ -38,8 +38,17 @@ class ListOfCreatedGames extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
               child: ListView.builder(
                 itemCount: snapshot.data.length,
-                itemBuilder: (context, index) =>
-                    GameTile(snapshot.data[index], index),
+                itemBuilder: (context, index) {
+                  // put bottom padding on last game tile in list
+                  // so user can scroll it past fab
+                  final lastTilePadding =
+                      index == snapshot.data.length - 1 ? 70.0 : 0.0;
+
+                  return Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, lastTilePadding),
+                    child: GameTile(snapshot.data[index], index),
+                  );
+                },
               ),
             );
           }

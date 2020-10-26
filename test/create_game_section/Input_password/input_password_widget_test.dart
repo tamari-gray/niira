@@ -13,7 +13,7 @@ import 'package:niira/screens/input_password.dart';
 import 'package:niira/screens/waiting_screen/waiting_for_game_to_start.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/game_service.dart';
+import 'package:niira/services/user_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/services/mock_auth_service.dart';
@@ -26,7 +26,7 @@ void main() {
       final _authController = StreamController<UserData>();
       final _mockAuthService = MockAuthService(controller: _authController);
       final _mockDatabaseService = MockDatabaseService();
-      final _gameService = GameService();
+      final _userDataService = UserDataService();
       final _mockGame = Game(
         id: 'mock_game_123',
         name: null,
@@ -38,7 +38,7 @@ void main() {
         boundaryPosition: Location(latitude: 0, longitude: 0),
         phase: null,
       );
-      _gameService.currentGame = _mockGame;
+      _userDataService.joinedGame = _mockGame;
       await tester.pumpAndSettle();
 
       // init input password page
@@ -46,7 +46,7 @@ void main() {
         providers: [
           Provider<AuthService>.value(value: _mockAuthService),
           Provider<DatabaseService>.value(value: _mockDatabaseService),
-          Provider<GameService>.value(value: _gameService),
+          Provider<UserDataService>.value(value: _userDataService),
         ],
         child: MaterialApp(
           home: InputPasswordScreen(),
@@ -80,7 +80,7 @@ void main() {
           controller: _databaseController,
           playerStreamController: _playerStreamController);
       final navigation = Navigation();
-      final _gameService = GameService();
+      final _userDataService = UserDataService();
 
       final _mockGame = Game(
           id: 'mock_game_123',
@@ -92,7 +92,7 @@ void main() {
           boundarySize: 0,
           boundaryPosition: Location(latitude: 0, longitude: 0),
           phase: null);
-      _gameService.currentGame = _mockGame;
+      _userDataService.joinedGame = _mockGame;
       await tester.pumpAndSettle();
 
       // init input password page
@@ -101,7 +101,7 @@ void main() {
           Provider<AuthService>.value(value: _mockAuthService),
           Provider<DatabaseService>.value(value: _mockDatabaseService),
           Provider<Navigation>.value(value: navigation),
-          Provider<GameService>.value(value: _gameService)
+          Provider<UserDataService>.value(value: _userDataService)
         ],
         child: MaterialApp(
             home: InputPasswordScreen(),
@@ -123,7 +123,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // check user has been added to game
-      verify(_mockDatabaseService.joinGame(any, any)).called(1);
+      verify(_mockDatabaseService.joinGame(any, any, any)).called(1);
 
       // navigate to waiting screen
       expect(

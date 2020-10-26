@@ -7,7 +7,8 @@ abstract class DatabaseService {
   Future<String> getUserName(String userId);
   Stream<List<Game>> get streamOfCreatedGames;
   Stream<List<Player>> streamOfJoinedPlayers(String gameId);
-  Future<void> joinGame(String gameId, String userId);
+  Future<void> joinGame(String gameId, String userId, bool isAdmin);
   Future<void> leaveGame(String gameId, String userId);
-  Future<void> createGame(Game game, String userId);
+  Future<String> createGame(Game game, String userId);
+  Stream<Game> streamOfJoinedGame(String gameId);
 }

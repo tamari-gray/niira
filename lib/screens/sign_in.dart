@@ -3,6 +3,7 @@ import 'package:niira/loading.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/services/auth/auth_service.dart';
+import 'package:niira/services/user_service.dart';
 import 'package:provider/provider.dart';
 import 'package:niira/extensions/custom_colors_extension.dart';
 
@@ -125,8 +126,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                 .signInWithEmail(_email, _password);
 
                             // if successfull login,
-                            // go to lobby and set userId in local state
+                            // go to lobby and set user in local state
                             if (authResult is UserData) {
+                              // context.read<UserDataService>().user =
                               context.read<Navigation>().pop();
                             } else if (authResult == null) {
                               setState(() {

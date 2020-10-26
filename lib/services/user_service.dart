@@ -1,11 +1,9 @@
-import 'package:niira/models/player.dart';
+import 'package:niira/models/game.dart';
+import 'package:niira/models/user_data.dart';
 
-class PlayerService {
-  Player player = Player(
-      id: null,
-      username: null,
-      isTagger: null,
-      hasBeenTagged: null,
-      hasItem: null,
-      isAdmin: null);
+class UserDataService {
+  UserData user;
+  Game joinedGame;
+
+  void stopJoiningGame() => joinedGame = null;
 }

@@ -4,7 +4,7 @@ import 'package:niira/models/location.dart';
 enum GamePhase { created, initialising, playing, finished }
 
 class Game {
-  final String id;
+  String id;
   final String name;
   final String adminName;
   final String adminId;
@@ -17,7 +17,7 @@ class Game {
   double distanceFromUser;
 
   Game({
-    @required this.id,
+    this.id,
     @required this.name,
     @required this.adminName,
     @required this.adminId,

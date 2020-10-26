@@ -4,6 +4,7 @@ import 'package:niira/models/game.dart';
 import 'package:niira/models/player.dart';
 import 'package:niira/models/location.dart';
 import 'package:niira/extensions/game_extension.dart';
+import 'package:niira/extensions/firestore_doc_snapshot_extension.dart';
 import 'package:niira/services/database/database_service.dart';
 
 class FirestoreService implements DatabaseService {
@@ -29,9 +30,11 @@ class FirestoreService implements DatabaseService {
 
   @override
   Future<String> getUserName(String userId) async {
-    return await _firestore.doc('players/$userId').get().then(
-          (doc) => doc.data()['username'].toString() ?? 'undefined',
-        );
+    print('userid: $userId');
+    return await _firestore.doc('players/$userId').get().then((doc) {
+      print(doc.id);
+      return doc.data()['username'].toString() ?? 'undefined';
+    });
   }
 
   @override
@@ -48,14 +51,14 @@ class FirestoreService implements DatabaseService {
               id: gameDoc.data()['id']?.toString() ?? 'undefined',
               name: gameDoc.data()['name']?.toString() ?? 'undefined',
               adminName:
-                  gameDoc.data()['creatorName']?.toString() ?? 'undefined',
-              adminId: gameDoc.data()['creatorName']?.toString() ?? 'undefined',
+                  gameDoc.data()['admin_name']?.toString() ?? 'undefined',
+              adminId: gameDoc.data()['admin_id']?.toString() ?? 'undefined',
               password: gameDoc.data()['password']?.toString() ?? 'undefined',
-              sonarIntervals: gameDoc.data()['sonarIntervals'] as double,
+              sonarIntervals: gameDoc.data()['sonar_intervals'] as double,
               phase: gamePhase ?? GamePhase.created,
-              boundarySize: gameDoc.data()['boundarySize'] as double,
+              boundarySize: gameDoc.data()['boundary_size'] as double,
               boundaryPosition: Location.fromMap(
-                  gameDoc.data()['location'] as Map<String, dynamic>),
+                  gameDoc.data()['boundary_position'] as Map<String, dynamic>),
             );
           }).toList());
 
@@ -68,11 +71,11 @@ class FirestoreService implements DatabaseService {
                   id: playerDoc.data()['id'].toString() ?? 'undefined',
                   username:
                       playerDoc.data()['username'].toString() ?? 'undefined',
-                  isTagger: playerDoc.data()['isTagger'] as bool ?? false,
+                  isTagger: playerDoc.data()['is_tagger'] as bool ?? false,
                   hasBeenTagged:
-                      playerDoc.data()['hasBeenTagged'] as bool ?? false,
-                  hasItem: playerDoc.data()['hasItem'] as bool ?? false,
-                  isAdmin: playerDoc.data()['isAdmin'] as bool ?? false,
+                      playerDoc.data()['has_been_tagged'] as bool ?? false,
+                  hasItem: playerDoc.data()['has_item'] as bool ?? false,
+                  isAdmin: playerDoc.data()['is_admin'] as bool ?? false,
                 ),
               )
               .toList(),
@@ -85,7 +88,7 @@ class FirestoreService implements DatabaseService {
   }
 
   @override
-  Future<void> joinGame(String gameId, String userId) async {
+  Future<void> joinGame(String gameId, String userId, bool isAdmin) async {
     // create player object
     final username = await getUserName(userId);
     final player = Player(
@@ -94,7 +97,7 @@ class FirestoreService implements DatabaseService {
       isTagger: false,
       hasBeenTagged: false,
       hasItem: false,
-      isAdmin: false,
+      isAdmin: isAdmin,
     );
 
     // add player to game in db
@@ -110,14 +113,29 @@ class FirestoreService implements DatabaseService {
   }
 
   @override
-  Future<void> createGame(Game game, String userId) async {
+  Future<String> createGame(Game game, String userId) async {
     try {
       final gameRef = await _firestore.collection('games').add(game.toMap());
 
-      await joinGame(gameRef.id, userId);
+      await joinGame(gameRef.id, userId, true);
+      return gameRef.id;
     } catch (e) {
       // do something
-      print('error creating game');
+      print('error creating game ${e}');
+      return null;
+    }
+  }
+
+  @override
+  Stream<Game> streamOfJoinedGame(String gameId) {
+    try {
+      return _firestore
+          .doc('games/$gameId')
+          .snapshots()
+          .map((doc) => doc.toGame());
+    } catch (e) {
+      print('error getting stream of joined game: $e');
+      return null;
     }
   }
 }

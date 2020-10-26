@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import '../game.dart';
 import '../location.dart';
 
 /// set initial [boundarySize] value by manualy changing it here
-class CreateGameViewModel2 extends ChangeNotifier {
+class CreateGameViewModel extends ChangeNotifier {
   double boundarySize = 100;
-  double sonarIntervals = 300;
+  double sonarIntervals = 180;
   Location boundaryPosition;
   bool loadingMap = true;
+
+  String name;
+  String password;
 
   void updateBoundarySize(double size) {
     boundarySize = size;
@@ -28,5 +32,19 @@ class CreateGameViewModel2 extends ChangeNotifier {
     sonarIntervals = 300;
     boundaryPosition = null;
     loadingMap = false;
+    name = null;
+    password = null;
   }
+
+  Game createGameData(String userId, String username) => Game(
+        id: '',
+        name: name,
+        password: password,
+        adminName: username,
+        adminId: userId,
+        sonarIntervals: sonarIntervals,
+        boundaryPosition: boundaryPosition,
+        boundarySize: boundarySize,
+        phase: GamePhase.created,
+      );
 }

@@ -9,13 +9,12 @@ import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/waiting_screen/waiting_for_game_to_start.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/game_service.dart';
+import 'package:niira/services/user_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/data/mock_games.dart';
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
-import '../../mocks/services/mock_game_service.dart';
 
 void main() {
   testWidgets('after admin choose tagger, show user the chosen tagger',
@@ -32,17 +31,17 @@ void main() {
     // setup dependant services
     final _mockDatabaseService =
         MockDatabaseService(playerStreamController: _controller);
-    final _fakeGameService = FakeGameService();
+    final _userDataService = UserDataService();
     final _navigation = Navigation();
 
     // init waiting for game to start screen
     final mockGame = MockGames().gamesToJoin[0];
-    _fakeGameService.currentGame = mockGame;
+    _userDataService.joinedGame = mockGame;
     await tester.pumpWidget(
       MultiProvider(providers: [
         Provider<DatabaseService>.value(value: _mockDatabaseService),
         Provider<Navigation>.value(value: _navigation),
-        Provider<GameService>.value(value: _fakeGameService)
+        Provider<UserDataService>.value(value: _userDataService)
       ], child: MaterialApp(home: WaitingForGameToStartScreen())),
     );
 
@@ -79,8 +78,8 @@ void main() {
         MockDatabaseService(playerStreamController: _playerStreamController);
     final _navigation = Navigation();
     final _authService = MockAuthService();
-    final _fakeGameService = FakeGameService();
-    _fakeGameService.currentGame = MockGames().gamesToJoin[0];
+    final _userDataService = UserDataService();
+    _userDataService.joinedGame = MockGames().gamesToJoin[0];
 
     // init waiting for game to start screen
     final mockGames = MockGames().gamesToJoin;
@@ -92,7 +91,7 @@ void main() {
         providers: [
           Provider<DatabaseService>.value(value: _mockDatabaseService),
           Provider<Navigation>.value(value: _navigation),
-          Provider<GameService>.value(value: _fakeGameService),
+          Provider<UserDataService>.value(value: _userDataService),
           Provider<AuthService>.value(value: _authService)
         ],
         child: MaterialApp(
