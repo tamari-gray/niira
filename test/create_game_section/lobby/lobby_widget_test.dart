@@ -29,7 +29,7 @@ void main() {
     // init services
     final controller = StreamController<UserData>();
     final navigation = Navigation();
-    final userDataService = UserDataService();
+    final userDataService = GameService();
     final mockAuthService = MockAuthService(controller: controller);
     final fakeLocationService = FakeLocationService();
     final mockDatabseController = StreamController<List<Game>>();
@@ -44,7 +44,7 @@ void main() {
           Provider<Navigation>.value(value: navigation),
           Provider<LocationService>.value(value: fakeLocationService),
           Provider<DatabaseService>.value(value: mockDatabaseService),
-          Provider<UserDataService>.value(value: userDataService),
+          Provider<GameService>.value(value: userDataService),
         ],
         child: MaterialApp(
           home: LobbyScreen(),

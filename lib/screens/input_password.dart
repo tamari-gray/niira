@@ -20,7 +20,7 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
 
   @override
   void initState() {
-    _game = context.read<UserDataService>().joinedGame;
+    _game = context.read<GameService>().currentGame;
     super.initState();
   }
 
@@ -35,7 +35,7 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
           FlatButton.icon(
               onPressed: () {
                 context.read<Navigation>().pop();
-                context.read<UserDataService>().stopJoiningGame();
+                context.read<GameService>().leaveCurrentGame();
               },
               icon: Icon(
                 Icons.clear,

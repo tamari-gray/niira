@@ -20,14 +20,14 @@ void main() {
         (WidgetTester tester) async {
       // init services
       final navigation = Navigation();
-      final userDataService = UserDataService();
+      final gameService = GameService();
       final mockGame = MockGames().gamesToJoin[0];
       // create the widget under test
       await tester.pumpWidget(
         MultiProvider(
           providers: [
             Provider<Navigation>.value(value: navigation),
-            Provider<UserDataService>.value(value: userDataService),
+            Provider<GameService>.value(value: gameService),
           ],
           child: MaterialApp(
             navigatorKey: navigation.navigatorKey,
@@ -51,7 +51,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // check that current game has been set
-      expect(userDataService.joinedGame.id, mockGame.id);
+      expect(gameService.currentGame.id, mockGame.id);
 
       // observe navigation to input password screen
       expect(find.byKey(Key('inputPasswordScreen')), findsOneWidget);

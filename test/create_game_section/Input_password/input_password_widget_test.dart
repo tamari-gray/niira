@@ -26,7 +26,7 @@ void main() {
       final _authController = StreamController<UserData>();
       final _mockAuthService = MockAuthService(controller: _authController);
       final _mockDatabaseService = MockDatabaseService();
-      final _userDataService = UserDataService();
+      final _gameService = GameService();
       final _mockGame = Game(
         id: 'mock_game_123',
         name: null,
@@ -38,7 +38,7 @@ void main() {
         boundaryPosition: Location(latitude: 0, longitude: 0),
         phase: null,
       );
-      _userDataService.joinedGame = _mockGame;
+      _gameService.currentGame = _mockGame;
       await tester.pumpAndSettle();
 
       // init input password page
@@ -46,7 +46,7 @@ void main() {
         providers: [
           Provider<AuthService>.value(value: _mockAuthService),
           Provider<DatabaseService>.value(value: _mockDatabaseService),
-          Provider<UserDataService>.value(value: _userDataService),
+          Provider<GameService>.value(value: _gameService),
         ],
         child: MaterialApp(
           home: InputPasswordScreen(),
@@ -80,7 +80,7 @@ void main() {
           controller: _databaseController,
           playerStreamController: _playerStreamController);
       final navigation = Navigation();
-      final _userDataService = UserDataService();
+      final _gameService = GameService();
 
       final _mockGame = Game(
           id: 'mock_game_123',
@@ -92,7 +92,7 @@ void main() {
           boundarySize: 0,
           boundaryPosition: Location(latitude: 0, longitude: 0),
           phase: null);
-      _userDataService.joinedGame = _mockGame;
+      _gameService.currentGame = _mockGame;
       await tester.pumpAndSettle();
 
       // init input password page
@@ -101,7 +101,7 @@ void main() {
           Provider<AuthService>.value(value: _mockAuthService),
           Provider<DatabaseService>.value(value: _mockDatabaseService),
           Provider<Navigation>.value(value: navigation),
-          Provider<UserDataService>.value(value: _userDataService)
+          Provider<GameService>.value(value: _gameService)
         ],
         child: MaterialApp(
             home: InputPasswordScreen(),

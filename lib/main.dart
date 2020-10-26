@@ -34,7 +34,7 @@ class MyApp extends StatefulWidget {
   final CreateGameViewModel _createGameVM;
   final LocationService _locationService;
   final FirebaseWrapper _firebase;
-  final UserDataService _userDataService;
+  final GameService _gameService;
 
   MyApp(
       {AuthService authService,
@@ -43,9 +43,9 @@ class MyApp extends StatefulWidget {
       LocationService locationService,
       CreateGameViewModel createGameVM2,
       FirebaseWrapper firebase,
-      UserDataService userDataService})
+      GameService gameService})
       : _authService = authService,
-        _userDataService = userDataService,
+        _gameService = gameService,
         _databaseService = databaseService,
         _navigation = navigation,
         _locationService = locationService,
@@ -59,7 +59,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool _loadingServices;
   AuthService _authService;
-  UserDataService _userDataService;
+  GameService _gameService;
   DatabaseService _databaseService;
   Navigation _navigation;
   LocationService _locationService;
@@ -102,7 +102,7 @@ class _MyAppState extends State<MyApp> {
     _authService = widget._authService ??
         FirebaseAuthService(FirebaseAuth.instance, _navigation);
 
-    _userDataService = widget._userDataService ?? UserDataService();
+    _gameService = widget._gameService ?? GameService();
 
     _databaseService =
         widget._databaseService ?? FirestoreService(FirebaseFirestore.instance);
@@ -124,7 +124,7 @@ class _MyAppState extends State<MyApp> {
       return MultiProvider(
         providers: [
           Provider<AuthService>.value(value: _authService),
-          Provider<UserDataService>.value(value: _userDataService),
+          Provider<GameService>.value(value: _gameService),
           Provider<DatabaseService>.value(value: _databaseService),
           Provider<Navigation>.value(value: _navigation),
           Provider<LocationService>.value(value: _locationService),

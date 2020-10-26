@@ -31,17 +31,17 @@ void main() {
     // setup dependant services
     final _mockDatabaseService =
         MockDatabaseService(playerStreamController: _controller);
-    final _userDataService = UserDataService();
+    final _gameService = GameService();
     final _navigation = Navigation();
 
     // init waiting for game to start screen
     final mockGame = MockGames().gamesToJoin[0];
-    _userDataService.joinedGame = mockGame;
+    _gameService.currentGame = mockGame;
     await tester.pumpWidget(
       MultiProvider(providers: [
         Provider<DatabaseService>.value(value: _mockDatabaseService),
         Provider<Navigation>.value(value: _navigation),
-        Provider<UserDataService>.value(value: _userDataService)
+        Provider<GameService>.value(value: _gameService)
       ], child: MaterialApp(home: WaitingForGameToStartScreen())),
     );
 
@@ -78,8 +78,8 @@ void main() {
         MockDatabaseService(playerStreamController: _playerStreamController);
     final _navigation = Navigation();
     final _authService = MockAuthService();
-    final _userDataService = UserDataService();
-    _userDataService.joinedGame = MockGames().gamesToJoin[0];
+    final _gameService = GameService();
+    _gameService.currentGame = MockGames().gamesToJoin[0];
 
     // init waiting for game to start screen
     final mockGames = MockGames().gamesToJoin;
@@ -91,7 +91,7 @@ void main() {
         providers: [
           Provider<DatabaseService>.value(value: _mockDatabaseService),
           Provider<Navigation>.value(value: _navigation),
-          Provider<UserDataService>.value(value: _userDataService),
+          Provider<GameService>.value(value: _gameService),
           Provider<AuthService>.value(value: _authService)
         ],
         child: MaterialApp(

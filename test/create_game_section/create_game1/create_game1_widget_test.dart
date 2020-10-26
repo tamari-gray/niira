@@ -19,7 +19,7 @@ void main() {
       final nav = Navigation();
       await tester.pumpWidget(MultiProvider(
           providers: [
-            Provider<UserDataService>(create: (_) => UserDataService()),
+            Provider<GameService>(create: (_) => GameService()),
             ChangeNotifierProvider<CreateGameViewModel>(
                 create: (_) => CreateGameViewModel()),
             Provider<LocationService>(create: (_) => FakeLocationService()),

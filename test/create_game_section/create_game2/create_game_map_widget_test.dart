@@ -23,8 +23,8 @@ void main() {
             Provider<LocationService>(
               create: (_) => FakeLocationService(),
             ),
-            Provider<UserDataService>(
-              create: (_) => UserDataService(),
+            Provider<GameService>(
+              create: (_) => GameService(),
             ),
             ChangeNotifierProvider<CreateGameViewModel>.value(
               value: vm,

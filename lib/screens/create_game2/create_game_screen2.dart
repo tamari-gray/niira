@@ -86,7 +86,7 @@ class _CreateGameScreen2State extends State<CreateGameScreen2> {
                             .createGame(game, _userId);
 
                         // store game id in global state
-                        context.read<UserDataService>().joinedGame.id = gameId;
+                        context.read<GameService>().currentGame.id = gameId;
 
                         await navigation
                             .navigateTo(WaitingForGameToStartScreen.routeName);

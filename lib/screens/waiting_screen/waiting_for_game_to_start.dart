@@ -23,8 +23,7 @@ class _WaitingForGameToStartScreenState
 
   @override
   void initState() {
-    _gameId =
-        context.select((UserDataService service) => service.joinedGame.id);
+    _gameId = context.select((GameService service) => service.currentGame.id);
     super.initState();
   }
 
@@ -65,7 +64,7 @@ class _WaitingForGameToStartScreenState
                               await context.read<AuthService>().currentUserId;
 
                           // leave game in global state
-                          context.read<UserDataService>().stopJoiningGame();
+                          context.read<GameService>().leaveCurrentGame();
 
                           // leave game in db
                           await context
