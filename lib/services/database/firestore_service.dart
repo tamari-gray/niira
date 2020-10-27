@@ -75,7 +75,6 @@ class FirestoreService implements DatabaseService {
                   hasBeenTagged:
                       playerDoc.data()['has_been_tagged'] as bool ?? false,
                   hasItem: playerDoc.data()['has_item'] as bool ?? false,
-                  isAdmin: playerDoc.data()['is_admin'] as bool ?? false,
                 ),
               )
               .toList(),
@@ -88,7 +87,7 @@ class FirestoreService implements DatabaseService {
   }
 
   @override
-  Future<void> joinGame(String gameId, String userId, bool isAdmin) async {
+  Future<void> joinGame(String gameId, String userId) async {
     // create player object
     final username = await getUserName(userId);
     final player = Player(
@@ -97,7 +96,6 @@ class FirestoreService implements DatabaseService {
       isTagger: false,
       hasBeenTagged: false,
       hasItem: false,
-      isAdmin: isAdmin,
     );
 
     // add player to game in db
@@ -108,7 +106,6 @@ class FirestoreService implements DatabaseService {
       'has_been_tagged': player.hasBeenTagged,
       'has_item': player.hasItem,
       'is_tagger': player.isTagger,
-      'is_admin': player.isAdmin
     }, SetOptions(merge: true));
   }
 
@@ -117,7 +114,7 @@ class FirestoreService implements DatabaseService {
     try {
       final gameRef = await _firestore.collection('games').add(game.toMap());
 
-      await joinGame(gameRef.id, userId, true);
+      await joinGame(gameRef.id, userId);
       return gameRef.id;
     } catch (e) {
       // do something

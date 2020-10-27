@@ -32,8 +32,7 @@ class MockDatabaseService extends Mock implements DatabaseService {
   Future<String> getUserName(String userId) => Future.value('username123');
 
   @override
-  Future<void> joinGame(String gameId, String userId, bool isAdmin) =>
-      Future.value();
+  Future<void> joinGame(String gameId, String userId) => Future.value();
 }
 
 class FakeDatabaseService extends Fake implements DatabaseService {
