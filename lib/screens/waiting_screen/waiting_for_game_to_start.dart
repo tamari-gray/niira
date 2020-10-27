@@ -19,17 +19,17 @@ class WaitingForGameToStartScreen extends StatefulWidget {
 
 class _WaitingForGameToStartScreenState
     extends State<WaitingForGameToStartScreen> {
-  String _gameId;
+  Game _game;
 
   @override
   void initState() {
-    _gameId = context.read<GameService>().currentGame.id;
+    _game = context.read<GameService>().currentGame;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return _gameId == null
+    return _game == null
         ? Scaffold(
             body: Container(
             child: Loading(
@@ -38,7 +38,7 @@ class _WaitingForGameToStartScreenState
           ))
         : StreamBuilder<Game>(
             stream:
-                context.watch<DatabaseService>().streamOfJoinedGame(_gameId),
+                context.watch<DatabaseService>().streamOfJoinedGame(_game.id),
             builder: (context, snapshot) {
               return Scaffold(
                 key: Key('waiting_for_game_to_start_screen'),
@@ -69,7 +69,7 @@ class _WaitingForGameToStartScreenState
                           // leave game in db
                           await context
                               .read<DatabaseService>()
-                              .leaveGame(_gameId, userId);
+                              .leaveGame(_game.id, userId);
                         }
 
                         _navigation.showConfirmationDialog(
@@ -86,7 +86,7 @@ class _WaitingForGameToStartScreenState
                       // get stream of players that have joined this game
                       stream: context
                           .watch<DatabaseService>()
-                          .streamOfJoinedPlayers(_gameId),
+                          .streamOfJoinedPlayers(_game.id),
                       builder: (context, snapshot) {
                         if (snapshot.data == null) {
                           return Loading(
