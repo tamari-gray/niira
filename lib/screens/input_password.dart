@@ -29,7 +29,7 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
     return Scaffold(
       key: Key('inputPasswordScreen'),
       appBar: AppBar(
-        automaticallyImplyLeading: true,
+        automaticallyImplyLeading: false,
         title: Text('Joining ${_game.name}'),
         actions: [
           FlatButton.icon(
