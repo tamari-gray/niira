@@ -30,9 +30,7 @@ class FirestoreService implements DatabaseService {
 
   @override
   Future<String> getUserName(String userId) async {
-    print('userid: $userId');
     return await _firestore.doc('players/$userId').get().then((doc) {
-      print(doc.id);
       return doc.data()['username'].toString() ?? 'undefined';
     });
   }
