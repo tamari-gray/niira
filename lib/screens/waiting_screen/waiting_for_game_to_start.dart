@@ -19,17 +19,17 @@ class WaitingForGameToStartScreen extends StatefulWidget {
 
 class _WaitingForGameToStartScreenState
     extends State<WaitingForGameToStartScreen> {
-  Game _game;
+  String _gameId;
 
   @override
   void initState() {
-    _game = context.read<GameService>().currentGame;
+    _gameId = context.read<GameService>().currentGame.id;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return _game == null
+    return _gameId == null
         ? Scaffold(
             body: Container(
             child: Loading(
@@ -38,10 +38,10 @@ class _WaitingForGameToStartScreenState
           ))
         : StreamBuilder<Game>(
             stream:
-                context.watch<DatabaseService>().streamOfJoinedGame(_game.id),
+                context.watch<DatabaseService>().streamOfJoinedGame(_gameId),
             builder: (context, snapshot) {
               return Scaffold(
-                key: Key('waiting_for_game_to_start_screen'),
+                key: Key('waiting_for_gameId_to_start_screen'),
                 appBar: AppBar(
                   automaticallyImplyLeading: false,
                   title: Text('Waiting for game to start'),
@@ -69,7 +69,7 @@ class _WaitingForGameToStartScreenState
                           // leave game in db
                           await context
                               .read<DatabaseService>()
-                              .leaveGame(_game.id, userId);
+                              .leaveGame(_gameId, userId);
                         }
 
                         _navigation.showConfirmationDialog(
@@ -86,7 +86,7 @@ class _WaitingForGameToStartScreenState
                       // get stream of players that have joined this game
                       stream: context
                           .watch<DatabaseService>()
-                          .streamOfJoinedPlayers(_game.id),
+                          .streamOfJoinedPlayers(_gameId),
                       builder: (context, snapshot) {
                         if (snapshot.data == null) {
                           return Loading(

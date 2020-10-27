@@ -49,7 +49,6 @@ class _SignInScreenState extends State<SignInScreen> {
           'Sign in',
           style: TextStyle(color: Colors.white),
         ),
-        // backgroundColor: Color.fromRGBO(247, 152, 0, 1),
       ),
       body: _waitingForAuthResult
           ? Loading()
@@ -128,7 +127,6 @@ class _SignInScreenState extends State<SignInScreen> {
                             // if successfull login,
                             // go to lobby and set user in local state
                             if (authResult is UserData) {
-                              // context.read<GameService>().user =
                               context.read<Navigation>().pop();
                             } else if (authResult == null) {
                               setState(() {
