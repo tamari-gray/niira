@@ -18,7 +18,7 @@ import 'package:niira/services/auth/firebase_auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/database/firestore_service.dart';
 import 'package:niira/services/location_service.dart';
-import 'package:niira/services/user_service.dart';
+import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import 'utilities/firebase_wrapper.dart';

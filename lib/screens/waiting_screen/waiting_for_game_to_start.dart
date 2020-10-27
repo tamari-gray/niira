@@ -6,7 +6,7 @@ import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/waiting_screen/joined_players_list.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/user_service.dart';
+import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 class WaitingForGameToStartScreen extends StatefulWidget {

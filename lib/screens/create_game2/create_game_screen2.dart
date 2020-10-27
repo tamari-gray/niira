@@ -7,7 +7,7 @@ import 'package:niira/screens/create_game2/sonar_intervals_slider.dart';
 import 'package:niira/screens/waiting_screen/waiting_for_game_to_start.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/user_service.dart';
+import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import 'boundary_size_slider.dart';
