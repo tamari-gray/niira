@@ -167,7 +167,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                             // successfull login
                             if (authResult is UserData) {
                               // add username to db
-                              final userId = authResult.uid;
+                              final userId = authResult.id;
                               await context
                                   .read<DatabaseService>()
                                   .addUsername(userId, _userName);

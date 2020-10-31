@@ -29,8 +29,20 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
     return Scaffold(
       key: Key('inputPasswordScreen'),
       appBar: AppBar(
-        automaticallyImplyLeading: true,
+        automaticallyImplyLeading: false,
         title: Text('Joining ${_game.name}'),
+        actions: [
+          FlatButton.icon(
+              onPressed: () {
+                context.read<Navigation>().pop();
+                context.read<GameService>().leaveCurrentGame();
+              },
+              icon: Icon(
+                Icons.clear,
+                color: Colors.white,
+              ),
+              label: Text('Cancel', style: TextStyle(color: Colors.white)))
+        ],
       ),
       // form submit button
       floatingActionButton: FloatingActionButton.extended(

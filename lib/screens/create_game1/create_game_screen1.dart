@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:niira/models/view_models/create_game.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/create_game1/game_name_field.dart';
 import 'package:niira/screens/create_game1/password_field.dart';
 import 'package:niira/screens/create_game2/create_game_screen2.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 class CreateGameScreen1 extends StatefulWidget {
@@ -30,7 +30,7 @@ class _CreateGameScreen1State extends State<CreateGameScreen1> {
           FlatButton.icon(
               onPressed: () {
                 context.read<Navigation>().pop();
-                context.read<GameService>().createGameViewModel1.clear();
+                context.read<CreateGameViewModel>().reset();
               },
               icon: Icon(
                 Icons.clear,

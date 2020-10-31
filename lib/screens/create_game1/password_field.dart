@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:niira/services/game_service.dart';
+import 'package:niira/models/view_models/create_game.dart';
 import 'package:niira/utilities/validators.dart' as validators;
 import 'package:provider/provider.dart';
 
@@ -39,8 +39,7 @@ class _PasswordFieldState extends State<PasswordField> {
               }),
             )),
         validator: validators.gamePassword,
-        onChanged: (val) =>
-            context.read<GameService>().createGameViewModel1.password = val,
+        onChanged: (val) => context.read<CreateGameViewModel>().password = val,
       ),
     );
   }

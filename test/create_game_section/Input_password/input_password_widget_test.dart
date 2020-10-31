@@ -16,6 +16,7 @@ import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
+import '../../mocks/navigation/mock_navigation.dart';
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
 
@@ -30,7 +31,8 @@ void main() {
       final _mockGame = Game(
         id: 'mock_game_123',
         name: null,
-        creatorName: null,
+        adminId: null,
+        adminName: null,
         sonarIntervals: null,
         password: 'test_password',
         boundarySize: 0,
@@ -71,20 +73,20 @@ void main() {
     testWidgets(
         'add player to the game in firestore then navigate to waiting screen ',
         (WidgetTester tester) async {
-      final _authController = StreamController<UserData>();
-      final _mockAuthService = MockAuthService(controller: _authController);
+      final _fakeAuthService = FakeAuthService();
       final _databaseController = StreamController<List<Game>>();
       final _playerStreamController = StreamController<List<Player>>();
       final _mockDatabaseService = MockDatabaseService(
           controller: _databaseController,
           playerStreamController: _playerStreamController);
-      final navigation = Navigation();
+      final navigation = MockNavigation();
       final _gameService = GameService();
 
       final _mockGame = Game(
           id: 'mock_game_123',
           name: null,
-          creatorName: null,
+          adminId: null,
+          adminName: null,
           sonarIntervals: null,
           password: 'test_password',
           boundarySize: 0,
@@ -96,7 +98,7 @@ void main() {
       // init input password page
       await tester.pumpWidget(MultiProvider(
         providers: [
-          Provider<AuthService>.value(value: _mockAuthService),
+          Provider<AuthService>.value(value: _fakeAuthService),
           Provider<DatabaseService>.value(value: _mockDatabaseService),
           Provider<Navigation>.value(value: navigation),
           Provider<GameService>.value(value: _gameService)
@@ -117,15 +119,15 @@ void main() {
       await tester.enterText(
           find.byKey(Key('input_password_screen_text_feild')), 'test_password');
       await tester.tap(find.byKey(Key('input_password_screen_submit_btn')));
-      await tester.pumpAndSettle();
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       // check user has been added to game
       verify(_mockDatabaseService.joinGame(any, any)).called(1);
+      expect(_gameService.currentGame, _mockGame);
 
-      // navigate to waiting screen
-      expect(
-          find.byKey(Key('waiting_for_game_to_start_screen')), findsOneWidget);
+      // check we navigate to waiting screen
+      verify(navigation.navigateTo(WaitingForGameToStartScreen.routeName))
+          .called(1);
     });
   });
 }

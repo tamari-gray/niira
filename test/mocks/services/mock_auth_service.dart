@@ -1,9 +1,13 @@
 import 'dart:async';
+import 'package:mockito/mockito.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import '../navigation/mock_navigation.dart';
 
-import 'package:meta/meta.dart';
+class FakeAuthService extends Fake implements AuthService {
+  @override
+  String get currentUserId => 'uid_123';
+}
 
 class MockAuthService implements AuthService {
   final StreamController<UserData> _controller;
@@ -12,7 +16,7 @@ class MockAuthService implements AuthService {
   final bool _successfulAuth;
 
   MockAuthService({
-    @required StreamController<UserData> controller,
+    StreamController<UserData> controller,
     UserData mockUserData,
     FakeNavigation fakeNavigation,
     bool successfulAuth = true,

@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:niira/loading.dart';
-import 'package:niira/models/view_models/create_game2.dart';
+import 'package:niira/models/view_models/create_game.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/create_account.dart';
 import 'package:niira/screens/create_game1/create_game_screen1.dart';
@@ -17,8 +17,8 @@ import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/firebase_auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/database/firestore_service.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:niira/services/location_service.dart';
+import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import 'utilities/firebase_wrapper.dart';
@@ -31,25 +31,25 @@ class MyApp extends StatefulWidget {
   final AuthService _authService;
   final DatabaseService _databaseService;
   final Navigation _navigation;
-  final GameService _gameService;
-  final CreateGameViewModel2 _createGameVM2;
+  final CreateGameViewModel _createGameVM;
   final LocationService _locationService;
   final FirebaseWrapper _firebase;
+  final GameService _gameService;
 
-  MyApp({
-    AuthService authService,
-    DatabaseService databaseService,
-    Navigation navigation,
-    LocationService locationService,
-    GameService gameService,
-    CreateGameViewModel2 createGameVM2,
-    FirebaseWrapper firebase,
-  })  : _authService = authService,
+  MyApp(
+      {AuthService authService,
+      DatabaseService databaseService,
+      Navigation navigation,
+      LocationService locationService,
+      CreateGameViewModel createGameVM2,
+      FirebaseWrapper firebase,
+      GameService gameService})
+      : _authService = authService,
+        _gameService = gameService,
         _databaseService = databaseService,
         _navigation = navigation,
         _locationService = locationService,
-        _gameService = gameService,
-        _createGameVM2 = createGameVM2,
+        _createGameVM = createGameVM2,
         _firebase = firebase ?? FirebaseWrapper();
 
   @override
@@ -59,11 +59,11 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool _loadingServices;
   AuthService _authService;
+  GameService _gameService;
   DatabaseService _databaseService;
   Navigation _navigation;
   LocationService _locationService;
-  GameService _gameService;
-  CreateGameViewModel2 _createGameVM2;
+  CreateGameViewModel _createGameVM;
   dynamic _firebaseInitError;
   bool _initializedFirebase;
 
@@ -97,11 +97,12 @@ class _MyAppState extends State<MyApp> {
     _locationService =
         widget._locationService ?? LocationService(GeolocatorPlatform.instance);
 
-    _gameService = widget._gameService ?? GameService();
-    _createGameVM2 = widget._createGameVM2 ?? CreateGameViewModel2();
+    _createGameVM = widget._createGameVM ?? CreateGameViewModel();
 
     _authService = widget._authService ??
         FirebaseAuthService(FirebaseAuth.instance, _navigation);
+
+    _gameService = widget._gameService ?? GameService();
 
     _databaseService =
         widget._databaseService ?? FirestoreService(FirebaseFirestore.instance);
@@ -123,12 +124,12 @@ class _MyAppState extends State<MyApp> {
       return MultiProvider(
         providers: [
           Provider<AuthService>.value(value: _authService),
+          Provider<GameService>.value(value: _gameService),
           Provider<DatabaseService>.value(value: _databaseService),
           Provider<Navigation>.value(value: _navigation),
           Provider<LocationService>.value(value: _locationService),
-          Provider<GameService>.value(value: _gameService),
-          ChangeNotifierProvider<CreateGameViewModel2>.value(
-            value: _createGameVM2,
+          ChangeNotifierProvider<CreateGameViewModel>.value(
+            value: _createGameVM,
           )
         ],
         child: MaterialApp(

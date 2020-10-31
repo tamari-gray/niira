@@ -5,7 +5,8 @@ class MockGames {
   List<Game> gamesInorderOfDistance = <Game>[
     Game(
       name: 'pullo',
-      creatorName: 'fdsafd',
+      adminId: null,
+      adminName: null,
       id: 'closest',
       sonarIntervals: 5,
       phase: GamePhase.created,
@@ -16,7 +17,8 @@ class MockGames {
     ),
     Game(
       name: 'yeet',
-      creatorName: 'tam',
+      adminId: null,
+      adminName: null,
       id: 'middle',
       sonarIntervals: 5,
       phase: GamePhase.created,
@@ -27,7 +29,8 @@ class MockGames {
     ),
     Game(
       name: 'teet',
-      creatorName: 'tam',
+      adminId: null,
+      adminName: null,
       id: 'furtherest',
       sonarIntervals: 5,
       phase: GamePhase.created,
@@ -40,7 +43,8 @@ class MockGames {
   List<Game> gamesWithoutDistance = <Game>[
     Game(
       name: 'teet',
-      creatorName: 'tam',
+      adminId: null,
+      adminName: null,
       id: 'further_from_user',
       sonarIntervals: 5,
       phase: GamePhase.created,
@@ -50,7 +54,8 @@ class MockGames {
     ),
     Game(
       name: 'yeet',
-      creatorName: 'tam',
+      adminId: null,
+      adminName: null,
       id: 'closer_to_user',
       sonarIntervals: 5,
       phase: GamePhase.created,
@@ -62,7 +67,8 @@ class MockGames {
   List<Game> gamesToJoin = <Game>[
     Game(
       name: 'yeet',
-      creatorName: 'tam',
+      adminId: null,
+      adminName: null,
       id: 'fadsg',
       sonarIntervals: 5,
       phase: GamePhase.created,
@@ -72,7 +78,8 @@ class MockGames {
     ),
     Game(
       name: 'very yeet',
-      creatorName: 'stanley',
+      adminId: null,
+      adminName: null,
       id: '1000',
       sonarIntervals: 5,
       phase: GamePhase.created,
@@ -82,7 +89,8 @@ class MockGames {
     ),
     Game(
       name: 'yeeting',
-      creatorName: 'kesha',
+      adminId: null,
+      adminName: null,
       id: 'fdfddgasgdshi',
       sonarIntervals: 5,
       phase: GamePhase.created,
@@ -92,7 +100,8 @@ class MockGames {
     ),
     Game(
       name: 'seachuan',
-      creatorName: 'timothy',
+      adminId: null,
+      adminName: null,
       id: 'gadsg',
       sonarIntervals: 5,
       phase: GamePhase.created,
@@ -102,7 +111,8 @@ class MockGames {
     ),
     Game(
       name: 'seek divine',
-      creatorName: 'dave',
+      adminId: null,
+      adminName: null,
       id: 'fdfdshipdi98',
       sonarIntervals: 5,
       phase: GamePhase.created,

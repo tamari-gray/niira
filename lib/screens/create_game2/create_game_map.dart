@@ -6,7 +6,7 @@ import 'package:niira/models/location.dart';
 import 'package:niira/extensions/location_extension.dart';
 import 'package:niira/extensions/circle_extension.dart';
 import 'package:niira/extensions/camera_position.dart';
-import 'package:niira/models/view_models/create_game2.dart';
+import 'package:niira/models/view_models/create_game.dart';
 import 'package:niira/screens/create_game2/show_location_btn.dart';
 import 'package:niira/services/location_service.dart';
 import 'package:niira/utilities/map_styles/create_game_map.dart';
@@ -15,13 +15,12 @@ import 'package:provider/provider.dart';
 /// google map with draggable boundary and custom userlocation icon + btn
 class CreateGameMap extends StatefulWidget {
   final double boundarySize;
-  final Function loadedMap;
   final Location boundaryPosition;
 
-  CreateGameMap(
-      {@required this.boundarySize,
-      @required this.boundaryPosition,
-      @required this.loadedMap});
+  CreateGameMap({
+    @required this.boundarySize,
+    @required this.boundaryPosition,
+  });
   @override
   State<CreateGameMap> createState() => CreateGameMapState();
 }
@@ -57,11 +56,11 @@ class CreateGameMapState extends State<CreateGameMap> {
 
     // update boundary position in vm
     context
-        .read<CreateGameViewModel2>()
+        .read<CreateGameViewModel>()
         .updateBoundaryPosition(userLocationFromService);
 
     // get initial boundary size from vm
-    final vmBoundarySize = context.read<CreateGameViewModel2>().boundarySize;
+    final vmBoundarySize = context.read<CreateGameViewModel>().boundarySize;
 
     setState(() {
       _userLocation = userLocationFromService;
@@ -85,7 +84,7 @@ class CreateGameMapState extends State<CreateGameMap> {
                 controller.setMapStyle(createGameMapStyle);
                 _controller.complete(controller);
                 // tell `createGameScreen2` that the map is loaded
-                widget.loadedMap();
+                context.read<CreateGameViewModel>().loadedMap();
               },
               // update boundary position and user icon size when user moves map
               onCameraMove: (cameraPosition) => _updateMap(cameraPosition),
@@ -114,7 +113,7 @@ class CreateGameMapState extends State<CreateGameMap> {
     // update vm
     final boundaryPosition = cameraPosition.toLocation();
     context
-        .read<CreateGameViewModel2>()
+        .read<CreateGameViewModel>()
         .updateBoundaryPosition(boundaryPosition);
   }
 

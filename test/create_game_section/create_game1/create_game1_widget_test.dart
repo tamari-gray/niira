@@ -1,14 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:niira/models/view_models/create_game2.dart';
+import 'package:niira/models/view_models/create_game.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/create_game1/create_game_screen1.dart';
 import 'package:niira/screens/create_game2/create_game_screen2.dart';
-import 'package:niira/services/game_service.dart';
+import 'package:niira/services/auth/auth_service.dart';
+import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/location_service.dart';
+import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
+import '../../mocks/services/mock_auth_service.dart';
+import '../../mocks/services/mock_database_service.dart';
 import '../../mocks/services/mock_location_service.dart';
 
 void main() {
@@ -20,8 +24,10 @@ void main() {
       await tester.pumpWidget(MultiProvider(
           providers: [
             Provider<GameService>(create: (_) => GameService()),
-            ChangeNotifierProvider<CreateGameViewModel2>(
-                create: (_) => CreateGameViewModel2()),
+            Provider<AuthService>(create: (_) => MockAuthService()),
+            Provider<DatabaseService>(create: (_) => FakeDatabaseService()),
+            ChangeNotifierProvider<CreateGameViewModel>(
+                create: (_) => CreateGameViewModel()),
             Provider<LocationService>(create: (_) => FakeLocationService()),
             Provider<Navigation>.value(value: nav),
           ],

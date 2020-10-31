@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:niira/models/view_models/create_game2.dart';
+import 'package:niira/models/view_models/create_game.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/create_game2/sonar_intervals_slider.dart';
 import 'package:provider/provider.dart';
@@ -11,16 +11,16 @@ void main() {
         (WidgetTester tester) async {
       // init services
       final nav = Navigation();
-      final vm = CreateGameViewModel2();
+      final vm = CreateGameViewModel();
+      expect(vm.sonarIntervals, 150);
 
       // spin up the wut
       final wut = SonarIntervalsSlider();
-      expect(vm.sonarIntervals, 300);
 
       await tester.pumpWidget(
         MultiProvider(
           providers: [
-            ChangeNotifierProvider<CreateGameViewModel2>.value(value: vm)
+            ChangeNotifierProvider<CreateGameViewModel>.value(value: vm)
           ],
           child: MaterialApp(
             navigatorKey: nav.navigatorKey,

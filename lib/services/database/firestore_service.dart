@@ -3,6 +3,8 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/player.dart';
 import 'package:niira/models/location.dart';
+import 'package:niira/extensions/game_extension.dart';
+import 'package:niira/extensions/firestore_doc_snapshot_extension.dart';
 import 'package:niira/services/database/database_service.dart';
 
 class FirestoreService implements DatabaseService {
@@ -28,9 +30,9 @@ class FirestoreService implements DatabaseService {
 
   @override
   Future<String> getUserName(String userId) async {
-    return await _firestore.doc('players/$userId').get().then(
-          (doc) => doc.data()['username'].toString() ?? 'undefined',
-        );
+    return await _firestore.doc('players/$userId').get().then((doc) {
+      return doc.data()['username'].toString() ?? 'undefined';
+    });
   }
 
   @override
@@ -46,14 +48,15 @@ class FirestoreService implements DatabaseService {
             return Game(
               id: gameDoc.data()['id']?.toString() ?? 'undefined',
               name: gameDoc.data()['name']?.toString() ?? 'undefined',
-              creatorName:
-                  gameDoc.data()['creatorName']?.toString() ?? 'undefined',
+              adminName:
+                  gameDoc.data()['admin_name']?.toString() ?? 'undefined',
+              adminId: gameDoc.data()['admin_id']?.toString() ?? 'undefined',
               password: gameDoc.data()['password']?.toString() ?? 'undefined',
-              sonarIntervals: gameDoc.data()['sonarIntervals'] as int,
+              sonarIntervals: gameDoc.data()['sonar_intervals'] as double,
               phase: gamePhase ?? GamePhase.created,
-              boundarySize: gameDoc.data()['boundarySize'] as int,
+              boundarySize: gameDoc.data()['boundary_size'] as double,
               boundaryPosition: Location.fromMap(
-                  gameDoc.data()['location'] as Map<String, dynamic>),
+                  gameDoc.data()['boundary_position'] as Map<String, dynamic>),
             );
           }).toList());
 
@@ -66,11 +69,10 @@ class FirestoreService implements DatabaseService {
                   id: playerDoc.data()['id'].toString() ?? 'undefined',
                   username:
                       playerDoc.data()['username'].toString() ?? 'undefined',
-                  isTagger: playerDoc.data()['isTagger'] as bool ?? false,
+                  isTagger: playerDoc.data()['is_tagger'] as bool ?? false,
                   hasBeenTagged:
-                      playerDoc.data()['hasBeenTagged'] as bool ?? false,
-                  hasItem: playerDoc.data()['hasItem'] as bool ?? false,
-                  isAdmin: playerDoc.data()['isAdmin'] as bool ?? false,
+                      playerDoc.data()['has_been_tagged'] as bool ?? false,
+                  hasItem: playerDoc.data()['has_item'] as bool ?? false,
                 ),
               )
               .toList(),
@@ -92,7 +94,6 @@ class FirestoreService implements DatabaseService {
       isTagger: false,
       hasBeenTagged: false,
       hasItem: false,
-      isAdmin: false,
     );
 
     // add player to game in db
@@ -103,7 +104,33 @@ class FirestoreService implements DatabaseService {
       'has_been_tagged': player.hasBeenTagged,
       'has_item': player.hasItem,
       'is_tagger': player.isTagger,
-      'is_admin': player.isAdmin
     }, SetOptions(merge: true));
+  }
+
+  @override
+  Future<String> createGame(Game game, String userId) async {
+    try {
+      final gameRef = await _firestore.collection('games').add(game.toMap());
+
+      await joinGame(gameRef.id, userId);
+      return gameRef.id;
+    } catch (e) {
+      // do something
+      print('error creating game ${e}');
+      return null;
+    }
+  }
+
+  @override
+  Stream<Game> streamOfJoinedGame(String gameId) {
+    try {
+      return _firestore
+          .doc('games/$gameId')
+          .snapshots()
+          .map((doc) => doc.toGame());
+    } catch (e) {
+      print('error getting stream of joined game: $e');
+      return null;
+    }
   }
 }

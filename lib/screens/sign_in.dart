@@ -3,6 +3,7 @@ import 'package:niira/loading.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/services/auth/auth_service.dart';
+import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 import 'package:niira/extensions/custom_colors_extension.dart';
 
@@ -48,7 +49,6 @@ class _SignInScreenState extends State<SignInScreen> {
           'Sign in',
           style: TextStyle(color: Colors.white),
         ),
-        // backgroundColor: Color.fromRGBO(247, 152, 0, 1),
       ),
       body: _waitingForAuthResult
           ? Loading()
@@ -124,7 +124,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                 .read<AuthService>()
                                 .signInWithEmail(_email, _password);
 
-                            // go to lobby if successfull login
+                            // if successfull login,
+                            // go to lobby and set user in local state
                             if (authResult is UserData) {
                               context.read<Navigation>().pop();
                             } else if (authResult == null) {

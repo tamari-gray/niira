@@ -1,9 +1,16 @@
 import 'package:niira/models/game.dart';
-import 'package:niira/models/view_models/create_game1.dart';
+
+final defaultGame = () => Game(
+    name: null,
+    adminName: null,
+    adminId: null,
+    sonarIntervals: null,
+    password: null,
+    boundaryPosition: null,
+    boundarySize: null,
+    phase: null);
 
 class GameService {
-  Game currentGame;
-  final createGameViewModel1 = CreateGameViewModel1();
-
-  GameService({this.currentGame});
+  Game currentGame = defaultGame();
+  void leaveCurrentGame() => currentGame = defaultGame();
 }

@@ -12,15 +12,14 @@ import 'package:niira/screens/lobby/list_of_created_games.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:niira/services/location_service.dart';
+import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/firebase_wrapper_mocks.dart';
 import '../../mocks/mock_user_data.dart';
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
-import '../../mocks/services/mock_game_service.dart';
 import '../../mocks/services/mock_location_service.dart';
 
 void main() {
@@ -30,9 +29,9 @@ void main() {
     // init services
     final controller = StreamController<UserData>();
     final navigation = Navigation();
+    final userDataService = GameService();
     final mockAuthService = MockAuthService(controller: controller);
     final fakeLocationService = FakeLocationService();
-    final mockGameService = FakeGameService();
     final mockDatabseController = StreamController<List<Game>>();
     final mockDatabaseService =
         MockDatabaseService(controller: mockDatabseController);
@@ -45,7 +44,7 @@ void main() {
           Provider<Navigation>.value(value: navigation),
           Provider<LocationService>.value(value: fakeLocationService),
           Provider<DatabaseService>.value(value: mockDatabaseService),
-          Provider<GameService>.value(value: mockGameService),
+          Provider<GameService>.value(value: userDataService),
         ],
         child: MaterialApp(
           home: LobbyScreen(),
