@@ -16,6 +16,8 @@
 // import '../../mocks/services/mock_auth_service.dart';
 // import '../../mocks/services/mock_database_service.dart';
 
+void main() {}
+
 // void main() {
 //   testWidgets('after admin choose tagger, show user the chosen tagger',
 //       (WidgetTester tester) async {
