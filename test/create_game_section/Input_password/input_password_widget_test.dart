@@ -16,6 +16,7 @@ import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
+import '../../mocks/navigation/mock_navigation.dart';
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
 
@@ -78,7 +79,7 @@ void main() {
       final _mockDatabaseService = MockDatabaseService(
           controller: _databaseController,
           playerStreamController: _playerStreamController);
-      final navigation = Navigation();
+      final navigation = MockNavigation();
       final _gameService = GameService();
 
       final _mockGame = Game(
@@ -121,12 +122,12 @@ void main() {
       await tester.pump();
 
       // check user has been added to game
-      // verify(_mockDatabaseService.joinGame(any, any, any)).called(1);
+      verify(_mockDatabaseService.joinGame(any, any)).called(1);
       expect(_gameService.currentGame, _mockGame);
 
-      // navigate to waiting screen
-      expect(
-          find.byKey(Key('waiting_for_game_to_start_screen')), findsOneWidget);
+      // check we navigate to waiting screen
+      verify(navigation.navigateTo(WaitingForGameToStartScreen.routeName))
+          .called(1);
     });
   });
 }
