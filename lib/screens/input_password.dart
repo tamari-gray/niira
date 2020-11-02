@@ -62,7 +62,9 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
             final userId = await context.read<AuthService>().currentUserId;
 
             // add player to game in database
-            await context.read<DatabaseService>().joinGame(_game.id, userId);
+            await context
+                .read<DatabaseService>()
+                .joinGame(_game.id, userId, false);
 
             await context
                 .read<Navigation>()

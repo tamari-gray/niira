@@ -4,6 +4,7 @@ import 'package:niira/models/game.dart';
 import 'package:niira/models/player.dart';
 import 'package:niira/models/location.dart';
 import 'package:niira/extensions/game_extension.dart';
+import 'package:niira/extensions/player_extension.dart';
 import 'package:niira/extensions/firestore_doc_snapshot_extension.dart';
 import 'package:niira/services/database/database_service.dart';
 
@@ -85,34 +86,32 @@ class FirestoreService implements DatabaseService {
   }
 
   @override
-  Future<void> joinGame(String gameId, String userId) async {
+  Future<void> joinGame(String gameId, String userId, bool isAdmin) async {
     // create player object
     final username = await getUserName(userId);
     final player = Player(
-      id: userId,
-      username: username,
-      isTagger: false,
-      hasBeenTagged: false,
-      hasItem: false,
-    );
+        id: userId,
+        username: username,
+        isTagger: false,
+        hasBeenTagged: false,
+        hasItem: false,
+        isAdmin: isAdmin ?? false);
 
     // add player to game in db
     return await _firestore
         .doc('games/$gameId/players/${player.id}')
-        .set(<String, dynamic>{
-      'username': player.username,
-      'has_been_tagged': player.hasBeenTagged,
-      'has_item': player.hasItem,
-      'is_tagger': player.isTagger,
-    }, SetOptions(merge: true));
+        .set(player.toMap(), SetOptions(merge: true));
   }
 
   @override
   Future<String> createGame(Game game, String userId) async {
     try {
+      // create game
       final gameRef = await _firestore.collection('games').add(game.toMap());
 
-      await joinGame(gameRef.id, userId);
+      // join game as admin
+      await joinGame(gameRef.id, userId, true);
+
       return gameRef.id;
     } catch (e) {
       // do something
@@ -130,6 +129,34 @@ class FirestoreService implements DatabaseService {
           .map((doc) => doc.toGame());
     } catch (e) {
       print('error getting stream of joined game: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<void> chooseTagger(String playerId, String gameId) async {
+    try {
+      // check if there is already a tagger chosen
+      final currentTaggerQuery = await _firestore
+          .collection('games/$gameId/players')
+          .where('is_tagger', isEqualTo: true)
+          .get();
+
+      // should only be one tagger if there is one chosen
+      if (currentTaggerQuery.docs.first.exists) {
+        final taggerId = currentTaggerQuery.docs.first.id;
+        // un-choose current tagger
+        await _firestore
+            .doc('games/$gameId/players/$taggerId')
+            .update(<String, bool>{'is_tagger': false});
+      }
+
+      // set new tagger
+      return await _firestore
+          .doc('games/$gameId/players/$playerId')
+          .update(<String, bool>{'is_tagger': true});
+    } catch (e) {
+      print('error choosing tagger, $e');
       return null;
     }
   }
