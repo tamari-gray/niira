@@ -12,4 +12,5 @@ abstract class DatabaseService {
   Future<String> createGame(Game game, String userId);
   Stream<Game> streamOfJoinedGame(String gameId);
   Future<void> chooseTagger(String playerId, String gameId);
+  Future<void> unSelectTagger(String playerId, String gameId);
 }

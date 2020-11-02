@@ -67,14 +67,14 @@ class FirestoreService implements DatabaseService {
           (QuerySnapshot snapshot) => snapshot.docs
               .map(
                 (playerDoc) => Player(
-                  id: playerDoc.data()['id'].toString() ?? 'undefined',
-                  username:
-                      playerDoc.data()['username'].toString() ?? 'undefined',
-                  isTagger: playerDoc.data()['is_tagger'] as bool ?? false,
-                  hasBeenTagged:
-                      playerDoc.data()['has_been_tagged'] as bool ?? false,
-                  hasItem: playerDoc.data()['has_item'] as bool ?? false,
-                ),
+                    id: playerDoc.id ?? 'undefined',
+                    username:
+                        playerDoc.data()['username'].toString() ?? 'undefined',
+                    isTagger: playerDoc.data()['is_tagger'] as bool ?? false,
+                    hasBeenTagged:
+                        playerDoc.data()['has_been_tagged'] as bool ?? false,
+                    hasItem: playerDoc.data()['has_item'] as bool ?? false,
+                    isAdmin: playerDoc.data()['has_item'] as bool ?? false),
               )
               .toList(),
         );
@@ -90,16 +90,17 @@ class FirestoreService implements DatabaseService {
     // create player object
     final username = await getUserName(userId);
     final player = Player(
-        id: userId,
-        username: username,
-        isTagger: false,
-        hasBeenTagged: false,
-        hasItem: false,
-        isAdmin: isAdmin ?? false);
+      id: userId,
+      username: username,
+      isTagger: false,
+      hasBeenTagged: false,
+      hasItem: false,
+      isAdmin: isAdmin ?? false,
+    );
 
     // add player to game in db
     return await _firestore
-        .doc('games/$gameId/players/${player.id}')
+        .doc('games/$gameId/players/${userId}')
         .set(player.toMap(), SetOptions(merge: true));
   }
 
@@ -141,9 +142,7 @@ class FirestoreService implements DatabaseService {
           .collection('games/$gameId/players')
           .where('is_tagger', isEqualTo: true)
           .get();
-
-      // should only be one tagger if there is one chosen
-      if (currentTaggerQuery.docs.first.exists) {
+      if (currentTaggerQuery.size > 0) {
         final taggerId = currentTaggerQuery.docs.first.id;
         // un-choose current tagger
         await _firestore
@@ -157,6 +156,18 @@ class FirestoreService implements DatabaseService {
           .update(<String, bool>{'is_tagger': true});
     } catch (e) {
       print('error choosing tagger, $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<void> unSelectTagger(String playerId, String gameId) async {
+    try {
+      return await _firestore
+          .doc('games/$gameId/players/$playerId')
+          .update(<String, bool>{'is_tagger': false});
+    } catch (e) {
+      print('error un-selecting tagger, $e');
       return null;
     }
   }

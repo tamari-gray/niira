@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:niira/models/player.dart';
+import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 /// Show joined player including their name
 /// and indicate if they have been chosen as tagger
-class JoinedPlayerTile extends StatelessWidget {
+class JoinedPlayerTile extends StatefulWidget {
   JoinedPlayerTile({
     @required this.player,
   });
@@ -14,13 +15,36 @@ class JoinedPlayerTile extends StatelessWidget {
   final Player player;
 
   @override
+  _JoinedPlayerTileState createState() => _JoinedPlayerTileState();
+}
+
+class _JoinedPlayerTileState extends State<JoinedPlayerTile> {
+  bool _userIsAdmin;
+
+  @override
+  void initState() {
+    _checkIfAdmin();
+    super.initState();
+  }
+
+  void _checkIfAdmin() {
+    final adminId = context.read<GameService>().currentGame.adminId;
+    final userId = context.read<AuthService>().currentUserId;
+
+    // if adminId is equal to userId then set them as admin
+    setState(() {
+      _userIsAdmin = userId == adminId;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
-      key: Key('created_game_tile_${player.id}'),
+      key: Key('created_game_tile_${widget.player.id}'),
       padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
-      child: player.isTagger
-          ? TaggerTile(player: player)
-          : PlayerTile(player: player),
+      child: widget.player.isTagger
+          ? TaggerTile(player: widget.player, userIsAdmin: _userIsAdmin)
+          : PlayerTile(player: widget.player, userIsAdmin: _userIsAdmin),
     );
   }
 }
@@ -29,9 +53,11 @@ class PlayerTile extends StatelessWidget {
   const PlayerTile({
     Key key,
     @required this.player,
+    @required this.userIsAdmin,
   }) : super(key: key);
 
   final Player player;
+  final bool userIsAdmin;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +70,7 @@ class PlayerTile extends StatelessWidget {
           ),
         ),
         subtitle: Text('is ready'),
-        trailing: player.isAdmin
+        trailing: userIsAdmin
             ? OutlineButton(
                 textColor: Theme.of(context).primaryColor,
                 borderSide: BorderSide(color: Theme.of(context).primaryColor),
@@ -67,9 +93,11 @@ class TaggerTile extends StatelessWidget {
   const TaggerTile({
     Key key,
     @required this.player,
+    @required this.userIsAdmin,
   }) : super(key: key);
 
   final Player player;
+  final bool userIsAdmin;
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +116,14 @@ class TaggerTile extends StatelessWidget {
           'is the tagger',
           style: TextStyle(color: Colors.white),
         ),
-        trailing: player.isAdmin ? Icon(Icons.close) : Container(),
+        trailing: userIsAdmin ? Icon(Icons.close) : Container(),
+        onTap: () async {
+          // unselect tagger
+          final gameId = context.read<GameService>().currentGame.id;
+          await context
+              .read<DatabaseService>()
+              .unSelectTagger(player.id, gameId);
+        },
       ),
     );
   }

@@ -66,9 +66,8 @@ class _CreateGameScreen2State extends State<CreateGameScreen2> {
                 label: Text('Cancel', style: TextStyle(color: Colors.white)))
           ],
         ),
-        floatingActionButton: vm.loadingMap && _username == null
-            ? Container()
-            : FloatingActionButton.extended(
+        floatingActionButton: vm.loadingMap == false && _username != null
+            ? FloatingActionButton.extended(
                 key: Key('create_game_screen_2_submit_button'),
                 onPressed: () {
                   /// prompt user to confirm navigation
@@ -77,8 +76,9 @@ class _CreateGameScreen2State extends State<CreateGameScreen2> {
                       confirmText: 'Yes',
                       cancelText: 'No',
                       onConfirmed: () async {
-                        // create game data
+                        // create game data and save in local state
                         final game = vm.createGameData(_userId, _username);
+                        context.read<GameService>().currentGame = game;
 
                         // create game in db
                         final gameId = await context
@@ -94,7 +94,8 @@ class _CreateGameScreen2State extends State<CreateGameScreen2> {
                 },
                 label: Text('Next'),
                 icon: Icon(Icons.arrow_forward_ios),
-              ),
+              )
+            : Container(),
         body: _username == null
             ? Loading(
                 message: 'getting user data...',
