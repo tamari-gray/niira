@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/player.dart';
-import 'package:niira/models/location.dart';
 import 'package:niira/extensions/game_extension.dart';
 import 'package:niira/extensions/player_extension.dart';
+import 'package:niira/extensions/firestore_query_snapshot_extension.dart';
 import 'package:niira/extensions/firestore_doc_snapshot_extension.dart';
 import 'package:niira/services/database/database_service.dart';
 
@@ -40,44 +39,14 @@ class FirestoreService implements DatabaseService {
   Stream<List<Game>> get streamOfCreatedGames => _firestore
       .collection('games')
       .snapshots()
-      .map((QuerySnapshot snapshot) => snapshot.docs.map((gameDoc) {
-            // convert gamephase into enum
-            final gamePhase = EnumToString.fromString(
-                GamePhase.values, gameDoc.data()['phase']?.toString());
-
-            // map document to game object
-            return Game(
-              id: gameDoc.data()['id']?.toString() ?? 'undefined',
-              name: gameDoc.data()['name']?.toString() ?? 'undefined',
-              adminName:
-                  gameDoc.data()['admin_name']?.toString() ?? 'undefined',
-              adminId: gameDoc.data()['admin_id']?.toString() ?? 'undefined',
-              password: gameDoc.data()['password']?.toString() ?? 'undefined',
-              sonarIntervals: gameDoc.data()['sonar_intervals'] as double,
-              phase: gamePhase ?? GamePhase.created,
-              boundarySize: gameDoc.data()['boundary_size'] as double,
-              boundaryPosition: Location.fromMap(
-                  gameDoc.data()['boundary_position'] as Map<String, dynamic>),
-            );
-          }).toList());
+      .map((QuerySnapshot snapshot) => snapshot.toListOfGames());
 
   @override
   Stream<List<Player>> streamOfJoinedPlayers(String gameId) {
-    return _firestore.collection('games/$gameId/players').snapshots().map(
-          (QuerySnapshot snapshot) => snapshot.docs
-              .map(
-                (playerDoc) => Player(
-                    id: playerDoc.id ?? 'undefined',
-                    username:
-                        playerDoc.data()['username'].toString() ?? 'undefined',
-                    isTagger: playerDoc.data()['is_tagger'] as bool ?? false,
-                    hasBeenTagged:
-                        playerDoc.data()['has_been_tagged'] as bool ?? false,
-                    hasItem: playerDoc.data()['has_item'] as bool ?? false,
-                    isAdmin: playerDoc.data()['has_item'] as bool ?? false),
-              )
-              .toList(),
-        );
+    return _firestore
+        .collection('games/$gameId/players')
+        .snapshots()
+        .map((QuerySnapshot snapshot) => snapshot.toListOfPlayers());
   }
 
   @override
