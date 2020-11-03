@@ -78,7 +78,6 @@ class _CreateGameScreen2State extends State<CreateGameScreen2> {
                       onConfirmed: () async {
                         // create game data and save in local state
                         final game = vm.createGameData(_userId, _username);
-                        context.read<GameService>().currentGame = game;
 
                         // create game in db
                         final gameId = await context
@@ -86,7 +85,7 @@ class _CreateGameScreen2State extends State<CreateGameScreen2> {
                             .createGame(game, _userId);
 
                         // store game id in global state
-                        context.read<GameService>().currentGame.id = gameId;
+                        context.read<GameService>().currentGameId = gameId;
 
                         await navigation
                             .navigateTo(WaitingForGameToStartScreen.routeName);

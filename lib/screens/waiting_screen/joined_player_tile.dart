@@ -5,6 +5,8 @@ import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
+import '../../loading.dart';
+
 /// Show joined player including their name
 /// and indicate if they have been chosen as tagger
 class JoinedPlayerTile extends StatefulWidget {
@@ -27,8 +29,10 @@ class _JoinedPlayerTileState extends State<JoinedPlayerTile> {
     super.initState();
   }
 
-  void _checkIfAdmin() {
-    final adminId = context.read<GameService>().currentGame.adminId;
+  void _checkIfAdmin() async {
+    final gameId = context.read<GameService>().currentGameId;
+    final game = await context.read<DatabaseService>().currentGame(gameId);
+    final adminId = game.adminId;
     final userId = context.read<AuthService>().currentUserId;
 
     // if adminId is equal to userId then set them as admin
@@ -39,6 +43,9 @@ class _JoinedPlayerTileState extends State<JoinedPlayerTile> {
 
   @override
   Widget build(BuildContext context) {
+    if (_userIsAdmin == null) {
+      return Loading();
+    }
     return Padding(
       key: Key('created_game_tile_${widget.player.id}'),
       padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
@@ -77,7 +84,7 @@ class PlayerTile extends StatelessWidget {
                 child: Text('Select'),
                 onPressed: () async {
                   // admin choose tagger
-                  final gameId = context.read<GameService>().currentGame.id;
+                  final gameId = context.read<GameService>().currentGameId;
                   await context
                       .read<DatabaseService>()
                       .chooseTagger(player.id, gameId);
@@ -119,7 +126,7 @@ class TaggerTile extends StatelessWidget {
         trailing: userIsAdmin ? Icon(Icons.close) : Container(),
         onTap: () async {
           // unselect tagger
-          final gameId = context.read<GameService>().currentGame.id;
+          final gameId = context.read<GameService>().currentGameId;
           await context
               .read<DatabaseService>()
               .unSelectTagger(player.id, gameId);

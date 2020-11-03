@@ -99,9 +99,13 @@ class FirestoreService implements DatabaseService {
     );
 
     // add player to game in db
-    return await _firestore
-        .doc('games/$gameId/players/${userId}')
-        .set(player.toMap(), SetOptions(merge: true));
+    try {
+      return await _firestore
+          .doc('games/$gameId/players/$userId')
+          .set(player.toMap(), SetOptions(merge: true));
+    } catch (e) {
+      print('error joining game: $e');
+    }
   }
 
   @override
@@ -168,6 +172,19 @@ class FirestoreService implements DatabaseService {
           .update(<String, bool>{'is_tagger': false});
     } catch (e) {
       print('error un-selecting tagger, $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<Game> currentGame(String gameId) async {
+    try {
+      return await _firestore
+          .doc('games/$gameId')
+          .get()
+          .then((doc) => doc.toGame());
+    } catch (e) {
+      print('error getting current game from firestore: $e');
       return null;
     }
   }
