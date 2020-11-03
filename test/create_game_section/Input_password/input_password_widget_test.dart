@@ -28,19 +28,7 @@ void main() {
       final _mockAuthService = MockAuthService(controller: _authController);
       final _mockDatabaseService = MockDatabaseService();
       final _gameService = GameService();
-      final _mockGame = Game(
-        id: 'mock_game_123',
-        name: null,
-        adminId: null,
-        adminName: null,
-        sonarIntervals: null,
-        password: 'test_password',
-        boundarySize: 0,
-        boundaryPosition: Location(latitude: 0, longitude: 0),
-        phase: null,
-      );
-      _gameService.currentGame = _mockGame;
-      await tester.pumpAndSettle();
+      _gameService.currentGameId = 'test_game_id';
 
       // init input password page
       await tester.pumpWidget(MultiProvider(
@@ -55,7 +43,7 @@ void main() {
       ));
 
       // ol reliable
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       // tap to join a game
       final passwordFeild = find.byKey(Key('input_password_screen_text_feild'));
@@ -81,19 +69,7 @@ void main() {
           playerStreamController: _playerStreamController);
       final navigation = MockNavigation();
       final _gameService = GameService();
-
-      final _mockGame = Game(
-          id: 'mock_game_123',
-          name: null,
-          adminId: null,
-          adminName: null,
-          sonarIntervals: null,
-          password: 'test_password',
-          boundarySize: 0,
-          boundaryPosition: Location(latitude: 0, longitude: 0),
-          phase: null);
-      _gameService.currentGame = _mockGame;
-      await tester.pumpAndSettle();
+      _gameService.currentGameId = 'test_game_123';
 
       // init input password page
       await tester.pumpWidget(MultiProvider(
@@ -113,17 +89,16 @@ void main() {
       ));
 
       // ol reliable
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       // tap and join a game
       await tester.enterText(
-          find.byKey(Key('input_password_screen_text_feild')), 'test_password');
+          find.byKey(Key('input_password_screen_text_feild')), 'password123');
       await tester.tap(find.byKey(Key('input_password_screen_submit_btn')));
       await tester.pump();
 
       // check user has been added to game
       verify(_mockDatabaseService.joinGame(any, any, any)).called(1);
-      expect(_gameService.currentGame, _mockGame);
 
       // check we navigate to waiting screen
       verify(navigation.navigateTo(WaitingForGameToStartScreen.routeName))

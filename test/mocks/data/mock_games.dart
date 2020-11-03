@@ -69,7 +69,7 @@ class MockGames {
       name: 'yeet',
       adminId: null,
       adminName: null,
-      id: 'fadsg',
+      id: 'test_game_123',
       sonarIntervals: 5,
       phase: GamePhase.created,
       boundarySize: 0,

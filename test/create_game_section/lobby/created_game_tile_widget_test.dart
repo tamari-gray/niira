@@ -5,10 +5,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:niira/screens/lobby/created_game_tile.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/input_password.dart';
+import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/data/mock_games.dart';
+import '../../mocks/services/mock_database_service.dart';
 import '../../mocks/services/mock_firebase_platform.dart';
 
 void main() {
@@ -22,12 +24,14 @@ void main() {
       final navigation = Navigation();
       final gameService = GameService();
       final mockGame = MockGames().gamesToJoin[0];
+      final mockdbService = MockDatabaseService();
       // create the widget under test
       await tester.pumpWidget(
         MultiProvider(
           providers: [
             Provider<Navigation>.value(value: navigation),
             Provider<GameService>.value(value: gameService),
+            Provider<DatabaseService>.value(value: mockdbService),
           ],
           child: MaterialApp(
             navigatorKey: navigation.navigatorKey,
@@ -51,7 +55,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // check that current game has been set
-      expect(gameService.currentGame.id, mockGame.id);
+      expect(gameService.currentGameId, mockGame.id);
 
       // observe navigation to input password screen
       expect(find.byKey(Key('inputPasswordScreen')), findsOneWidget);

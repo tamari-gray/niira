@@ -5,6 +5,8 @@ import 'package:niira/models/game.dart';
 import 'package:niira/models/player.dart';
 import 'package:niira/services/database/database_service.dart';
 
+import '../data/mock_games.dart';
+
 class MockDatabaseService extends Mock implements DatabaseService {
   final StreamController<List<Game>> _controller;
   final StreamController<List<Player>> _playerStreamController;
@@ -30,6 +32,10 @@ class MockDatabaseService extends Mock implements DatabaseService {
 
   @override
   Future<String> getUserName(String userId) => Future.value('username123');
+
+  @override
+  Stream<Game> streamOfJoinedGame(String gameId) =>
+      Stream.fromIterable([MockGames().gamesToJoin[0]]);
 }
 
 class FakeDatabaseService extends Fake implements DatabaseService {
