@@ -55,7 +55,7 @@ class FirestoreService implements DatabaseService {
   }
 
   @override
-  Future<void> joinGame(String gameId, String userId, bool isAdmin) async {
+  Future<void> joinGame(String gameId, String userId) async {
     // create player object
     final username = await getUserName(userId);
     final player = Player(
@@ -64,7 +64,6 @@ class FirestoreService implements DatabaseService {
       isTagger: false,
       hasBeenTagged: false,
       hasItem: false,
-      isAdmin: isAdmin ?? false,
     );
 
     // add player to game in db
@@ -84,7 +83,7 @@ class FirestoreService implements DatabaseService {
       final gameRef = await _firestore.collection('games').add(game.toMap());
 
       // join game as admin
-      await joinGame(gameRef.id, userId, true);
+      await joinGame(gameRef.id, userId);
 
       return gameRef.id;
     } catch (e) {

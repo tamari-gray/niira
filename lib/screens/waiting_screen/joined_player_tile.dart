@@ -32,12 +32,11 @@ class _JoinedPlayerTileState extends State<JoinedPlayerTile> {
   void _checkIfAdmin() async {
     final gameId = context.read<GameService>().currentGameId;
     final game = await context.read<DatabaseService>().currentGame(gameId);
-    final adminId = game.adminId;
     final userId = context.read<AuthService>().currentUserId;
 
     // if adminId is equal to userId then set them as admin
     setState(() {
-      _userIsAdmin = userId == adminId;
+      _userIsAdmin = userId == game.adminId;
     });
   }
 
@@ -46,6 +45,7 @@ class _JoinedPlayerTileState extends State<JoinedPlayerTile> {
     if (_userIsAdmin == null) {
       return Loading();
     }
+    print(_userIsAdmin);
     return Padding(
       key: Key('created_game_tile_${widget.player.id}'),
       padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
@@ -90,7 +90,7 @@ class PlayerTile extends StatelessWidget {
                       .chooseTagger(player.id, gameId);
                 },
               )
-            : Container(),
+            : Icon(Icons.person),
       ),
     );
   }
@@ -123,7 +123,7 @@ class TaggerTile extends StatelessWidget {
           'is the tagger',
           style: TextStyle(color: Colors.white),
         ),
-        trailing: userIsAdmin ? Icon(Icons.close) : Container(),
+        trailing: userIsAdmin ? Icon(Icons.close) : Icon(Icons.person),
         onTap: () async {
           // unselect tagger
           final gameId = context.read<GameService>().currentGameId;

@@ -8,6 +8,5 @@ extension QueryDocumentSnapshotExt on QueryDocumentSnapshot {
         isTagger: data()['is_tagger'] as bool ?? false,
         hasBeenTagged: data()['has_been_tagged'] as bool ?? false,
         hasItem: data()['has_item'] as bool ?? false,
-        isAdmin: data()['has_item'] as bool ?? false,
       );
 }

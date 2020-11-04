@@ -7,7 +7,6 @@ class Player {
   final bool isTagger;
   final bool hasBeenTagged;
   final bool hasItem;
-  final bool isAdmin;
 
   Player({
     @required this.id,
@@ -15,6 +14,5 @@ class Player {
     @required this.isTagger,
     @required this.hasBeenTagged,
     @required this.hasItem,
-    @required this.isAdmin,
   });
 }

@@ -98,7 +98,7 @@ void main() {
       await tester.pump();
 
       // check user has been added to game
-      verify(_mockDatabaseService.joinGame(any, any, any)).called(1);
+      verify(_mockDatabaseService.joinGame(any, any)).called(1);
 
       // check we navigate to waiting screen
       verify(navigation.navigateTo(WaitingForGameToStartScreen.routeName))
