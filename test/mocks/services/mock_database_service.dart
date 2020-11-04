@@ -36,6 +36,10 @@ class MockDatabaseService extends Mock implements DatabaseService {
   @override
   Stream<Game> streamOfJoinedGame(String gameId) =>
       Stream.fromIterable([MockGames().gamesToJoin[0]]);
+
+  @override
+  Future<Game> currentGame(String gameId) =>
+      Future.value(MockGames().gamesToJoin[0]);
 }
 
 class FakeDatabaseService extends Fake implements DatabaseService {

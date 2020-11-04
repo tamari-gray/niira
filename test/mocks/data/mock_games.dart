@@ -67,7 +67,7 @@ class MockGames {
   List<Game> gamesToJoin = <Game>[
     Game(
       name: 'yeet',
-      adminId: null,
+      adminId: 'uid_123',
       adminName: null,
       id: 'test_game_123',
       sonarIntervals: 5,
