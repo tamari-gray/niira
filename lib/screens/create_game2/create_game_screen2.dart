@@ -66,6 +66,7 @@ class _CreateGameScreen2State extends State<CreateGameScreen2> {
                 label: Text('Cancel', style: TextStyle(color: Colors.white)))
           ],
         ),
+        // show floatingActionButton if map and user data is loaded
         floatingActionButton: vm.loadingMap == false && _username != null
             ? FloatingActionButton.extended(
                 key: Key('create_game_screen_2_submit_button'),

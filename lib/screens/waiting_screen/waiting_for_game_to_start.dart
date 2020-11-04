@@ -39,7 +39,7 @@ class _WaitingForGameToStartScreenState
             key: Key('waiting_for_gameId_to_start_screen'),
             appBar: AppBar(
               automaticallyImplyLeading: false,
-              title: Text('Choose tagger'),
+              title: Text('Choosing tagger...'),
               actions: [
                 FlatButton.icon(
                   key: Key('waiting_screen_quit_btn'),
