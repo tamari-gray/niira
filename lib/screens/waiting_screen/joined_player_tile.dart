@@ -45,7 +45,6 @@ class _JoinedPlayerTileState extends State<JoinedPlayerTile> {
     if (_userIsAdmin == null) {
       return Loading();
     }
-    print(_userIsAdmin);
     return Padding(
       key: Key('created_game_tile_${widget.player.id}'),
       padding: EdgeInsets.fromLTRB(20, 5, 20, 5),

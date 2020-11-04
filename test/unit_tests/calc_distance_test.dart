@@ -19,8 +19,6 @@ void main() {
       lon2: _gameLocation.longitude,
     );
 
-    print(_distance);
-
     // check that distance is rounded to 1 decimal place e.g 1.5
     expect(_distance.toString().length, 3);
   });

@@ -111,7 +111,6 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
                               BorderSide(color: Colors.black, width: 2.0),
                         ),
                       ),
-                      onChanged: (val) => print('${_game.password}, $val'),
                       // check if password is correct
                       validator: (value) {
                         if (value.isEmpty) {
