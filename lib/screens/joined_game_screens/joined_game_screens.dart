@@ -30,7 +30,7 @@ class _JoinedGameScreensState extends State<JoinedGameScreens> {
       Loading(message: 'identifiying game...');
     }
     return StreamBuilder<Game>(
-        stream: context.read<DatabaseService>().streamOfJoinedGame(_gameId),
+        stream: context.watch<DatabaseService>().streamOfJoinedGame(_gameId),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             context.read<Navigation>().displayError(snapshot.error);

@@ -54,18 +54,19 @@ class _WaitingForGameToStartScreenState
 
                     // remove user from game and navigate to lobby
                     void leaveGame() async {
-                      await _navigation.popUntilLobby();
-
                       final userId =
                           await context.read<AuthService>().currentUserId;
-
-                      // leave game in global state
-                      context.read<GameService>().leaveCurrentGame();
 
                       // leave game in db
                       await context
                           .read<DatabaseService>()
                           .leaveGame(_gameId, userId);
+
+                      // dismiss dialog
+                      await _navigation.pop();
+
+                      // leave game in global state auto navigates to lobby
+                      context.read<GameService>().leaveCurrentGame();
                     }
 
                     _navigation.showConfirmationDialog(

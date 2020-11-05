@@ -83,9 +83,11 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
                       .read<DatabaseService>()
                       .joinGame(_gameId, userId);
 
-                  await context
-                      .read<Navigation>()
-                      .navigateTo(WaitingForGameToStartScreen.routeName);
+                  // remove current route stack
+                  await context.read<Navigation>().popUntilLobby();
+
+                  // tell local state player has joined a game
+                  context.read<GameService>().joinGame(_gameId);
                 }
               },
             ),

@@ -125,7 +125,7 @@ class _MyAppState extends State<MyApp> {
       return MultiProvider(
         providers: [
           Provider<AuthService>.value(value: _authService),
-          Provider<GameService>.value(value: _gameService),
+          ChangeNotifierProvider<GameService>.value(value: _gameService),
           Provider<DatabaseService>.value(value: _databaseService),
           Provider<Navigation>.value(value: _navigation),
           Provider<LocationService>.value(value: _locationService),
@@ -134,43 +134,55 @@ class _MyAppState extends State<MyApp> {
           )
         ],
         child: MaterialApp(
-            title: 'Niira',
-            navigatorKey: _navigation.navigatorKey,
-            theme: ThemeData(
-              brightness: Brightness.light,
-              primaryColor: Color.fromRGBO(247, 152, 0, 1),
-              accentColor: Color.fromRGBO(130, 250, 184, 1),
-              visualDensity: VisualDensity.adaptivePlatformDensity,
-            ),
-            routes: {
-              WaitingForGameToStartScreen.routeName: (context) =>
-                  WaitingForGameToStartScreen(),
-              LobbyScreen.routeName: (context) => LobbyScreen(),
-              CreateAccountScreen.routeName: (context) => CreateAccountScreen(),
-              SignInScreen.routeName: (context) => SignInScreen(),
-              CreateGameScreen1.routeName: (context) => CreateGameScreen1(),
-              CreateGameScreen2.routeName: (context) => CreateGameScreen2(),
-              InputPasswordScreen.routeName: (context) => InputPasswordScreen(),
+          title: 'Niira',
+          navigatorKey: _navigation.navigatorKey,
+          theme: ThemeData(
+            brightness: Brightness.light,
+            primaryColor: Color.fromRGBO(247, 152, 0, 1),
+            accentColor: Color.fromRGBO(130, 250, 184, 1),
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          routes: {
+            WaitingForGameToStartScreen.routeName: (context) =>
+                WaitingForGameToStartScreen(),
+            LobbyScreen.routeName: (context) => LobbyScreen(),
+            CreateAccountScreen.routeName: (context) => CreateAccountScreen(),
+            SignInScreen.routeName: (context) => SignInScreen(),
+            CreateGameScreen1.routeName: (context) => CreateGameScreen1(),
+            CreateGameScreen2.routeName: (context) => CreateGameScreen2(),
+            InputPasswordScreen.routeName: (context) => InputPasswordScreen(),
+            JoinedGameScreens.routeName: (context) => JoinedGameScreens(),
+          },
+          home: StreamBuilder(
+            stream: _authService.streamOfAuthState,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                context.read<Navigation>().displayError(snapshot.error);
+              }
+              // check if user is signed in
+              if (snapshot.data == null) {
+                return WelcomeScreen();
+              } else {
+                return CheckIfJoinedGame();
+              }
             },
-            home: StreamBuilder(
-              stream: _authService.streamOfAuthState,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  context.read<Navigation>().displayError(snapshot.error);
-                }
-                if ((snapshot.data == null)) {
-                  return WelcomeScreen();
-                } else {
-                  if (context.watch<GameService>().currentGameId == '') {
-                    return LobbyScreen();
-                  } else {
-                    return JoinedGameScreens();
-                  }
-                }
-              },
-            )),
+          ),
+        ),
       );
     }
+  }
+}
+
+class CheckIfJoinedGame extends StatelessWidget {
+  const CheckIfJoinedGame({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<GameService>(builder: (_context, gameService, __) {
+      return gameService.currentGameId == ''
+          ? LobbyScreen()
+          : JoinedGameScreens();
+    });
   }
 }
 
