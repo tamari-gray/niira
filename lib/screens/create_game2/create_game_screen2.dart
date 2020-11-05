@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/models/view_models/create_game.dart';
 import 'package:niira/navigation/navigation.dart';
-import 'package:niira/screens/create_game2/create_game_map.dart';
-import 'package:niira/screens/create_game2/sonar_intervals_slider.dart';
-import 'package:niira/screens/waiting_screen/waiting_for_game_to_start.dart';
+import 'package:niira/screens/joined_game_screens/waiting_screen/waiting_for_game_to_start.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import 'boundary_size_slider.dart';
+import 'create_game_map.dart';
+import 'sonar_intervals_slider.dart';
 
 class CreateGameScreen2 extends StatefulWidget {
   static const routeName = '/create_game2';

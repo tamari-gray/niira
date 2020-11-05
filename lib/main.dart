@@ -9,9 +9,10 @@ import 'package:niira/screens/create_account.dart';
 import 'package:niira/screens/create_game1/create_game_screen1.dart';
 import 'package:niira/screens/create_game2/create_game_screen2.dart';
 import 'package:niira/screens/input_password.dart';
+import 'package:niira/screens/joined_game_screens/joined_game_screens.dart';
 import 'package:niira/screens/lobby/lobby.dart';
+import 'package:niira/screens/joined_game_screens/waiting_screen/waiting_for_game_to_start.dart';
 import 'package:niira/screens/sign_in.dart';
-import 'package:niira/screens/waiting_screen/waiting_for_game_to_start.dart';
 import 'package:niira/screens/welcome.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/firebase_auth_service.dart';
@@ -157,9 +158,15 @@ class _MyAppState extends State<MyApp> {
                 if (snapshot.hasError) {
                   context.read<Navigation>().displayError(snapshot.error);
                 }
-                return (snapshot.data == null)
-                    ? WelcomeScreen()
-                    : LobbyScreen();
+                if ((snapshot.data == null)) {
+                  return WelcomeScreen();
+                } else {
+                  if (context.watch<GameService>().currentGameId == '') {
+                    return LobbyScreen();
+                  } else {
+                    return JoinedGameScreens();
+                  }
+                }
               },
             )),
       );

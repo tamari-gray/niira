@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/location.dart';
-import 'package:niira/screens/lobby/created_game_tile.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/location_service.dart';
 import 'package:provider/provider.dart';
+
+import 'created_game_tile.dart';
 
 class ListOfCreatedGames extends StatelessWidget {
   // pass in userlocation to avoid async operations in build fn
