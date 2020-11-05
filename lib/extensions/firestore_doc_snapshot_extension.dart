@@ -11,7 +11,7 @@ extension FirestoreDocumentSnapshotExt on DocumentSnapshot {
 
     // map document to game object
     return Game(
-      id: data()['id']?.toString() ?? 'undefined',
+      id: id ?? 'undefined',
       name: data()['name']?.toString() ?? 'undefined',
       adminName: data()['admin_name']?.toString() ?? 'undefined',
       adminId: data()['admin_id']?.toString() ?? 'undefined',

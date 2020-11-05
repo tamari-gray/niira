@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/player.dart';
-import 'package:niira/models/location.dart';
 import 'package:niira/extensions/game_extension.dart';
+import 'package:niira/extensions/player_extension.dart';
+import 'package:niira/extensions/firestore_query_snapshot_extension.dart';
 import 'package:niira/extensions/firestore_doc_snapshot_extension.dart';
 import 'package:niira/services/database/database_service.dart';
 
@@ -39,44 +39,14 @@ class FirestoreService implements DatabaseService {
   Stream<List<Game>> get streamOfCreatedGames => _firestore
       .collection('games')
       .snapshots()
-      .map((QuerySnapshot snapshot) => snapshot.docs.map((gameDoc) {
-            // convert gamephase into enum
-            final gamePhase = EnumToString.fromString(
-                GamePhase.values, gameDoc.data()['phase']?.toString());
-
-            // map document to game object
-            return Game(
-              id: gameDoc.data()['id']?.toString() ?? 'undefined',
-              name: gameDoc.data()['name']?.toString() ?? 'undefined',
-              adminName:
-                  gameDoc.data()['admin_name']?.toString() ?? 'undefined',
-              adminId: gameDoc.data()['admin_id']?.toString() ?? 'undefined',
-              password: gameDoc.data()['password']?.toString() ?? 'undefined',
-              sonarIntervals: gameDoc.data()['sonar_intervals'] as double,
-              phase: gamePhase ?? GamePhase.created,
-              boundarySize: gameDoc.data()['boundary_size'] as double,
-              boundaryPosition: Location.fromMap(
-                  gameDoc.data()['boundary_position'] as Map<String, dynamic>),
-            );
-          }).toList());
+      .map((QuerySnapshot snapshot) => snapshot.toListOfGames());
 
   @override
   Stream<List<Player>> streamOfJoinedPlayers(String gameId) {
-    return _firestore.collection('games/$gameId/players').snapshots().map(
-          (QuerySnapshot snapshot) => snapshot.docs
-              .map(
-                (playerDoc) => Player(
-                  id: playerDoc.data()['id'].toString() ?? 'undefined',
-                  username:
-                      playerDoc.data()['username'].toString() ?? 'undefined',
-                  isTagger: playerDoc.data()['is_tagger'] as bool ?? false,
-                  hasBeenTagged:
-                      playerDoc.data()['has_been_tagged'] as bool ?? false,
-                  hasItem: playerDoc.data()['has_item'] as bool ?? false,
-                ),
-              )
-              .toList(),
-        );
+    return _firestore
+        .collection('games/$gameId/players')
+        .snapshots()
+        .map((QuerySnapshot snapshot) => snapshot.toListOfPlayers());
   }
 
   @override
@@ -97,22 +67,24 @@ class FirestoreService implements DatabaseService {
     );
 
     // add player to game in db
-    return await _firestore
-        .doc('games/$gameId/players/${player.id}')
-        .set(<String, dynamic>{
-      'username': player.username,
-      'has_been_tagged': player.hasBeenTagged,
-      'has_item': player.hasItem,
-      'is_tagger': player.isTagger,
-    }, SetOptions(merge: true));
+    try {
+      return await _firestore
+          .doc('games/$gameId/players/$userId')
+          .set(player.toMap(), SetOptions(merge: true));
+    } catch (e) {
+      print('error joining game: $e');
+    }
   }
 
   @override
   Future<String> createGame(Game game, String userId) async {
     try {
+      // create game
       final gameRef = await _firestore.collection('games').add(game.toMap());
 
+      // join game as admin
       await joinGame(gameRef.id, userId);
+
       return gameRef.id;
     } catch (e) {
       // do something
@@ -130,6 +102,57 @@ class FirestoreService implements DatabaseService {
           .map((doc) => doc.toGame());
     } catch (e) {
       print('error getting stream of joined game: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<void> chooseTagger(String playerId, String gameId) async {
+    try {
+      // check if there is already a tagger chosen
+      final currentTaggerQuery = await _firestore
+          .collection('games/$gameId/players')
+          .where('is_tagger', isEqualTo: true)
+          .get();
+      if (currentTaggerQuery.size > 0) {
+        final taggerId = currentTaggerQuery.docs.first.id;
+        // un-choose current tagger
+        await _firestore
+            .doc('games/$gameId/players/$taggerId')
+            .update(<String, bool>{'is_tagger': false});
+      }
+
+      // set new tagger
+      return await _firestore
+          .doc('games/$gameId/players/$playerId')
+          .update(<String, bool>{'is_tagger': true});
+    } catch (e) {
+      print('error choosing tagger, $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<void> unSelectTagger(String playerId, String gameId) async {
+    try {
+      return await _firestore
+          .doc('games/$gameId/players/$playerId')
+          .update(<String, bool>{'is_tagger': false});
+    } catch (e) {
+      print('error un-selecting tagger, $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<Game> currentGame(String gameId) async {
+    try {
+      return await _firestore
+          .doc('games/$gameId')
+          .get()
+          .then((doc) => doc.toGame());
+    } catch (e) {
+      print('error getting current game from firestore: $e');
       return null;
     }
   }
