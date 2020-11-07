@@ -10,8 +10,6 @@ import 'package:provider/provider.dart';
 import 'joined_players_list.dart';
 
 class WaitingForGameToStartScreen extends StatefulWidget {
-  static const routeName = '/waiting_for_game_to_start';
-
   @override
   _WaitingForGameToStartScreenState createState() =>
       _WaitingForGameToStartScreenState();

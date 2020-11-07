@@ -85,11 +85,12 @@ class _CreateGameScreen2State extends State<CreateGameScreen2> {
                             .read<DatabaseService>()
                             .createGame(game, _userId);
 
-                        // store game id in global state
-                        context.read<GameService>().joinGame(gameId);
+                        // pop navigation stack
+                        await navigation.popUntilLobby();
 
-                        await navigation
-                            .navigateTo(WaitingForGameToStartScreen.routeName);
+                        // store game id in global state
+                        // triggers navigation to JoinedGameScreens
+                        context.read<GameService>().joinGame(gameId);
                       });
                 },
                 label: Text('Next'),
