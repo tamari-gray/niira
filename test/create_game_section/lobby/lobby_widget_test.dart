@@ -44,7 +44,7 @@ void main() {
           Provider<Navigation>.value(value: navigation),
           Provider<LocationService>.value(value: fakeLocationService),
           Provider<DatabaseService>.value(value: mockDatabaseService),
-          Provider<GameService>.value(value: userDataService),
+          ChangeNotifierProvider<GameService>.value(value: userDataService),
         ],
         child: MaterialApp(
           home: LobbyScreen(),

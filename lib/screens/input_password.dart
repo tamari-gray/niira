@@ -29,7 +29,9 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     if (_gameId == null) {
-      return Loading();
+      return Loading(
+        message: 'identifying game you vant to join',
+      );
     }
     return StreamBuilder<Game>(
         stream: context.watch<DatabaseService>().streamOfJoinedGame(_gameId),
@@ -71,6 +73,9 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
                 Icons.navigate_next,
                 color: Colors.white,
               ),
+
+              /// navigation will be handled by CheckIfJoinedGame
+              /// after we update GameService.currentGameId
               onPressed: () async {
                 // check if password is correct
                 if (_formKey.currentState.validate()) {
@@ -87,6 +92,7 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
                   await context.read<Navigation>().popUntilLobby();
 
                   // tell local state player has joined a game
+                  // this will trigger navigation to JoinedGameScreens
                   context.read<GameService>().joinGame(_gameId);
                 }
               },
