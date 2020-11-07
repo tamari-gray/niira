@@ -8,6 +8,7 @@ class Game {
   final String name;
   final String adminName;
   final String adminId;
+  final bool adminQuitCreatingGame;
   final String password;
   final double sonarIntervals;
   final Location boundaryPosition;
@@ -21,6 +22,7 @@ class Game {
     @required this.name,
     @required this.adminName,
     @required this.adminId,
+    @required this.adminQuitCreatingGame,
     @required this.sonarIntervals,
     @required this.password,
     @required this.boundaryPosition,

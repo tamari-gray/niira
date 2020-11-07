@@ -42,7 +42,12 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
           if (!snapshot.hasData) {
             return Loading(message: 'getting game data..');
           }
+
           final _game = snapshot.data;
+
+          if (_game.adminQuitCreatingGame) {
+            context.read<Navigation>().popUntilLobby();
+          }
           return Scaffold(
             key: Key('inputPasswordScreen'),
             appBar: AppBar(

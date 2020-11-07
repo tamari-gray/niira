@@ -15,6 +15,8 @@ extension FirestoreDocumentSnapshotExt on DocumentSnapshot {
       name: data()['name']?.toString() ?? 'undefined',
       adminName: data()['admin_name']?.toString() ?? 'undefined',
       adminId: data()['admin_id']?.toString() ?? 'undefined',
+      adminQuitCreatingGame:
+          data()['admin_quit_creating_game'] as bool ?? false,
       password: data()['password']?.toString() ?? 'undefined',
       sonarIntervals: data()['sonar_intervals'] as double,
       phase: gamePhase ?? GamePhase.created,
