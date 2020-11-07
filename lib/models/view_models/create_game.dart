@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import '../game.dart';
 import '../location.dart';
 
-/// set initial [boundarySize] value by manualy changing it here
+/// set initial [boundarySize] and [sonarIntervals] value by manualy changing it here
 class CreateGameViewModel extends ChangeNotifier {
   double boundarySize = 100;
-  double sonarIntervals = 150;
+  double sonarIntervals = 210;
   Location boundaryPosition;
   bool loadingMap = true;
 
@@ -29,7 +29,7 @@ class CreateGameViewModel extends ChangeNotifier {
 
   void reset() {
     boundarySize = 100;
-    sonarIntervals = 300;
+    sonarIntervals = 210;
     boundaryPosition = null;
     loadingMap = false;
     name = null;
