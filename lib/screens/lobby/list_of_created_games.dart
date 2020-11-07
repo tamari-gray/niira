@@ -14,7 +14,7 @@ class ListOfCreatedGames extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // init location service here in hopes of making the next fn call thing more readable
+    // init location service here in hopes of making createdGamesInOrderOfDistance more readable
     final locationService = context.watch<LocationService>();
 
     // get stream of created games in order of distanceFromUser, (nearest to furtherest)
