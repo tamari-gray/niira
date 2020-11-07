@@ -22,6 +22,7 @@ import 'package:niira/services/location_service.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
+import 'screens/error_page.dart';
 import 'utilities/firebase_wrapper.dart';
 
 void main() async {
@@ -183,40 +184,5 @@ class CheckIfJoinedGame extends StatelessWidget {
           ? LobbyScreen()
           : JoinedGameScreens();
     });
-  }
-}
-
-/// This widget just displays the available info if there is an error during
-/// intialization.
-///
-/// It's not particularly pretty but it shouldn't ever be seen and if it is,
-/// we just need to view the available info.
-class ErrorPage extends StatelessWidget {
-  final dynamic _error;
-  final StackTrace _trace;
-  const ErrorPage({
-    @required dynamic error,
-    @required StackTrace trace,
-    Key key,
-  })  : _error = error,
-        _trace = trace,
-        super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: SingleChildScrollView(
-        child: ListBody(
-          children: <Widget>[
-            SizedBox(height: 50),
-            Text('Looks like there was a problem.',
-                textDirection: TextDirection.ltr),
-            SizedBox(height: 20),
-            Text(_error.toString(), textDirection: TextDirection.ltr),
-            SizedBox(height: 50),
-            Text(_trace.toString(), textDirection: TextDirection.ltr),
-          ],
-        ),
-      ),
-    );
   }
 }
