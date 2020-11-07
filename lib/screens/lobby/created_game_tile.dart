@@ -58,7 +58,7 @@ class GameTile extends StatelessWidget {
                   child: Text('Join'),
                   onPressed: () async {
                     // make selected game id available to all widgets
-                    context.read<GameService>().currentGameId = _game.id;
+                    context.read<GameService>().joinGame(_game.id);
                     // navigate to input password screen
                     await context
                         .read<Navigation>()

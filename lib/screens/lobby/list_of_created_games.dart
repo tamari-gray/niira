@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/location.dart';
-import 'package:niira/screens/lobby/created_game_tile.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/location_service.dart';
 import 'package:provider/provider.dart';
+
+import 'created_game_tile.dart';
 
 class ListOfCreatedGames extends StatelessWidget {
   // pass in userlocation to avoid async operations in build fn
@@ -13,7 +14,7 @@ class ListOfCreatedGames extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // init location service here in hopes of making the next fn call thing more readable
+    // init location service here in hopes of making createdGamesInOrderOfDistance more readable
     final locationService = context.watch<LocationService>();
 
     // get stream of created games in order of distanceFromUser, (nearest to furtherest)

@@ -7,8 +7,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:niira/main.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/user_data.dart';
-import 'package:niira/screens/lobby/lobby.dart';
 import 'package:niira/screens/lobby/list_of_created_games.dart';
+import 'package:niira/screens/lobby/lobby.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/services/database/database_service.dart';
@@ -44,7 +44,7 @@ void main() {
           Provider<Navigation>.value(value: navigation),
           Provider<LocationService>.value(value: fakeLocationService),
           Provider<DatabaseService>.value(value: mockDatabaseService),
-          Provider<GameService>.value(value: userDataService),
+          ChangeNotifierProvider<GameService>.value(value: userDataService),
         ],
         child: MaterialApp(
           home: LobbyScreen(),

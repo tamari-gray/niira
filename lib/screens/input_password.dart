@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/navigation/navigation.dart';
-import 'package:niira/screens/waiting_screen/waiting_for_game_to_start.dart';
+import 'joined_game_screens/waiting_screen/waiting_for_game_to_start.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/game_service.dart';
@@ -29,7 +29,9 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     if (_gameId == null) {
-      return Loading();
+      return Loading(
+        message: 'identifying game you vant to join',
+      );
     }
     return StreamBuilder<Game>(
         stream: context.watch<DatabaseService>().streamOfJoinedGame(_gameId),
@@ -49,7 +51,7 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
               actions: [
                 FlatButton.icon(
                     onPressed: () {
-                      context.read<Navigation>().pop();
+                      context.read<Navigation>().popUntilLobby();
                       context.read<GameService>().leaveCurrentGame();
                     },
                     icon: Icon(
@@ -71,6 +73,9 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
                 Icons.navigate_next,
                 color: Colors.white,
               ),
+
+              /// navigation will be handled by CheckIfJoinedGame
+              /// after we update GameService.currentGameId
               onPressed: () async {
                 // check if password is correct
                 if (_formKey.currentState.validate()) {
@@ -83,9 +88,12 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
                       .read<DatabaseService>()
                       .joinGame(_gameId, userId);
 
-                  await context
-                      .read<Navigation>()
-                      .navigateTo(WaitingForGameToStartScreen.routeName);
+                  // remove current route stack
+                  await context.read<Navigation>().popUntilLobby();
+
+                  // tell local state player has joined a game
+                  // this will trigger navigation to JoinedGameScreens
+                  context.read<GameService>().joinGame(_gameId);
                 }
               },
             ),

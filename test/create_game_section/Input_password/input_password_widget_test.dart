@@ -5,18 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:niira/models/game.dart';
-import 'package:niira/models/location.dart';
 import 'package:niira/models/player.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/input_password.dart';
-import 'package:niira/screens/waiting_screen/waiting_for_game_to_start.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/navigation/mock_navigation.dart';
+import '../../mocks/services/game_service_mocks.dart';
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
 
@@ -35,7 +34,7 @@ void main() {
         providers: [
           Provider<AuthService>.value(value: _mockAuthService),
           Provider<DatabaseService>.value(value: _mockDatabaseService),
-          Provider<GameService>.value(value: _gameService),
+          ChangeNotifierProvider<GameService>.value(value: _gameService),
         ],
         child: MaterialApp(
           home: InputPasswordScreen(),
@@ -67,42 +66,80 @@ void main() {
       final _mockDatabaseService = MockDatabaseService(
           controller: _databaseController,
           playerStreamController: _playerStreamController);
-      final navigation = MockNavigation();
-      final _gameService = GameService();
-      _gameService.currentGameId = 'test_game_123';
+      final _mockNavigation = MockNavigation();
+      final _mockGameService = MockGameService();
+      _mockGameService.currentGameId = 'test_game_123';
+
+      await tester.pumpAndSettle();
 
       // init input password page
       await tester.pumpWidget(MultiProvider(
         providers: [
           Provider<AuthService>.value(value: _fakeAuthService),
           Provider<DatabaseService>.value(value: _mockDatabaseService),
-          Provider<Navigation>.value(value: navigation),
-          Provider<GameService>.value(value: _gameService)
+          Provider<Navigation>.value(value: _mockNavigation),
+          ChangeNotifierProvider<GameService>.value(value: _mockGameService)
         ],
         child: MaterialApp(
-            home: InputPasswordScreen(),
-            navigatorKey: navigation.navigatorKey,
-            routes: {
-              WaitingForGameToStartScreen.routeName: (context) =>
-                  WaitingForGameToStartScreen(),
-            }),
+          home: InputPasswordScreen(),
+        ),
       ));
 
       // ol reliable
       await tester.pump();
 
+      // check inputPasswordScreen is showing
+      final inputPasswordScreenTextField =
+          find.byKey(Key('input_password_screen_text_feild'));
+      expect(inputPasswordScreenTextField, findsOneWidget);
+
       // tap and join a game
-      await tester.enterText(
-          find.byKey(Key('input_password_screen_text_feild')), 'password123');
+      await tester.enterText(inputPasswordScreenTextField, 'password123');
       await tester.tap(find.byKey(Key('input_password_screen_submit_btn')));
       await tester.pump();
 
       // check user has been added to game
       verify(_mockDatabaseService.joinGame(any, any)).called(1);
 
-      // check we navigate to waiting screen
-      verify(navigation.navigateTo(WaitingForGameToStartScreen.routeName))
-          .called(1);
+      // check we remove current navigation stack
+      verify(_mockNavigation.popUntilLobby()).called(1);
+
+      // check we tell local state that user has joined a game
+      verify(_mockGameService.joinGame(any)).called(1);
     });
+  });
+
+  testWidgets('user exits InputPasswordScreen', (WidgetTester tester) async {
+    final _authController = StreamController<UserData>();
+    final _mockAuthService = MockAuthService(controller: _authController);
+    final _mockDatabaseService = MockDatabaseService();
+    final _mockNavigation = MockNavigation();
+    final _mockGameService = MockGameService();
+    _mockGameService.currentGameId = 'test_game_id';
+
+    // init input password page
+    await tester.pumpWidget(MultiProvider(
+      providers: [
+        Provider<AuthService>.value(value: _mockAuthService),
+        Provider<DatabaseService>.value(value: _mockDatabaseService),
+        Provider<Navigation>.value(value: _mockNavigation),
+        ChangeNotifierProvider<GameService>.value(value: _mockGameService),
+      ],
+      child: MaterialApp(
+        home: InputPasswordScreen(),
+      ),
+    ));
+
+    // ol reliable
+    await tester.pump();
+
+    // tap to cancel joining game
+    await tester.tap(find.text('Cancel'));
+
+    // check that we pop all routes
+    verify(_mockNavigation.popUntilLobby()).called(1);
+
+    // check that we update local state
+    verify(_mockGameService.leaveCurrentGame()).called(1);
   });
 }

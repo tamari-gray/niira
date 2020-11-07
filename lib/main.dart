@@ -9,9 +9,10 @@ import 'package:niira/screens/create_account.dart';
 import 'package:niira/screens/create_game1/create_game_screen1.dart';
 import 'package:niira/screens/create_game2/create_game_screen2.dart';
 import 'package:niira/screens/input_password.dart';
+import 'package:niira/screens/joined_game_screens/joined_game_screens.dart';
 import 'package:niira/screens/lobby/lobby.dart';
+import 'package:niira/screens/joined_game_screens/waiting_screen/waiting_for_game_to_start.dart';
 import 'package:niira/screens/sign_in.dart';
-import 'package:niira/screens/waiting_screen/waiting_for_game_to_start.dart';
 import 'package:niira/screens/welcome.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/auth/firebase_auth_service.dart';
@@ -21,6 +22,7 @@ import 'package:niira/services/location_service.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
+import 'screens/error_page.dart';
 import 'utilities/firebase_wrapper.dart';
 
 void main() async {
@@ -124,7 +126,7 @@ class _MyAppState extends State<MyApp> {
       return MultiProvider(
         providers: [
           Provider<AuthService>.value(value: _authService),
-          Provider<GameService>.value(value: _gameService),
+          ChangeNotifierProvider<GameService>.value(value: _gameService),
           Provider<DatabaseService>.value(value: _databaseService),
           Provider<Navigation>.value(value: _navigation),
           Provider<LocationService>.value(value: _locationService),
@@ -133,71 +135,51 @@ class _MyAppState extends State<MyApp> {
           )
         ],
         child: MaterialApp(
-            title: 'Niira',
-            navigatorKey: _navigation.navigatorKey,
-            theme: ThemeData(
-              brightness: Brightness.light,
-              primaryColor: Color.fromRGBO(247, 152, 0, 1),
-              accentColor: Color.fromRGBO(130, 250, 184, 1),
-              visualDensity: VisualDensity.adaptivePlatformDensity,
-            ),
-            routes: {
-              WaitingForGameToStartScreen.routeName: (context) =>
-                  WaitingForGameToStartScreen(),
-              LobbyScreen.routeName: (context) => LobbyScreen(),
-              CreateAccountScreen.routeName: (context) => CreateAccountScreen(),
-              SignInScreen.routeName: (context) => SignInScreen(),
-              CreateGameScreen1.routeName: (context) => CreateGameScreen1(),
-              CreateGameScreen2.routeName: (context) => CreateGameScreen2(),
-              InputPasswordScreen.routeName: (context) => InputPasswordScreen(),
+          title: 'Niira',
+          navigatorKey: _navigation.navigatorKey,
+          theme: ThemeData(
+            brightness: Brightness.light,
+            primaryColor: Color.fromRGBO(247, 152, 0, 1),
+            accentColor: Color.fromRGBO(130, 250, 184, 1),
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          routes: {
+            LobbyScreen.routeName: (context) => LobbyScreen(),
+            CreateAccountScreen.routeName: (context) => CreateAccountScreen(),
+            SignInScreen.routeName: (context) => SignInScreen(),
+            CreateGameScreen1.routeName: (context) => CreateGameScreen1(),
+            CreateGameScreen2.routeName: (context) => CreateGameScreen2(),
+            InputPasswordScreen.routeName: (context) => InputPasswordScreen(),
+          },
+          home: StreamBuilder(
+            stream: _authService.streamOfAuthState,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                context.read<Navigation>().displayError(snapshot.error);
+              }
+              // check if user is signed in
+              if (snapshot.data == null) {
+                return WelcomeScreen();
+              } else {
+                return CheckIfJoinedGame();
+              }
             },
-            home: StreamBuilder(
-              stream: _authService.streamOfAuthState,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  context.read<Navigation>().displayError(snapshot.error);
-                }
-                return (snapshot.data == null)
-                    ? WelcomeScreen()
-                    : LobbyScreen();
-              },
-            )),
+          ),
+        ),
       );
     }
   }
 }
 
-/// This widget just displays the available info if there is an error during
-/// intialization.
-///
-/// It's not particularly pretty but it shouldn't ever be seen and if it is,
-/// we just need to view the available info.
-class ErrorPage extends StatelessWidget {
-  final dynamic _error;
-  final StackTrace _trace;
-  const ErrorPage({
-    @required dynamic error,
-    @required StackTrace trace,
-    Key key,
-  })  : _error = error,
-        _trace = trace,
-        super(key: key);
+class CheckIfJoinedGame extends StatelessWidget {
+  const CheckIfJoinedGame({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: SingleChildScrollView(
-        child: ListBody(
-          children: <Widget>[
-            SizedBox(height: 50),
-            Text('Looks like there was a problem.',
-                textDirection: TextDirection.ltr),
-            SizedBox(height: 20),
-            Text(_error.toString(), textDirection: TextDirection.ltr),
-            SizedBox(height: 50),
-            Text(_trace.toString(), textDirection: TextDirection.ltr),
-          ],
-        ),
-      ),
-    );
+    return Consumer<GameService>(builder: (_context, gameService, __) {
+      return gameService.currentGameId == ''
+          ? LobbyScreen()
+          : JoinedGameScreens();
+    });
   }
 }

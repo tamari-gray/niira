@@ -6,14 +6,19 @@ void main() {
     final gameService = GameService();
     expect(gameService.currentGameId, '');
 
-    gameService.currentGameId = 'test_id';
-    expect(gameService.currentGameId, 'test_id');
+    gameService.addListener(() {
+      expect(gameService.currentGameId, 'test_id');
+    });
+    gameService.joinGame('test_id');
   });
   test('resets current gameId to empty string', () {
     final gameService = GameService();
     gameService.currentGameId = 'Id123';
 
+    gameService.addListener(() {
+      expect(gameService.currentGameId, '');
+    });
+
     gameService.leaveCurrentGame();
-    expect(gameService.currentGameId, '');
   });
 }

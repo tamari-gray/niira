@@ -1,4 +1,15 @@
-class GameService {
+import 'package:flutter/material.dart';
+
+class GameService extends ChangeNotifier {
   String currentGameId = '';
-  void leaveCurrentGame() => currentGameId = '';
+
+  void joinGame(String gameId) {
+    currentGameId = gameId;
+    notifyListeners();
+  }
+
+  void leaveCurrentGame() {
+    currentGameId = '';
+    notifyListeners();
+  }
 }

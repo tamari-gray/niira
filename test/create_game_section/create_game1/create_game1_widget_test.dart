@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:niira/models/view_models/create_game.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/create_game1/create_game_screen1.dart';
@@ -11,12 +12,48 @@ import 'package:niira/services/location_service.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
+import '../../mocks/create_game_vm_mocks.dart';
+import '../../mocks/navigation/mock_navigation.dart';
+import '../../mocks/services/game_service_mocks.dart';
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
 import '../../mocks/services/mock_location_service.dart';
 
 void main() {
   group('CreateGameScreen1 ', () {
+    testWidgets('quit creating game', (WidgetTester tester) async {
+      // spin up the wut
+      final nav = MockNavigation();
+      final mockVm = MockcreateGameVm();
+      final mockGameService = MockGameService();
+      await tester.pumpWidget(MultiProvider(
+          providers: [
+            ChangeNotifierProvider<GameService>.value(value: mockGameService),
+            Provider<AuthService>(create: (_) => MockAuthService()),
+            Provider<DatabaseService>(create: (_) => FakeDatabaseService()),
+            ChangeNotifierProvider<CreateGameViewModel>.value(value: mockVm),
+            Provider<LocationService>(create: (_) => FakeLocationService()),
+            Provider<Navigation>.value(value: nav),
+          ],
+          child: MaterialApp(
+            home: CreateGameScreen1(),
+          )));
+
+      await tester.pumpAndSettle();
+
+      // quit creating game
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+
+      // check that we pop all routes
+      verify(nav.popUntilLobby()).called(1);
+
+      // check that we clear any vm data
+      verify(mockVm.reset()).called(1);
+
+      // check that we navigate to lobby screen
+      verify(mockGameService.leaveCurrentGame()).called(1);
+    });
     testWidgets('only navigates with invalid inputs',
         (WidgetTester tester) async {
       // spin up the wut
