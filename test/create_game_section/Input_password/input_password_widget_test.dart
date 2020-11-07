@@ -108,4 +108,38 @@ void main() {
       verify(_mockGameService.joinGame(any)).called(1);
     });
   });
+
+  testWidgets('user exits InputPasswordScreen', (WidgetTester tester) async {
+    final _authController = StreamController<UserData>();
+    final _mockAuthService = MockAuthService(controller: _authController);
+    final _mockDatabaseService = MockDatabaseService();
+    final _mockNavigation = MockNavigation();
+    final _mockGameService = MockGameService();
+    _mockGameService.currentGameId = 'test_game_id';
+
+    // init input password page
+    await tester.pumpWidget(MultiProvider(
+      providers: [
+        Provider<AuthService>.value(value: _mockAuthService),
+        Provider<DatabaseService>.value(value: _mockDatabaseService),
+        Provider<Navigation>.value(value: _mockNavigation),
+        ChangeNotifierProvider<GameService>.value(value: _mockGameService),
+      ],
+      child: MaterialApp(
+        home: InputPasswordScreen(),
+      ),
+    ));
+
+    // ol reliable
+    await tester.pump();
+
+    // tap to cancel joining game
+    await tester.tap(find.text('Cancel'));
+
+    // check that we pop all routes
+    verify(_mockNavigation.popUntilLobby()).called(1);
+
+    // check that we update local state
+    verify(_mockGameService.leaveCurrentGame()).called(1);
+  });
 }

@@ -51,7 +51,7 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
               actions: [
                 FlatButton.icon(
                     onPressed: () {
-                      context.read<Navigation>().pop();
+                      context.read<Navigation>().popUntilLobby();
                       context.read<GameService>().leaveCurrentGame();
                     },
                     icon: Icon(
