@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/navigation/navigation.dart';
+import 'package:niira/screens/joined_game_screens/finished_game_screen.dart';
 import 'package:niira/screens/joined_game_screens/waiting_screen/waiting_for_game_to_start.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
+
+import 'playing_game_screen.dart';
 
 class JoinedGameScreens extends StatefulWidget {
   const JoinedGameScreens({Key key}) : super(key: key);
@@ -45,11 +48,10 @@ class _JoinedGameScreensState extends State<JoinedGameScreens> {
               return WaitingForGameToStartScreen();
               break;
             case GamePhase.playing:
-              // return PlayingGame();
-
+              return PlayingGameScreen();
               break;
             case GamePhase.finished:
-              // return PostGame();
+              return FinishedGameScreen();
               break;
             default:
               return WaitingForGameToStartScreen();
