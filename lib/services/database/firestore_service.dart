@@ -5,7 +5,10 @@ import 'package:niira/extensions/game_extension.dart';
 import 'package:niira/extensions/player_extension.dart';
 import 'package:niira/extensions/firestore_query_snapshot_extension.dart';
 import 'package:niira/extensions/firestore_doc_snapshot_extension.dart';
+import 'package:niira/models/user_data.dart';
 import 'package:niira/services/database/database_service.dart';
+
+// const currentGame = 'current_game';
 
 class FirestoreService implements DatabaseService {
   final FirebaseFirestore _firestore;
@@ -51,7 +54,36 @@ class FirestoreService implements DatabaseService {
 
   @override
   Future<void> leaveGame(String gameId, String playerId) async {
-    return await _firestore.doc('games/$gameId/players/${playerId}').delete();
+    try {
+      await _firestore
+          .doc('players/$playerId')
+          .update(<String, String>{'current_game': ''});
+
+      return await _firestore.doc('games/$gameId/players/${playerId}').delete();
+    } catch (e) {
+      print('error leaving game, $e');
+      return null;
+    }
+  }
+
+  /// set all joined players 'current_game' to empty string
+  /// and delete this game
+  @override
+  Future<void> adminQuitCreatingGame(String gameId) async {
+    try {
+      final joinedPlayers =
+          await _firestore.collection('games/$gameId/players').get();
+
+      await joinedPlayers.docs.forEach((QueryDocumentSnapshot playerDoc) async {
+        await _firestore
+            .doc('players/${playerDoc.id}')
+            .update(<String, String>{'current_game': ''});
+
+        return await _firestore.doc('games/$gameId').delete();
+      });
+    } catch (e) {
+      print('error when trying to quit game as admin, $e');
+    }
   }
 
   @override
@@ -66,13 +98,19 @@ class FirestoreService implements DatabaseService {
       hasItem: false,
     );
 
-    // add player to game in db
     try {
+      // tell player doc that we have joined a game
+      await _firestore
+          .doc('players/$userId')
+          .update(<String, String>{'current_game': gameId});
+
+      // add player to game
       return await _firestore
           .doc('games/$gameId/players/$userId')
           .set(player.toMap(), SetOptions(merge: true));
     } catch (e) {
       print('error joining game: $e');
+      return null;
     }
   }
 
@@ -145,6 +183,19 @@ class FirestoreService implements DatabaseService {
   }
 
   @override
+  Future<String> currentGameId(String userId) async {
+    try {
+      return await _firestore
+          .doc('players/$userId')
+          .get()
+          .then<String>((doc) => doc.data()['current_game'] as String);
+    } catch (e) {
+      print('error getting game id, $e');
+      return null;
+    }
+  }
+
+  @override
   Future<Game> currentGame(String gameId) async {
     try {
       return await _firestore
@@ -153,6 +204,36 @@ class FirestoreService implements DatabaseService {
           .then((doc) => doc.toGame());
     } catch (e) {
       print('error getting current game from firestore: $e');
+      return null;
+    }
+  }
+
+  @override
+  Stream<UserData> userData(String userId) {
+    try {
+      return _firestore
+          .doc('players/$userId')
+          .snapshots()
+          .map((doc) => doc.toUserData());
+    } catch (e) {
+      print('error getting user data, $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<bool> checkIfAdmin(String userId) async {
+    try {
+      final gameId = await currentGameId(userId);
+      final game = await currentGame(gameId);
+
+      if (game.adminId == userId) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print('error checking if user is admin, $e');
       return null;
     }
   }

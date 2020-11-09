@@ -5,13 +5,13 @@ import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/joined_game_screens/finished_game_screen.dart';
 import 'package:niira/screens/joined_game_screens/waiting_screen/waiting_for_game_to_start.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import 'playing_game_screen.dart';
 
 class JoinedGameScreens extends StatefulWidget {
-  const JoinedGameScreens({Key key}) : super(key: key);
+  final String gameId;
+  const JoinedGameScreens({Key key, @required this.gameId}) : super(key: key);
   static const routeName = '/joined_game_screens';
 
   @override
@@ -19,33 +19,30 @@ class JoinedGameScreens extends StatefulWidget {
 }
 
 class _JoinedGameScreensState extends State<JoinedGameScreens> {
-  String _gameId;
-
   @override
   void initState() {
-    _gameId = context.read<GameService>().currentGameId;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_gameId == null) {
-      Loading(message: 'identifiying game...');
-    }
     return StreamBuilder<Game>(
-        stream: context.watch<DatabaseService>().streamOfJoinedGame(_gameId),
+        stream:
+            context.watch<DatabaseService>().streamOfJoinedGame(widget.gameId),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             context.read<Navigation>().displayError(snapshot.error);
           }
 
           if (!snapshot.hasData) {
-            return Loading(message: 'retrieving your game');
+            return Scaffold(body: Loading(message: 'retrieving your game'));
           }
 
           switch (snapshot.data.phase) {
             case GamePhase.initialising:
-              return WaitingForGameToStartScreen();
+              return WaitingForGameToStartScreen(
+                gameId: snapshot.data.id,
+              );
               break;
             case GamePhase.playing:
               return PlayingGameScreen();
@@ -54,7 +51,7 @@ class _JoinedGameScreensState extends State<JoinedGameScreens> {
               return FinishedGameScreen();
               break;
             default:
-              return WaitingForGameToStartScreen();
+              return WaitingForGameToStartScreen(gameId: snapshot.data.id);
           }
         });
   }

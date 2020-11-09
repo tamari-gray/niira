@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/input_password.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 class GameTile extends StatelessWidget {
@@ -57,12 +56,11 @@ class GameTile extends StatelessWidget {
                   borderSide: BorderSide(color: Theme.of(context).primaryColor),
                   child: Text('Join'),
                   onPressed: () async {
-                    // make selected game id available to all widgets
-                    context.read<GameService>().joinGame(_game.id);
                     // navigate to input password screen
-                    await context
-                        .read<Navigation>()
-                        .navigateTo(InputPasswordScreen.routeName);
+                    await context.read<Navigation>().navigateTo(
+                          InputPasswordScreen.routeName,
+                          gameId: _game.id,
+                        );
                   },
                 )
               ],

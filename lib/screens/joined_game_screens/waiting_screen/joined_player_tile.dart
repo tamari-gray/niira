@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:niira/loading.dart';
 import 'package:niira/models/player.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 /// Show joined player including their name
@@ -21,6 +19,7 @@ class JoinedPlayerTile extends StatefulWidget {
 
 class _JoinedPlayerTileState extends State<JoinedPlayerTile> {
   bool _userIsAdmin;
+  String _gameId;
 
   @override
   void initState() {
@@ -29,27 +28,35 @@ class _JoinedPlayerTileState extends State<JoinedPlayerTile> {
   }
 
   void _checkIfAdmin() async {
-    final gameId = context.read<GameService>().currentGameId;
-    final game = await context.read<DatabaseService>().currentGame(gameId);
     final userId = context.read<AuthService>().currentUserId;
+    final gameId = await context.read<DatabaseService>().currentGameId(userId);
+    final isAdmin = await context.read<DatabaseService>().checkIfAdmin(userId);
 
-    // if adminId is equal to userId then set them as admin
     setState(() {
-      _userIsAdmin = userId == game.adminId;
+      _gameId = gameId;
+      _userIsAdmin = isAdmin;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_userIsAdmin == null) {
-      return Loading();
+    if (_userIsAdmin == null && _gameId == null) {
+      return Container();
     }
     return Padding(
       key: Key('created_game_tile_${widget.player.id}'),
       padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
       child: widget.player.isTagger
-          ? TaggerTile(player: widget.player, userIsAdmin: _userIsAdmin)
-          : PlayerTile(player: widget.player, userIsAdmin: _userIsAdmin),
+          ? TaggerTile(
+              player: widget.player,
+              userIsAdmin: _userIsAdmin,
+              gameId: _gameId,
+            )
+          : PlayerTile(
+              player: widget.player,
+              userIsAdmin: _userIsAdmin,
+              gameId: _gameId,
+            ),
     );
   }
 }
@@ -59,10 +66,12 @@ class PlayerTile extends StatelessWidget {
     Key key,
     @required this.player,
     @required this.userIsAdmin,
+    @required this.gameId,
   }) : super(key: key);
 
   final Player player;
   final bool userIsAdmin;
+  final String gameId;
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +91,6 @@ class PlayerTile extends StatelessWidget {
                 child: Text('Select'),
                 onPressed: () async {
                   // admin choose tagger
-                  final gameId = context.read<GameService>().currentGameId;
                   await context
                       .read<DatabaseService>()
                       .chooseTagger(player.id, gameId);
@@ -99,10 +107,12 @@ class TaggerTile extends StatelessWidget {
     Key key,
     @required this.player,
     @required this.userIsAdmin,
+    @required this.gameId,
   }) : super(key: key);
 
   final Player player;
   final bool userIsAdmin;
+  final String gameId;
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +134,6 @@ class TaggerTile extends StatelessWidget {
         trailing: userIsAdmin ? Icon(Icons.close) : Icon(Icons.person),
         onTap: () async {
           // unselect tagger
-          final gameId = context.read<GameService>().currentGameId;
           await context
               .read<DatabaseService>()
               .unSelectTagger(player.id, gameId);

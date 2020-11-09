@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:niira/loading.dart';
-import 'package:niira/models/user_data.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
@@ -160,21 +159,20 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                             }
 
                             // create user account
-                            final authResult = await context
+                            final _userId = await context
                                 .read<AuthService>()
                                 .createUserAccount(_email, _password);
 
                             // successfull login
-                            if (authResult is UserData) {
+                            if (_userId != null) {
                               // add username to db
-                              final userId = authResult.id;
                               await context
                                   .read<DatabaseService>()
-                                  .addUsername(userId, _userName);
+                                  .addUsername(_userId, _userName);
 
                               // go to lobby
                               context.read<Navigation>().pop();
-                            } else if (authResult == null) {
+                            } else if (_userId == null) {
                               // unsuccessfull create account
                               setState(() {
                                 _waitingForAuthResult = false;

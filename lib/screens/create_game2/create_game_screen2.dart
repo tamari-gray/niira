@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/models/view_models/create_game.dart';
 import 'package:niira/navigation/navigation.dart';
-import 'package:niira/screens/joined_game_screens/waiting_screen/waiting_for_game_to_start.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import 'boundary_size_slider.dart';
@@ -77,20 +75,17 @@ class _CreateGameScreen2State extends State<CreateGameScreen2> {
                       confirmText: 'Yes',
                       cancelText: 'No',
                       onConfirmed: () async {
-                        // create game data and save in local state
+                        // create game data
                         final game = vm.createGameData(_userId, _username);
 
                         // create game in db
-                        final gameId = await context
+                        // triggers navigation to JoinedGameScreens
+                        await context
                             .read<DatabaseService>()
                             .createGame(game, _userId);
 
                         // pop navigation stack
                         await navigation.popUntilLobby();
-
-                        // store game id in global state
-                        // triggers navigation to JoinedGameScreens
-                        context.read<GameService>().joinGame(gameId);
                       });
                 },
                 label: Text('Next'),

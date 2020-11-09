@@ -1,38 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/navigation/navigation.dart';
-import 'joined_game_screens/waiting_screen/waiting_for_game_to_start.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import '../loading.dart';
 
-class InputPasswordScreen extends StatefulWidget {
+class InputPasswordScreen extends StatelessWidget {
   static const routeName = '/input_pasword';
-
-  @override
-  _InputPasswordScreenState createState() => _InputPasswordScreenState();
-}
-
-class _InputPasswordScreenState extends State<InputPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
-  String _gameId;
-
-  @override
-  void initState() {
-    _gameId = context.read<GameService>().currentGameId;
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
-    if (_gameId == null) {
-      return Loading(
-        message: 'identifying game you vant to join',
-      );
-    }
+    final _gameId = ModalRoute.of(context).settings.arguments as String;
     return StreamBuilder<Game>(
         stream: context.watch<DatabaseService>().streamOfJoinedGame(_gameId),
         builder: (context, snapshot) {
@@ -52,7 +33,6 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
                 FlatButton.icon(
                     onPressed: () {
                       context.read<Navigation>().popUntilLobby();
-                      context.read<GameService>().leaveCurrentGame();
                     },
                     icon: Icon(
                       Icons.clear,
@@ -90,10 +70,6 @@ class _InputPasswordScreenState extends State<InputPasswordScreen> {
 
                   // remove current route stack
                   await context.read<Navigation>().popUntilLobby();
-
-                  // tell local state player has joined a game
-                  // this will trigger navigation to JoinedGameScreens
-                  context.read<GameService>().joinGame(_gameId);
                 }
               },
             ),

@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:niira/models/user_data.dart';
 import 'package:niira/services/auth/auth_service.dart';
 
-import 'package:niira/extensions/firebase_user_extensions.dart';
 import 'package:niira/navigation/navigation.dart';
 
 class FirebaseAuthService implements AuthService {
@@ -15,16 +13,15 @@ class FirebaseAuthService implements AuthService {
   String get currentUserId => _firebaseAuth.currentUser?.uid;
 
   @override
-  Stream<UserData> get streamOfAuthState => _firebaseAuth
-      .authStateChanges()
-      .map((firebaseUser) => firebaseUser.toUserData());
+  Stream<String> get streamOfAuthState =>
+      _firebaseAuth.authStateChanges().map((firebaseUser) => firebaseUser.uid);
 
   @override
-  Future<UserData> createUserAccount(String email, String password) async {
+  Future<String> createUserAccount(String email, String password) async {
     try {
       final result = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
-      return result.user.toUserData();
+      return result.user.uid;
     } on FirebaseAuthException catch (error) {
       String customErrorMessage;
       switch (error.code) {
@@ -54,11 +51,11 @@ class FirebaseAuthService implements AuthService {
   }
 
   @override
-  Future<UserData> signInWithEmail(String email, String password) async {
+  Future<String> signInWithEmail(String email, String password) async {
     try {
       final result = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
-      return result.user.toUserData();
+      return result.user.uid;
     } on FirebaseAuthException catch (error) {
       String customErrorMessage;
       switch (error.code) {

@@ -1,5 +1,6 @@
 import 'package:niira/models/game.dart';
 import 'package:niira/models/player.dart';
+import 'package:niira/models/user_data.dart';
 
 abstract class DatabaseService {
   Future<bool> usernameAlreadyExists(String username);
@@ -14,4 +15,8 @@ abstract class DatabaseService {
   Stream<Game> streamOfJoinedGame(String gameId);
   Future<void> chooseTagger(String playerId, String gameId);
   Future<void> unSelectTagger(String playerId, String gameId);
+  Stream<UserData> userData(String userId);
+  Future<void> adminQuitCreatingGame(String gameId);
+  Future<String> currentGameId(String userId);
+  Future<bool> checkIfAdmin(String userId);
 }
