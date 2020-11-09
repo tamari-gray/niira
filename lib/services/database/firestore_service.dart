@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/player.dart';
 import 'package:niira/extensions/game_extension.dart';
@@ -12,8 +13,20 @@ import 'package:niira/services/database/database_service.dart';
 
 class FirestoreService implements DatabaseService {
   final FirebaseFirestore _firestore;
-
   FirestoreService(this._firestore);
+
+  DocumentReference userDoc(String playerId) {
+    return _firestore.doc('players/$playerId');
+  }
+
+  DocumentReference joinedPlayerDoc(
+      {@required String gameId, @required String playerId}) {
+    return _firestore.doc('games/$gameId/players/${playerId}');
+  }
+
+  DocumentReference gameDoc(String gameId) {
+    return _firestore.doc('games/$gameId');
+  }
 
   @override
   Future<bool> usernameAlreadyExists(String username) async {
@@ -26,14 +39,15 @@ class FirestoreService implements DatabaseService {
 
   @override
   Future<void> addUsername(String userId, String username) {
-    return _firestore
-        .doc('players/$userId')
-        .set(<String, String>{'username': username}, SetOptions(merge: true));
+    return userDoc(userId).set(
+      <String, String>{'username': username},
+      SetOptions(merge: true),
+    );
   }
 
   @override
   Future<String> getUserName(String userId) async {
-    return await _firestore.doc('players/$userId').get().then((doc) {
+    return await userDoc(userId).get().then((doc) {
       return doc.data()['username'].toString() ?? 'undefined';
     });
   }
@@ -55,11 +69,9 @@ class FirestoreService implements DatabaseService {
   @override
   Future<void> leaveGame(String gameId, String playerId) async {
     try {
-      await _firestore
-          .doc('players/$playerId')
-          .update(<String, String>{'current_game': ''});
+      await userDoc(playerId).update(<String, String>{'current_game': ''});
 
-      return await _firestore.doc('games/$gameId/players/${playerId}').delete();
+      return await joinedPlayerDoc(gameId: gameId, playerId: playerId).delete();
     } catch (e) {
       print('error leaving game, $e');
       return null;
@@ -74,13 +86,10 @@ class FirestoreService implements DatabaseService {
       final joinedPlayers =
           await _firestore.collection('games/$gameId/players').get();
 
-      await joinedPlayers.docs.forEach((QueryDocumentSnapshot playerDoc) async {
-        await _firestore
-            .doc('players/${playerDoc.id}')
-            .update(<String, String>{'current_game': ''});
+      await joinedPlayers.docs.forEach((doc) async =>
+          await userDoc(doc.id).update(<String, String>{'current_game': ''}));
 
-        return await _firestore.doc('games/$gameId').delete();
-      });
+      return await gameDoc(gameId).delete();
     } catch (e) {
       print('error when trying to quit game as admin, $e');
     }
@@ -100,13 +109,10 @@ class FirestoreService implements DatabaseService {
 
     try {
       // tell player doc that we have joined a game
-      await _firestore
-          .doc('players/$userId')
-          .update(<String, String>{'current_game': gameId});
+      await userDoc(userId).update(<String, String>{'current_game': gameId});
 
       // add player to game
-      return await _firestore
-          .doc('games/$gameId/players/$userId')
+      return await joinedPlayerDoc(gameId: gameId, playerId: userId)
           .set(player.toMap(), SetOptions(merge: true));
     } catch (e) {
       print('error joining game: $e');
@@ -134,10 +140,7 @@ class FirestoreService implements DatabaseService {
   @override
   Stream<Game> streamOfJoinedGame(String gameId) {
     try {
-      return _firestore
-          .doc('games/$gameId')
-          .snapshots()
-          .map((doc) => doc.toGame());
+      return gameDoc(gameId).snapshots().map((doc) => doc.toGame());
     } catch (e) {
       print('error getting stream of joined game: $e');
       return null;
@@ -155,14 +158,12 @@ class FirestoreService implements DatabaseService {
       if (currentTaggerQuery.size > 0) {
         final taggerId = currentTaggerQuery.docs.first.id;
         // un-choose current tagger
-        await _firestore
-            .doc('games/$gameId/players/$taggerId')
+        await joinedPlayerDoc(gameId: gameId, playerId: taggerId)
             .update(<String, bool>{'is_tagger': false});
       }
 
       // set new tagger
-      return await _firestore
-          .doc('games/$gameId/players/$playerId')
+      return joinedPlayerDoc(gameId: gameId, playerId: playerId)
           .update(<String, bool>{'is_tagger': true});
     } catch (e) {
       print('error choosing tagger, $e');
@@ -173,8 +174,7 @@ class FirestoreService implements DatabaseService {
   @override
   Future<void> unSelectTagger(String playerId, String gameId) async {
     try {
-      return await _firestore
-          .doc('games/$gameId/players/$playerId')
+      return await joinedPlayerDoc(gameId: gameId, playerId: playerId)
           .update(<String, bool>{'is_tagger': false});
     } catch (e) {
       print('error un-selecting tagger, $e');
@@ -185,8 +185,7 @@ class FirestoreService implements DatabaseService {
   @override
   Future<String> currentGameId(String userId) async {
     try {
-      return await _firestore
-          .doc('players/$userId')
+      return await userDoc(userId)
           .get()
           .then<String>((doc) => doc.data()['current_game'] as String);
     } catch (e) {
@@ -198,10 +197,7 @@ class FirestoreService implements DatabaseService {
   @override
   Future<Game> currentGame(String gameId) async {
     try {
-      return await _firestore
-          .doc('games/$gameId')
-          .get()
-          .then((doc) => doc.toGame());
+      return await gameDoc(gameId).get().then((doc) => doc.toGame());
     } catch (e) {
       print('error getting current game from firestore: $e');
       return null;
@@ -211,10 +207,7 @@ class FirestoreService implements DatabaseService {
   @override
   Stream<UserData> userData(String userId) {
     try {
-      return _firestore
-          .doc('players/$userId')
-          .snapshots()
-          .map((doc) => doc.toUserData());
+      return userDoc(userId).snapshots().map((doc) => doc.toUserData());
     } catch (e) {
       print('error getting user data, $e');
       return null;
