@@ -31,7 +31,7 @@ class _JoinedGameScreensState extends State<JoinedGameScreens> {
             context.watch<DatabaseService>().streamOfJoinedGame(widget.gameId),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            context.read<Navigation>().displayError(snapshot.error);
+            context.watch<Navigation>().displayError(snapshot.error);
           }
 
           if (!snapshot.hasData) {
@@ -39,7 +39,7 @@ class _JoinedGameScreensState extends State<JoinedGameScreens> {
           }
 
           switch (snapshot.data.phase) {
-            case GamePhase.initialising:
+            case GamePhase.created:
               return WaitingForGameToStartScreen(
                 gameId: snapshot.data.id,
               );

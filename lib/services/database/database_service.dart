@@ -19,4 +19,5 @@ abstract class DatabaseService {
   Future<void> adminQuitCreatingGame(String gameId);
   Future<String> currentGameId(String userId);
   Future<bool> checkIfAdmin(String userId);
+  Future<void> startGame(String userId);
 }

@@ -230,4 +230,14 @@ class FirestoreService implements DatabaseService {
       return null;
     }
   }
+
+  @override
+  Future<void> startGame(String userId) async {
+    try {
+      final gameId = await currentGameId(userId);
+      return await gameDoc(gameId).update(<String, String>{'phase': 'playing'});
+    } catch (e) {
+      print('error when trying to start game, $e ');
+    }
+  }
 }
