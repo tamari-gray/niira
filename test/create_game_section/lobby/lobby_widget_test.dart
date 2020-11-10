@@ -6,18 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:niira/main.dart';
 import 'package:niira/models/game.dart';
-import 'package:niira/models/user_data.dart';
 import 'package:niira/screens/lobby/list_of_created_games.dart';
 import 'package:niira/screens/lobby/lobby.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/location_service.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/firebase_wrapper_mocks.dart';
-import '../../mocks/mock_user_data.dart';
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
 import '../../mocks/services/mock_location_service.dart';
@@ -27,9 +24,8 @@ void main() {
       'show loading icon until have users location, then show list of created games ',
       (WidgetTester tester) async {
     // init services
-    final controller = StreamController<UserData>();
     final navigation = Navigation();
-    final userDataService = GameService();
+    final controller = StreamController<String>();
     final mockAuthService = MockAuthService(controller: controller);
     final fakeLocationService = FakeLocationService();
     final mockDatabseController = StreamController<List<Game>>();
@@ -44,7 +40,6 @@ void main() {
           Provider<Navigation>.value(value: navigation),
           Provider<LocationService>.value(value: fakeLocationService),
           Provider<DatabaseService>.value(value: mockDatabaseService),
-          ChangeNotifierProvider<GameService>.value(value: userDataService),
         ],
         child: MaterialApp(
           home: LobbyScreen(),
@@ -65,21 +60,20 @@ void main() {
       'shows loading icon + redirects to welcome screen on successfull logout',
       (WidgetTester tester) async {
     // create a controller that the fake auth servive will hold
-    final controller = StreamController<UserData>();
     final navigation = Navigation();
+    final controller = StreamController<String>();
     final mockAuthService = MockAuthService(controller: controller);
     final createdGamesStreamContoller = StreamController<List<Game>>();
     final mockDBService =
         MockDatabaseService(controller: createdGamesStreamContoller);
     final fakeLocationService = FakeLocationService();
-    final mockUserData = MockUser().userData;
 
     // create a fake firebase wrapper with a supplied completer
     final firebaseCompleter = Completer<FirebaseApp>();
     final firebase = FakeFirebaseWrapper(completer: firebaseCompleter);
 
     //sign in the user
-    controller.add(mockUserData);
+    controller.add('test_user_id');
     await tester.pumpAndSettle();
 
     // create the widget under test

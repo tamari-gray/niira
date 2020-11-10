@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:niira/main.dart';
 import 'package:niira/models/game.dart';
-import 'package:niira/models/user_data.dart';
 
 import '../mocks/firebase_wrapper_mocks.dart';
 import '../mocks/mock_user_data.dart';
@@ -23,7 +22,7 @@ void main() {
         'show loading icon until all services + firebase are initialised',
         (WidgetTester tester) async {
       // create mock services
-      final controller = StreamController<UserData>();
+      final controller = StreamController<String>();
       final mockUserData = MockUser().userData;
 
       final fakeNavigation = FakeNavigation();
@@ -61,7 +60,7 @@ void main() {
     testWidgets('navigates to correct route based on auth state',
         (WidgetTester tester) async {
       // create a controller that the mock auth servive will hold
-      final controller = StreamController<UserData>();
+      final controller = StreamController<String>();
       final mockUserData = MockUser().userData;
       final fakeNavigation = FakeNavigation();
       final mockAuthService = MockAuthService(
@@ -111,7 +110,7 @@ void main() {
     testWidgets('show error message when error initialising firebase',
         (WidgetTester tester) async {
       // create a controller that the mock auth servive will hold
-      final controller = StreamController<UserData>();
+      final controller = StreamController<String>();
       final mockUserData = MockUser().userData;
       final fakeNavigation = FakeNavigation();
       final mockAuthService = MockAuthService(

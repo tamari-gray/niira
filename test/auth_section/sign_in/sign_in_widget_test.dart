@@ -64,7 +64,7 @@ void main() {
       //set up for testing
       final _fakeNavigation = FakeNavigation();
       final _mockUserData = MockUser().userData;
-      final _controller = StreamController<UserData>();
+      final _controller = StreamController<String>();
 
       final navigation = Navigation();
 
@@ -96,7 +96,7 @@ void main() {
       //set up for testing
       final _fakeNavigation = FakeNavigation();
       final _mockUserData = MockUser().userData;
-      final _controller = StreamController<UserData>();
+      final _controller = StreamController<String>();
 
       final _mockAuthService = MockAuthService(
         controller: _controller,
@@ -119,7 +119,7 @@ void main() {
       //set up for testing
       final _fakeNavigation = FakeNavigation();
       final _mockUserData = MockUser().userData;
-      final _controller = StreamController<UserData>();
+      final _controller = StreamController<String>();
 
       final _mockAuthService = MockAuthService(
         controller: _controller,
@@ -144,7 +144,7 @@ void main() {
       //set up for testing
       final _fakeNavigation = FakeNavigation();
       final _mockUserData = MockUser().userData;
-      final _controller = StreamController<UserData>();
+      final _controller = StreamController<String>();
 
       final _mockAuthService = MockAuthService(
         controller: _controller,

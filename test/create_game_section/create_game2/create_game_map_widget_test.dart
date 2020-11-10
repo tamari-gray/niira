@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:niira/models/view_models/create_game.dart';
 import 'package:niira/screens/create_game2/create_game_map.dart';
 import 'package:niira/services/location_service.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/services/mock_location_service.dart';
@@ -22,9 +21,6 @@ void main() {
           providers: [
             Provider<LocationService>(
               create: (_) => FakeLocationService(),
-            ),
-            Provider<GameService>(
-              create: (_) => GameService(),
             ),
             ChangeNotifierProvider<CreateGameViewModel>.value(
               value: vm,

@@ -8,7 +8,6 @@ import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/joined_game_screens/waiting_screen/waiting_for_game_to_start.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
@@ -28,21 +27,19 @@ void main() {
     // setup dependant services
     final _mockDatabaseService =
         MockDatabaseService(playerStreamController: _controller);
-    final _gameService = GameService();
     final _fakeAuthService = FakeAuthService();
     final _navigation = Navigation();
 
     // init waiting for game to start screen
-    _gameService.currentGameId = 'test_game_123';
+    // _gameService.currentGameId = 'test_game_123';
     await tester.pump();
 
     await tester.pumpWidget(
       MultiProvider(providers: [
         Provider<DatabaseService>.value(value: _mockDatabaseService),
         Provider<Navigation>.value(value: _navigation),
-        ChangeNotifierProvider<GameService>.value(value: _gameService),
         Provider<AuthService>.value(value: _fakeAuthService)
-      ], child: MaterialApp(home: WaitingForGameToStartScreen())),
+      ], child: MaterialApp(home: WaitingForGameToStartScreen(gameId: ,))),
     );
 
     // ensure stream has recieved data

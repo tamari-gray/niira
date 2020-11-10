@@ -7,12 +7,10 @@ import 'package:niira/screens/lobby/created_game_tile.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/input_password.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/data/mock_games.dart';
 import '../../mocks/navigation/mock_navigation.dart';
-import '../../mocks/services/game_service_mocks.dart';
 import '../../mocks/services/mock_database_service.dart';
 import '../../mocks/services/mock_firebase_platform.dart';
 
@@ -25,7 +23,6 @@ void main() {
         (WidgetTester tester) async {
       // init services
       final navigation = MockNavigation();
-      final mockGameService = MockGameService();
       final mockGame = MockGames().gamesToJoin[0];
       final mockdbService = MockDatabaseService();
       // create the widget under test
@@ -33,7 +30,6 @@ void main() {
         MultiProvider(
           providers: [
             Provider<Navigation>.value(value: navigation),
-            ChangeNotifierProvider<GameService>.value(value: mockGameService),
             Provider<DatabaseService>.value(value: mockdbService),
           ],
           child: MaterialApp(
@@ -58,7 +54,7 @@ void main() {
       await tester.pump();
 
       // check that current game has been set
-      verify(mockGameService.joinGame(any)).called(1);
+      // verify(mockGameService.joinGame(any)).called(1);
 
       // check we navigate to input password screen
       verify(navigation.navigateTo(InputPasswordScreen.routeName)).called(1);

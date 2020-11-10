@@ -17,7 +17,7 @@ void main() {
   final mockNavigation = MockNavigation();
   final mockUserData = MockUser().userData;
   final mockAuthService = MockAuthService(
-    controller: StreamController<UserData>(),
+    controller: StreamController<String>(),
     mockUserData: mockUserData,
     mockNavigation: mockNavigation,
   );

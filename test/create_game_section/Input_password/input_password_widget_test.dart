@@ -6,16 +6,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/player.dart';
-import 'package:niira/models/user_data.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/input_password.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/navigation/mock_navigation.dart';
-import '../../mocks/services/game_service_mocks.dart';
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
 
@@ -23,18 +20,17 @@ void main() {
   group('on unsuccessfull password submission', () {
     testWidgets('show error message when incorrect password is submitted',
         (WidgetTester tester) async {
-      final _authController = StreamController<UserData>();
+      final _authController = StreamController<String>();
       final _mockAuthService = MockAuthService(controller: _authController);
       final _mockDatabaseService = MockDatabaseService();
-      final _gameService = GameService();
-      _gameService.currentGameId = 'test_game_id';
+      // final _gameService = GameService();
+      // _gameService.currentGameId = 'test_game_id';
 
       // init input password page
       await tester.pumpWidget(MultiProvider(
         providers: [
           Provider<AuthService>.value(value: _mockAuthService),
           Provider<DatabaseService>.value(value: _mockDatabaseService),
-          ChangeNotifierProvider<GameService>.value(value: _gameService),
         ],
         child: MaterialApp(
           home: InputPasswordScreen(),
@@ -67,8 +63,7 @@ void main() {
           controller: _databaseController,
           playerStreamController: _playerStreamController);
       final _mockNavigation = MockNavigation();
-      final _mockGameService = MockGameService();
-      _mockGameService.currentGameId = 'test_game_123';
+      // _mockGameService.currentGameId = 'test_game_123';
 
       await tester.pumpAndSettle();
 
@@ -78,7 +73,6 @@ void main() {
           Provider<AuthService>.value(value: _fakeAuthService),
           Provider<DatabaseService>.value(value: _mockDatabaseService),
           Provider<Navigation>.value(value: _mockNavigation),
-          ChangeNotifierProvider<GameService>.value(value: _mockGameService)
         ],
         child: MaterialApp(
           home: InputPasswordScreen(),
@@ -105,17 +99,16 @@ void main() {
       verify(_mockNavigation.popUntilLobby()).called(1);
 
       // check we tell local state that user has joined a game
-      verify(_mockGameService.joinGame(any)).called(1);
+      // verify(_mockGameService.joinGame(any)).called(1);
     });
   });
 
   testWidgets('user exits InputPasswordScreen', (WidgetTester tester) async {
-    final _authController = StreamController<UserData>();
+    final _authController = StreamController<String>();
     final _mockAuthService = MockAuthService(controller: _authController);
     final _mockDatabaseService = MockDatabaseService();
     final _mockNavigation = MockNavigation();
-    final _mockGameService = MockGameService();
-    _mockGameService.currentGameId = 'test_game_id';
+    // _mockGameService.currentGameId = 'test_game_id';
 
     // init input password page
     await tester.pumpWidget(MultiProvider(
@@ -123,7 +116,6 @@ void main() {
         Provider<AuthService>.value(value: _mockAuthService),
         Provider<DatabaseService>.value(value: _mockDatabaseService),
         Provider<Navigation>.value(value: _mockNavigation),
-        ChangeNotifierProvider<GameService>.value(value: _mockGameService),
       ],
       child: MaterialApp(
         home: InputPasswordScreen(),
@@ -140,6 +132,6 @@ void main() {
     verify(_mockNavigation.popUntilLobby()).called(1);
 
     // check that we update local state
-    verify(_mockGameService.leaveCurrentGame()).called(1);
+    // verify(_mockGameService.leaveCurrentGame()).called(1);
   });
 }
