@@ -26,6 +26,7 @@ void main() {
     final fakeLocationService = FakeLocationService();
     final mockDatabseController = StreamController<List<Game>>();
     final mockUserDataController = StreamController<UserData>();
+    final mockCurrentGameController = StreamController<Game>();
     final mockCreatedGames = MockGames().gamesInorderOfDistance;
 
     final _playersController = StreamController<List<Player>>();
@@ -35,13 +36,19 @@ void main() {
       Player(id: 'ui123', username: 'wheat', isTagger: false),
     ];
     final mockDatabaseService = MockDatabaseService(
-      controller: mockDatabseController,
-      playerStreamController: _playersController,
-      userDataController: mockUserDataController,
-    );
+        controller: mockDatabseController,
+        playerStreamController: _playersController,
+        userDataController: mockUserDataController,
+        currentGame: mockCurrentGameController);
     // add mockData
     mockDatabseController.add(mockCreatedGames);
     _playersController.add(_mockJoinedPlayers);
+    mockUserDataController.add(UserData(
+      id: 'test_user_id',
+      name: 'tedd',
+      currentGameId: '',
+    ));
+    mockCurrentGameController.add(MockGames().gamesToJoin[0]);
 
     // spin up the wut
     final wut = CheckIfJoinedGame(
@@ -61,7 +68,7 @@ void main() {
     );
 
     // ol reliable
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     // check we initially show lobbyScreen
     expect(find.byType(LobbyScreen), findsOneWidget);
@@ -72,20 +79,22 @@ void main() {
       name: 'tedd',
       currentGameId: 'test_game_id',
     ));
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     // check joinedGameSceens is showing
     expect(find.byType(LobbyScreen), findsNothing);
     expect(find.byType(JoinedGameScreens), findsOneWidget);
 
-    // TODO: idk why leaving the game breaks this test
-    // says bad state: already listened to stream...
     // leave game
-    // gameService.leaveCurrentGame();
-    // await tester.pumpAndSettle();
+    mockUserDataController.add(UserData(
+      id: 'test_user_id',
+      name: 'tedd',
+      currentGameId: '',
+    ));
+    await tester.pump();
 
-    // // check LobbyScreen is showing
-    // expect(find.byType(LobbyScreen), findsOneWidget);
-    // expect(find.byType(JoinedGameScreens), findsNothing);
+    // check LobbyScreen is showing
+    expect(find.byType(LobbyScreen), findsOneWidget);
+    expect(find.byType(JoinedGameScreens), findsNothing);
   });
 }

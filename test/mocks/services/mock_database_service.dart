@@ -12,14 +12,17 @@ class MockDatabaseService extends Mock implements DatabaseService {
   final StreamController<List<Game>> _controller;
   final StreamController<List<Player>> _playerStreamController;
   final StreamController<UserData> _userDataController;
+  final StreamController<Game> _currentGame;
 
-  MockDatabaseService(
-      {StreamController<List<Game>> controller,
-      StreamController<List<Player>> playerStreamController,
-      StreamController<UserData> userDataController})
-      : _controller = controller,
+  MockDatabaseService({
+    StreamController<List<Game>> controller,
+    StreamController<List<Player>> playerStreamController,
+    StreamController<UserData> userDataController,
+    StreamController<Game> currentGame,
+  })  : _controller = controller,
         _playerStreamController = playerStreamController,
-        _userDataController = userDataController;
+        _userDataController = userDataController,
+        _currentGame = currentGame;
 
   @override
   Future<bool> usernameAlreadyExists(String username) => Future.value(true);
@@ -38,8 +41,7 @@ class MockDatabaseService extends Mock implements DatabaseService {
   Future<String> getUserName(String userId) => Future.value('username123');
 
   @override
-  Stream<Game> streamOfJoinedGame(String gameId) =>
-      Stream.fromIterable([MockGames().gamesToJoin[0]]);
+  Stream<Game> streamOfJoinedGame(String gameId) => _currentGame.stream;
 
   @override
   Future<Game> currentGame(String gameId) =>

@@ -11,7 +11,6 @@ class FakeAuthService extends Fake implements AuthService {
 
 class MockAuthService implements AuthService {
   final StreamController<String> _controller;
-  final UserData _mockUserData;
   final FakeNavigation _fakeNavigation;
   final bool _successfulAuth;
 
@@ -21,7 +20,6 @@ class MockAuthService implements AuthService {
     FakeNavigation fakeNavigation,
     bool successfulAuth = true,
   })  : _controller = controller,
-        _mockUserData = mockUserData,
         _fakeNavigation = fakeNavigation,
         _successfulAuth = successfulAuth = true;
 

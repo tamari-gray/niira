@@ -41,7 +41,7 @@ class _WaitingForGameToStartScreenState
 
   @override
   Widget build(BuildContext context) {
-    return _userIsAdmin == null && _userId == null
+    return _userIsAdmin == null || _userId == null
         ? Loading(message: 'getting user data')
         : StreamBuilder<List<Player>>(
             stream: context
