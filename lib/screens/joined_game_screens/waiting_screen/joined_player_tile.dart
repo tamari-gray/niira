@@ -40,7 +40,7 @@ class _JoinedPlayerTileState extends State<JoinedPlayerTile> {
 
   @override
   Widget build(BuildContext context) {
-    if (_userIsAdmin == null && _gameId == null) {
+    if (_userIsAdmin == null || _gameId == null) {
       return Container();
     }
     return Padding(
