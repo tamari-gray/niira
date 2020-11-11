@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:niira/main.dart';
 import 'package:niira/models/game.dart';
+import 'package:niira/models/user_data.dart';
 
 import '../mocks/firebase_wrapper_mocks.dart';
 import '../mocks/mock_user_data.dart';
@@ -12,6 +13,7 @@ import '../mocks/services/mock_auth_service.dart';
 import '../mocks/services/mock_database_service.dart';
 import '../mocks/services/mock_firebase_platform.dart';
 import '../mocks/navigation/mock_navigation.dart';
+import '../mocks/services/mock_location_service.dart';
 
 void main() {
   setUp(() {
@@ -63,15 +65,19 @@ void main() {
       final controller = StreamController<String>();
       final mockUserData = MockUser().userData;
       final fakeNavigation = FakeNavigation();
+      final fakeLocationService = FakeLocationService();
       final mockAuthService = MockAuthService(
         controller: controller,
         mockUserData: mockUserData,
         fakeNavigation: fakeNavigation,
         successfulAuth: true,
       );
+      final mockUserDataController = StreamController<UserData>();
       final mockDatabaseStreamController = StreamController<List<Game>>();
-      final mockDatabaseService =
-          MockDatabaseService(controller: mockDatabaseStreamController);
+      final mockDatabaseService = MockDatabaseService(
+        controller: mockDatabaseStreamController,
+        userDataController: mockUserDataController,
+      );
 
       // create a fake firebase wrapper with a supplied completer
       final firebaseCompleter = Completer<FirebaseApp>();
@@ -83,6 +89,7 @@ void main() {
         databaseService: mockDatabaseService,
         navigation: fakeNavigation,
         firebase: firebase,
+        locationService: fakeLocationService,
       ));
 
       // init firebase
@@ -100,7 +107,11 @@ void main() {
       final userData = await mockAuthService.signInWithEmail('a', 'b');
       controller.add(userData);
 
-      await tester.pump();
+      // add userData object for checkIfJoinedGame
+      mockUserDataController.add(UserData(
+          currentGameId: '', name: 'test_user_name', id: 'test_user_123'));
+
+      await tester.pumpAndSettle();
 
       // check the welcome screen is no longer present
       expect(find.byKey(Key('navigateToCreateAccount')), findsNothing);
