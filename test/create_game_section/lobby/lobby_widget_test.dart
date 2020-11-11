@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:niira/main.dart';
 import 'package:niira/models/game.dart';
+import 'package:niira/models/user_data.dart';
 import 'package:niira/screens/lobby/list_of_created_games.dart';
 import 'package:niira/screens/lobby/lobby.dart';
 import 'package:niira/services/auth/auth_service.dart';
@@ -64,16 +65,24 @@ void main() {
     final controller = StreamController<String>();
     final mockAuthService = MockAuthService(controller: controller);
     final createdGamesStreamContoller = StreamController<List<Game>>();
-    final mockDBService =
-        MockDatabaseService(controller: createdGamesStreamContoller);
+    final mockUserDataController = StreamController<UserData>();
+    final mockDBService = MockDatabaseService(
+      controller: createdGamesStreamContoller,
+      userDataController: mockUserDataController,
+    );
     final fakeLocationService = FakeLocationService();
 
     // create a fake firebase wrapper with a supplied completer
     final firebaseCompleter = Completer<FirebaseApp>();
     final firebase = FakeFirebaseWrapper(completer: firebaseCompleter);
 
-    //sign in the user
+    // sign in the user
     controller.add('test_user_id');
+    mockUserDataController.add(UserData(
+      id: 'test_user_id',
+      name: 'tedd',
+      currentGameId: '',
+    ));
     await tester.pumpAndSettle();
 
     // create the widget under test
