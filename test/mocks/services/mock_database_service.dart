@@ -49,6 +49,9 @@ class MockDatabaseService extends Mock implements DatabaseService {
 
   @override
   Stream<UserData> userData(String userId) => _userDataController.stream;
+
+  @override
+  Future<bool> checkIfAdmin(String userId) => Future.value(true);
 }
 
 class FakeDatabaseService extends Fake implements DatabaseService {
@@ -58,4 +61,28 @@ class FakeDatabaseService extends Fake implements DatabaseService {
   @override
   Future<String> createGame(Game game, String userId) =>
       Future.value('gameId_123');
+
+  final test = [
+    Player(
+        id: 'ui1',
+        username: 'pete',
+        isTagger: false,
+        hasBeenTagged: false,
+        hasItem: false),
+    Player(
+        id: 'ui12',
+        username: 'yeet',
+        isTagger: false,
+        hasBeenTagged: false,
+        hasItem: false),
+    Player(
+        id: 'ui123',
+        username: 'wheat',
+        isTagger: false,
+        hasBeenTagged: false,
+        hasItem: false),
+  ];
+  // @override
+  // Stream<List<Player>> streamOfJoinedPlayers(String gameId) =>
+  //     Stream.fromIterable(test);
 }

@@ -65,8 +65,6 @@ void main() {
       final _mockUserData = MockUser().userData;
       final _controller = StreamController<String>();
 
-      final navigation = Navigation();
-
       final _mockAuthService = MockAuthService(
         controller: _controller,
         mockUserData: _mockUserData,

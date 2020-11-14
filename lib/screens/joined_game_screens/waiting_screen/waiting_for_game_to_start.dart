@@ -48,6 +48,9 @@ class _WaitingForGameToStartScreenState
                 .watch<DatabaseService>()
                 .streamOfJoinedPlayers(widget.gameId),
             builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                context.read<Navigation>().displayError(snapshot.error);
+              }
               if (snapshot.data == null) {
                 return Scaffold(
                   body: Loading(

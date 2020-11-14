@@ -125,7 +125,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
                             // if successfull login,
                             // go to lobby and set user in local state
-                            if (authResult is UserData) {
+                            if (authResult != null) {
                               context.read<Navigation>().pop();
                             } else if (authResult == null) {
                               setState(() {
