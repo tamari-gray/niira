@@ -2,8 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/location.dart';
+import 'package:niira/models/user_data.dart';
 
 extension FirestoreDocumentSnapshotExt on DocumentSnapshot {
+  UserData toUserData() => UserData(
+        id: id ?? 'undefined',
+        name: data()['username']?.toString() ?? 'undefined',
+        // default empty string means user isnt in a game/ hasnt joined one
+        currentGameId: data()['current_game']?.toString() ?? '',
+      );
+
   Game toGame() {
     // convert gamephase into enum
     final gamePhase =

@@ -5,11 +5,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:niira/main.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/player.dart';
+import 'package:niira/models/user_data.dart';
 import 'package:niira/screens/joined_game_screens/joined_game_screens.dart';
 import 'package:niira/screens/lobby/lobby.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:niira/services/location_service.dart';
 import 'package:provider/provider.dart';
 
@@ -22,10 +22,11 @@ void main() {
   testWidgets('show joinedGameScreens when joined a game',
       (WidgetTester tester) async {
     //init services
-    final gameService = GameService();
     final fakeAuthService = FakeAuthService();
     final fakeLocationService = FakeLocationService();
     final mockDatabseController = StreamController<List<Game>>();
+    final mockUserDataController = StreamController<UserData>();
+    final mockCurrentGameController = StreamController<Game>();
     final mockCreatedGames = MockGames().gamesInorderOfDistance;
 
     final _playersController = StreamController<List<Player>>();
@@ -36,17 +37,26 @@ void main() {
     ];
     final mockDatabaseService = MockDatabaseService(
         controller: mockDatabseController,
-        playerStreamController: _playersController);
+        playerStreamController: _playersController,
+        userDataController: mockUserDataController,
+        currentGame: mockCurrentGameController);
     // add mockData
     mockDatabseController.add(mockCreatedGames);
     _playersController.add(_mockJoinedPlayers);
+    mockUserDataController.add(UserData(
+      id: 'test_user_id',
+      name: 'tedd',
+      currentGameId: '',
+    ));
+    mockCurrentGameController.add(MockGames().gamesToJoin[0]);
 
     // spin up the wut
-    final wut = CheckIfJoinedGame();
+    final wut = CheckIfJoinedGame(
+      userId: 'test_user_id',
+    );
     await tester.pumpWidget(
       MultiProvider(
         providers: [
-          ChangeNotifierProvider<GameService>.value(value: gameService),
           Provider<LocationService>.value(value: fakeLocationService),
           Provider<DatabaseService>.value(value: mockDatabaseService),
           Provider<AuthService>.value(value: fakeAuthService),
@@ -58,27 +68,33 @@ void main() {
     );
 
     // ol reliable
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     // check we initially show lobbyScreen
     expect(find.byType(LobbyScreen), findsOneWidget);
 
     // join a game
-    gameService.joinGame('test_game_id');
-    await tester.pumpAndSettle();
+    mockUserDataController.add(UserData(
+      id: 'test_user_id',
+      name: 'tedd',
+      currentGameId: 'test_game_id',
+    ));
+    await tester.pump();
 
     // check joinedGameSceens is showing
     expect(find.byType(LobbyScreen), findsNothing);
     expect(find.byType(JoinedGameScreens), findsOneWidget);
 
-    // TODO: idk why leaving the game breaks this test
-    // says bad state: already listened to stream...
     // leave game
-    // gameService.leaveCurrentGame();
-    // await tester.pumpAndSettle();
+    mockUserDataController.add(UserData(
+      id: 'test_user_id',
+      name: 'tedd',
+      currentGameId: '',
+    ));
+    await tester.pump();
 
-    // // check LobbyScreen is showing
-    // expect(find.byType(LobbyScreen), findsOneWidget);
-    // expect(find.byType(JoinedGameScreens), findsNothing);
+    // check LobbyScreen is showing
+    expect(find.byType(LobbyScreen), findsOneWidget);
+    expect(find.byType(JoinedGameScreens), findsNothing);
   });
 }

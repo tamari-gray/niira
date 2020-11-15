@@ -12,7 +12,7 @@ void main() {
       // init services
       final nav = Navigation();
       final vm = CreateGameViewModel();
-      expect(vm.sonarIntervals, 150);
+      expect(vm.sonarIntervals, 210);
 
       // spin up the wut
       final wut = SonarIntervalsSlider();

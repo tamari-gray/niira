@@ -4,12 +4,14 @@ import 'package:niira/models/player.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import 'joined_players_list.dart';
 
 class WaitingForGameToStartScreen extends StatefulWidget {
+  final String gameId;
+  WaitingForGameToStartScreen({@required this.gameId});
+
   @override
   _WaitingForGameToStartScreenState createState() =>
       _WaitingForGameToStartScreenState();
@@ -17,82 +19,142 @@ class WaitingForGameToStartScreen extends StatefulWidget {
 
 class _WaitingForGameToStartScreenState
     extends State<WaitingForGameToStartScreen> {
-  String _gameId;
+  bool _userIsAdmin;
+  String _userId;
 
   @override
   void initState() {
-    _gameId = context.read<GameService>().currentGameId;
+    _checkIfAdmin();
     super.initState();
+  }
+
+  void _checkIfAdmin() async {
+    final userId = context.read<AuthService>().currentUserId;
+    final userIsAdmin =
+        await context.read<DatabaseService>().checkIfAdmin(userId);
+
+    setState(() {
+      _userId = userId;
+      _userIsAdmin = userIsAdmin;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return _gameId == null
-        ? Scaffold(
-            body: Container(
-            child: Loading(
-              message: 'getting game...',
-            ),
-          ))
-        : Scaffold(
-            key: Key('waiting_for_gameId_to_start_screen'),
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              title: Text('Choosing tagger...'),
-              actions: [
-                FlatButton.icon(
-                  key: Key('waiting_screen_quit_btn'),
-                  label: Text('leave'),
-                  icon: Icon(Icons.exit_to_app),
-                  onPressed: () {
-                    // handle player leaving game
-                    // TODO: if admin leaving, force all players to quit and redirect to lobby
+    return _userIsAdmin == null || _userId == null
+        ? Loading(message: 'getting user data')
+        : StreamBuilder<List<Player>>(
+            stream: context
+                .watch<DatabaseService>()
+                .streamOfJoinedPlayers(widget.gameId),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                context.read<Navigation>().displayError(snapshot.error);
+              }
+              if (snapshot.data == null) {
+                return Scaffold(
+                  body: Loading(
+                    message: 'waiting for players to join...',
+                  ),
+                );
+              } else {
+                return Scaffold(
+                  key: Key('waiting_forgameId_to_start_screen'),
+                  appBar: AppBar(
+                    automaticallyImplyLeading: false,
+                    title: Text('Choosing tagger...'),
+                    actions: [
+                      FlatButton.icon(
+                        key: Key('waiting_screen_quit_btn'),
+                        label: Text('leave'),
+                        icon: Icon(Icons.exit_to_app),
+                        onPressed: () {
+                          final _navigation = context.read<Navigation>();
 
-                    final _navigation = context.read<Navigation>();
+                          // remove user from game and navigate to lobby
+                          void leaveGame() async {
+                            // dismiss dialog
+                            await _navigation.pop();
 
-                    // remove user from game and navigate to lobby
-                    void leaveGame() async {
-                      final userId =
-                          await context.read<AuthService>().currentUserId;
+                            if (_userIsAdmin) {
+                              await context
+                                  .read<DatabaseService>()
+                                  .adminQuitCreatingGame(widget.gameId);
+                            } else {
+                              // leave game in db
+                              // triggers navigation to lobby
+                              await context
+                                  .read<DatabaseService>()
+                                  .leaveGame(widget.gameId, _userId);
+                            }
+                          }
 
-                      // leave game in db
-                      await context
-                          .read<DatabaseService>()
-                          .leaveGame(_gameId, userId);
-
-                      // dismiss dialog
-                      await _navigation.pop();
-
-                      // leave game in global state auto navigates to lobby
-                      context.read<GameService>().leaveCurrentGame();
-                    }
-
-                    _navigation.showConfirmationDialog(
-                      onConfirmed: () => leaveGame(),
-                      confirmText: 'Leave game',
-                      cancelText: 'Return',
-                    );
-                  },
-                )
-              ],
-            ),
-            body: Container(
-              child: StreamBuilder<List<Player>>(
-                  // get stream of players that have joined this game
-                  stream: context
-                      .watch<DatabaseService>()
-                      .streamOfJoinedPlayers(_gameId),
-                  builder: (context, snapshot) {
-                    if (snapshot.data == null) {
-                      return Loading(
-                        message: 'waiting for players to join...',
-                      );
-                    } else {
-                      //render list of joined players
-                      return JoinedPlayersList(joinedPlayers: snapshot.data);
-                    }
-                  }),
-            ),
-          );
+                          _navigation.showConfirmationDialog(
+                            onConfirmed: () => leaveGame(),
+                            confirmText: 'Leave game',
+                            cancelText: 'Return',
+                          );
+                        },
+                      )
+                    ],
+                  ),
+                  body: Container(
+                    //render list of joined players
+                    child: JoinedPlayersList(joinedPlayers: snapshot.data),
+                  ),
+                  floatingActionButton: !_userIsAdmin
+                      ? Container()
+                      : FloatingActionButton.extended(
+                          label: Text(
+                            'Play game',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          icon: Icon(
+                            Icons.navigate_next,
+                            color: Colors.white,
+                          ),
+                          onPressed: () async {
+                            if (snapshot.data.length == 1) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content:
+                                      Text('wait for more players to join :)'),
+                                ),
+                              );
+                            } else {
+                              final chosenTagger = snapshot.data
+                                  .where((player) => player.isTagger);
+                              if (chosenTagger.length == 1) {
+                                await context
+                                    .read<Navigation>()
+                                    .showConfirmationDialog(
+                                        message:
+                                            'after you start the game, all hiders go hide! and tagger(s) wait for the timer to move!',
+                                        confirmText: 'Start!',
+                                        cancelText: 'back',
+                                        onConfirmed: () async {
+                                          // dismiss dialog
+                                          await context
+                                              .read<Navigation>()
+                                              .pop();
+                                          // admin start game and notify all players
+                                          // triggers navigation to playingGameScreen
+                                          await context
+                                              .read<DatabaseService>()
+                                              .startGame(_userId);
+                                        });
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('please choose tagger first'),
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                        ),
+                );
+              }
+            });
   }
 }

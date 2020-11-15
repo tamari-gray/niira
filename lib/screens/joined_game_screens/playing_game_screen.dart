@@ -5,6 +5,12 @@ class PlayingGameScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      body: Center(
+        child: Container(
+          child: Text('playing game screen'),
+        ),
+      ),
+    );
   }
 }

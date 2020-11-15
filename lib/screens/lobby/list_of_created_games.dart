@@ -29,30 +29,39 @@ class ListOfCreatedGames extends StatelessWidget {
         stream: createdGamesInOrderOfDistance,
         builder: (context, snapshot) {
           // show empty screen if stream hasnt come through yet
-          if (snapshot.data == null) {
-            return Container(
-              key: Key('list_of_created_games_empty_screen'),
-            );
-          } else {
-            // build that list!
-            return Padding(
-              padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-              child: ListView.builder(
-                itemCount: snapshot.data.length,
-                itemBuilder: (context, index) {
-                  // put bottom padding on last game tile in list
-                  // so user can scroll it past fab
-                  final lastTilePadding =
-                      index == snapshot.data.length - 1 ? 70.0 : 0.0;
+          return snapshot.data == null
+              ? Container(
+                  key: Key('list_of_created_games_empty_screen'),
+                )
+              // check if any games have been made
+              : snapshot.data.isEmpty
+                  ? Center(
+                      child: Container(
+                        child: Text(
+                          '''No games atm,
+                          create the first! :)''',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                    )
+                  : Padding(
+                      padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                      child: ListView.builder(
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) {
+                          // put bottom padding on last game tile in list
+                          // so user can scroll it past fab
+                          final lastTilePadding =
+                              index == snapshot.data.length - 1 ? 70.0 : 0.0;
 
-                  return Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, lastTilePadding),
-                    child: GameTile(snapshot.data[index], index),
-                  );
-                },
-              ),
-            );
-          }
+                          return Padding(
+                            padding:
+                                EdgeInsets.fromLTRB(0, 0, 0, lastTilePadding),
+                            child: GameTile(snapshot.data[index], index),
+                          );
+                        },
+                      ),
+                    );
         });
   }
 }

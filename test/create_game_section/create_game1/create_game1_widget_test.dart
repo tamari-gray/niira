@@ -9,12 +9,10 @@ import 'package:niira/screens/create_game2/create_game_screen2.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/location_service.dart';
-import 'package:niira/services/game_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../mocks/create_game_vm_mocks.dart';
 import '../../mocks/navigation/mock_navigation.dart';
-import '../../mocks/services/game_service_mocks.dart';
 import '../../mocks/services/mock_auth_service.dart';
 import '../../mocks/services/mock_database_service.dart';
 import '../../mocks/services/mock_location_service.dart';
@@ -25,10 +23,8 @@ void main() {
       // spin up the wut
       final nav = MockNavigation();
       final mockVm = MockcreateGameVm();
-      final mockGameService = MockGameService();
       await tester.pumpWidget(MultiProvider(
           providers: [
-            ChangeNotifierProvider<GameService>.value(value: mockGameService),
             Provider<AuthService>(create: (_) => MockAuthService()),
             Provider<DatabaseService>(create: (_) => FakeDatabaseService()),
             ChangeNotifierProvider<CreateGameViewModel>.value(value: mockVm),
@@ -52,7 +48,7 @@ void main() {
       verify(mockVm.reset()).called(1);
 
       // check that we navigate to lobby screen
-      verify(mockGameService.leaveCurrentGame()).called(1);
+      // verify(mockGameService.leaveCurrentGame()).called(1);
     });
     testWidgets('only navigates with invalid inputs',
         (WidgetTester tester) async {
@@ -60,7 +56,6 @@ void main() {
       final nav = Navigation();
       await tester.pumpWidget(MultiProvider(
           providers: [
-            Provider<GameService>(create: (_) => GameService()),
             Provider<AuthService>(create: (_) => MockAuthService()),
             Provider<DatabaseService>(create: (_) => FakeDatabaseService()),
             ChangeNotifierProvider<CreateGameViewModel>(

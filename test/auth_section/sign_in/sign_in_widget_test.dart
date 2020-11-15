@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:niira/models/user_data.dart';
 import 'package:niira/screens/sign_in.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/navigation/navigation.dart';
@@ -64,9 +63,7 @@ void main() {
       //set up for testing
       final _fakeNavigation = FakeNavigation();
       final _mockUserData = MockUser().userData;
-      final _controller = StreamController<UserData>();
-
-      final navigation = Navigation();
+      final _controller = StreamController<String>();
 
       final _mockAuthService = MockAuthService(
         controller: _controller,
@@ -96,7 +93,7 @@ void main() {
       //set up for testing
       final _fakeNavigation = FakeNavigation();
       final _mockUserData = MockUser().userData;
-      final _controller = StreamController<UserData>();
+      final _controller = StreamController<String>();
 
       final _mockAuthService = MockAuthService(
         controller: _controller,
@@ -119,7 +116,7 @@ void main() {
       //set up for testing
       final _fakeNavigation = FakeNavigation();
       final _mockUserData = MockUser().userData;
-      final _controller = StreamController<UserData>();
+      final _controller = StreamController<String>();
 
       final _mockAuthService = MockAuthService(
         controller: _controller,
@@ -144,7 +141,7 @@ void main() {
       //set up for testing
       final _fakeNavigation = FakeNavigation();
       final _mockUserData = MockUser().userData;
-      final _controller = StreamController<UserData>();
+      final _controller = StreamController<String>();
 
       final _mockAuthService = MockAuthService(
         controller: _controller,

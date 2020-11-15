@@ -6,13 +6,13 @@ import '../navigation/mock_navigation.dart';
 import 'package:meta/meta.dart';
 
 class MockAuthService implements AuthService {
-  final StreamController<UserData> _controller;
+  final StreamController<String> _controller;
   final UserData _mockUserData;
   final MockNavigation _mockNavigation;
   final bool _successfulAuth;
 
   MockAuthService({
-    @required StreamController<UserData> controller,
+    @required StreamController<String> controller,
     UserData mockUserData,
     MockNavigation mockNavigation,
     bool successfulAuth = true,
@@ -25,12 +25,12 @@ class MockAuthService implements AuthService {
   String get currentUserId => 'uid';
 
   @override
-  Stream<UserData> get streamOfAuthState => _controller.stream;
+  Stream<String> get streamOfAuthState => _controller.stream;
 
   @override
-  Future<UserData> createUserAccount(String email, String password) async {
+  Future<String> createUserAccount(String email, String password) async {
     if (_successfulAuth) {
-      return Future.value(_mockUserData);
+      return Future.value('test_user_id');
     } else {
       final errors = ['email in use', 'wronf password'];
       _mockNavigation.displayError(errors[0]);
@@ -39,10 +39,10 @@ class MockAuthService implements AuthService {
   }
 
   @override
-  Future<UserData> signInWithEmail(String email, String password) async {
+  Future<String> signInWithEmail(String email, String password) async {
     if (_successfulAuth) {
-      _controller.add(_mockUserData);
-      return Future.value(_mockUserData);
+      _controller.add('test_user_id');
+      return Future.value('test_user_id');
     } else {
       final errors = ['user not found', 'wronf password'];
       _mockNavigation.displayError(errors[0]);

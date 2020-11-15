@@ -14,8 +14,8 @@ class Navigation {
     navigatorKey.currentState.popUntil((route) => route.isFirst);
   }
 
-  Future<dynamic> navigateTo(String routeName) {
-    return navigatorKey.currentState.pushNamed(routeName);
+  Future<dynamic> navigateTo(String routeName, {String gameId}) {
+    return navigatorKey.currentState.pushNamed(routeName, arguments: gameId);
   }
 
   Future<dynamic> switchToSignIn() {

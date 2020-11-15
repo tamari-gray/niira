@@ -10,18 +10,16 @@ class FakeAuthService extends Fake implements AuthService {
 }
 
 class MockAuthService implements AuthService {
-  final StreamController<UserData> _controller;
-  final UserData _mockUserData;
+  final StreamController<String> _controller;
   final FakeNavigation _fakeNavigation;
   final bool _successfulAuth;
 
   MockAuthService({
-    StreamController<UserData> controller,
+    StreamController<String> controller,
     UserData mockUserData,
     FakeNavigation fakeNavigation,
     bool successfulAuth = true,
   })  : _controller = controller,
-        _mockUserData = mockUserData,
         _fakeNavigation = fakeNavigation,
         _successfulAuth = successfulAuth = true;
 
@@ -29,12 +27,12 @@ class MockAuthService implements AuthService {
   String get currentUserId => 'uid123';
 
   @override
-  Stream<UserData> get streamOfAuthState => _controller.stream;
+  Stream<String> get streamOfAuthState => _controller.stream;
 
   @override
-  Future<UserData> createUserAccount(String email, String password) async {
+  Future<String> createUserAccount(String email, String password) async {
     if (_successfulAuth) {
-      return Future.value(_mockUserData);
+      return Future.value('test_user_id');
     } else {
       final errors = ['email in use', 'wronf password'];
       _fakeNavigation.displayError(errors[0]);
@@ -43,10 +41,10 @@ class MockAuthService implements AuthService {
   }
 
   @override
-  Future<UserData> signInWithEmail(String email, String password) async {
+  Future<String> signInWithEmail(String email, String password) async {
     if (_successfulAuth) {
-      _controller.add(_mockUserData);
-      return Future.value(_mockUserData);
+      _controller.add('test_user_id');
+      return Future.value('test_user_id');
     } else {
       final errors = ['user not found', 'wronf password'];
       _fakeNavigation.displayError(errors[0]);
