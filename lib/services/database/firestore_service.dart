@@ -55,6 +55,7 @@ class FirestoreService implements DatabaseService {
   @override
   Stream<List<Game>> get streamOfCreatedGames => _firestore
       .collection('games')
+      .where('phase', isEqualTo: 'created')
       .snapshots()
       .map((QuerySnapshot snapshot) => snapshot.toListOfGames());
 

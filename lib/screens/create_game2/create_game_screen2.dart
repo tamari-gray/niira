@@ -65,7 +65,7 @@ class _CreateGameScreen2State extends State<CreateGameScreen2> {
           ],
         ),
         // show floatingActionButton if map and user data is loaded
-        floatingActionButton: vm.loadingMap == false || _username != null
+        floatingActionButton: vm.loadingMap == false && _username != null
             ? FloatingActionButton.extended(
                 key: Key('create_game_screen_2_submit_button'),
                 onPressed: () {

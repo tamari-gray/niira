@@ -128,9 +128,10 @@ class _WaitingForGameToStartScreenState
                                 await context
                                     .read<Navigation>()
                                     .showConfirmationDialog(
-                                        message: 'Are you ready?',
-                                        confirmText: 'Yes',
-                                        cancelText: 'No',
+                                        message:
+                                            'after you start the game, all hiders go hide! and tagger(s) wait for the timer to move!',
+                                        confirmText: 'Start!',
+                                        cancelText: 'back',
                                         onConfirmed: () async {
                                           // dismiss dialog
                                           await context
