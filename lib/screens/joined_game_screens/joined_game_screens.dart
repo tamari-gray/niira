@@ -45,7 +45,9 @@ class _JoinedGameScreensState extends State<JoinedGameScreens> {
               );
               break;
             case GamePhase.playing:
-              return PlayingGameScreen();
+              return PlayingGameScreen(
+                gameId: snapshot.data.id,
+              );
               break;
             case GamePhase.finished:
               return FinishedGameScreen();
