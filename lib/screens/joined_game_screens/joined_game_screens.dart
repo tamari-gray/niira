@@ -7,7 +7,7 @@ import 'package:niira/screens/joined_game_screens/waiting_screen/waiting_for_gam
 import 'package:niira/services/database/database_service.dart';
 import 'package:provider/provider.dart';
 
-import 'playing_game_screen.dart';
+import 'playing_game_screen/playing_game_screen.dart';
 
 class JoinedGameScreens extends StatefulWidget {
   final String gameId;
@@ -46,7 +46,7 @@ class _JoinedGameScreensState extends State<JoinedGameScreens> {
               break;
             case GamePhase.playing:
               return PlayingGameScreen(
-                gameId: snapshot.data.id,
+                game: snapshot.data,
               );
               break;
             case GamePhase.finished:
