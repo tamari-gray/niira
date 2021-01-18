@@ -7,12 +7,13 @@ class Player {
   final bool isTagger;
   final bool hasBeenTagged;
   final bool hasItem;
+  final bool hasQuit;
 
-  Player({
-    @required this.id,
-    @required this.username,
-    @required this.isTagger,
-    @required this.hasBeenTagged,
-    @required this.hasItem,
-  });
+  Player(
+      {@required this.id,
+      @required this.username,
+      @required this.isTagger,
+      @required this.hasBeenTagged,
+      @required this.hasItem,
+      @required this.hasQuit});
 }

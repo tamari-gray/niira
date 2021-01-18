@@ -20,4 +20,7 @@ abstract class DatabaseService {
   Future<String> currentGameId(String userId);
   Future<bool> checkIfAdmin(String userId);
   Future<void> startGame(String userId);
+  Future<bool> checkIfPlayerIsTagger(String userId);
+  Future<bool> checkIfPlayerIsLastTagger(String userId);
+  Future<void> quitGame(String userId);
 }
