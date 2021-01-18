@@ -147,7 +147,8 @@ class _MyAppState extends State<MyApp> {
             stream: _authService.streamOfAuthState,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                context.read<Navigation>().displayError(snapshot.error);
+                print(snapshot.error);
+                // context.watch<Navigation>().displayError(snapshot.error);
               }
               // check if user is signed in
               if (snapshot.data == null) {

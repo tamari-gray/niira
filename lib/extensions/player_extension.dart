@@ -6,5 +6,6 @@ extension PlayerExt on Player {
         'has_been_tagged': hasBeenTagged,
         'has_item': hasItem,
         'is_tagger': isTagger,
+        'has_quit': hasQuit
       };
 }

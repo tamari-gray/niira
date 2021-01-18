@@ -68,6 +68,65 @@ class FirestoreService implements DatabaseService {
   }
 
   @override
+  Future<bool> checkIfPlayerIsTagger(String userId) async {
+    try {
+      final gameId = await currentGameId(userId);
+      final playerDoc =
+          await joinedPlayerDoc(gameId: gameId, playerId: userId).get();
+      if (playerDoc.data()['is_tagger'] == true) {
+        return true;
+      } else if (playerDoc.data()['is_tagger'] == false) {
+        return false;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print('error checking if player is tagger');
+      return null;
+    }
+  }
+
+  @override
+  Future<bool> checkIfPlayerIsLastTagger(String userId) async {
+    try {
+      final gameId = await currentGameId(userId);
+
+      final taggers = await gameDoc(gameId)
+          .collection('players')
+          .where('is_tagger', isEqualTo: true)
+          .get();
+
+      if (taggers.docs.length == 1) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print('error checking if player is last tagger');
+      return null;
+    }
+  }
+
+  @override
+  Future<void> quitGame(String userId) async {
+    try {
+      final gameId = await currentGameId(userId);
+
+      final isLastTagger = await checkIfPlayerIsLastTagger(userId);
+      if (isLastTagger) {
+        await gameDoc(gameId).update(
+            <String, dynamic>{'taggersLost': true, 'phase': 'finished'});
+      }
+
+      await joinedPlayerDoc(gameId: gameId, playerId: userId)
+          .update(<String, bool>{'has_quit': true});
+    } catch (e) {
+      print('error quitting game, $e');
+      return null;
+    }
+  }
+
+  @override
   Future<void> leaveGame(String gameId, String playerId) async {
     try {
       await userDoc(playerId).update(<String, String>{'current_game': ''});
@@ -106,6 +165,7 @@ class FirestoreService implements DatabaseService {
       isTagger: false,
       hasBeenTagged: false,
       hasItem: false,
+      hasQuit: false,
     );
 
     try {

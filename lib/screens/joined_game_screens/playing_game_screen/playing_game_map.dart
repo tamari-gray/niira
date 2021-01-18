@@ -64,8 +64,6 @@ class PlayingGameMapState extends State<PlayingGameMap> {
                 // tell `createGameScreen2` that the map is loaded
                 context.read<CreateGameViewModel>().loadedMap();
               },
-              // update boundary position and user icon size when user moves map
-              onCameraMove: (cameraPosition) => _updateMap(cameraPosition),
               circles: _mapIcons,
             ),
             // custom fab type button to show users location
@@ -75,17 +73,5 @@ class PlayingGameMapState extends State<PlayingGameMap> {
                   boundarySize: widget.game.boundarySize),
             )
           ]);
-  }
-
-  /// Update boundary and user location icons in map.
-  /// Also update boundaryPosition and boundarySize in vm.
-  void _updateMap(CameraPosition cameraPosition) {
-    // update local state
-    setState(() {
-      _mapIcons = cameraPosition.toMapIcons(
-        boundarySize: widget.game.boundarySize,
-        userLocation: _userLocation.toLatLng(),
-      );
-    });
   }
 }

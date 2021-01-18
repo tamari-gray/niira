@@ -115,7 +115,7 @@ class _WaitingForGameToStartScreenState
                           ),
                           onPressed: () async {
                             if (snapshot.data.length == 1) {
-                              ScaffoldMessenger.of(context).showSnackBar(
+                              Scaffold.of(context).showSnackBar(
                                 const SnackBar(
                                   content:
                                       Text('wait for more players to join :)'),
@@ -144,7 +144,7 @@ class _WaitingForGameToStartScreenState
                                               .startGame(_userId);
                                         });
                               } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
+                                Scaffold.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text('please choose tagger first'),
                                   ),
