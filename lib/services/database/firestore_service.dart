@@ -9,8 +9,6 @@ import 'package:niira/extensions/firestore_doc_snapshot_extension.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/services/database/database_service.dart';
 
-// const currentGame = 'current_game';
-
 class FirestoreService implements DatabaseService {
   final FirebaseFirestore _firestore;
   FirestoreService(this._firestore);

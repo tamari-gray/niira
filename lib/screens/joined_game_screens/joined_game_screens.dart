@@ -56,26 +56,6 @@ class _JoinedGameScreensState extends State<JoinedGameScreens> {
               ),
             );
           }
-
-          // switch (snapshot.data.phase) {
-          //   case GamePhase.created:
-          //     return WaitingForGameToStartScreen(
-          //       gameId: snapshot.data.id,
-          //     );
-          //     break;
-          //   case GamePhase.playing:
-          //     return PlayingGameScreen(
-          //       game: snapshot.data,
-          //     );
-          //     break;
-          //   case GamePhase.finished:
-          //     return FinishedGameScreen(
-          //       game: snapshot.data,
-          //     );
-          //     break;
-          //   default:
-          //     return WaitingForGameToStartScreen(gameId: snapshot.data.id);
-          // }
         });
   }
 }
