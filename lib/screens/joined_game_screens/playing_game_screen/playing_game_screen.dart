@@ -82,6 +82,8 @@ class PlayingGameScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 // notifications and sonar timer
+                                Center(child: Text('Sonar timer')),
+                                
                               ],
                             ),
                           ),
