@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/models/game.dart';
@@ -8,10 +10,11 @@ import 'package:niira/screens/joined_game_screens/playing_game_screen/playing_ga
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:provider/provider.dart';
+import 'package:niira/utilities/calc_sonar_timer.dart';
 
-class PlayingGameScreen extends StatelessWidget {
+class PlayingGameScreenData extends StatelessWidget {
   final Game game;
-  const PlayingGameScreen({Key key, @required this.game}) : super(key: key);
+  const PlayingGameScreenData({Key key, @required this.game}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,63 +39,116 @@ class PlayingGameScreen extends StatelessWidget {
                 game.phase == GamePhase.finished) {
               return FinishedGameScreen(game: game, playerDoc: currentPlayer);
             } else {
-              return Scaffold(
-                appBar: AppBar(
-                  automaticallyImplyLeading: false,
-                  centerTitle: false,
-                  title: Text('${playersRemaining.length} players left',
-                      style: TextStyle(color: Colors.white)),
-                  actions: [
-                    FlatButton.icon(
-                        onPressed: () {
-                          // quit game
-                          // redirect to lobby
-                          context.read<Navigation>().showConfirmationDialog(
-                              onConfirmed: () {
-                            final userId =
-                                context.read<AuthService>().currentUserId;
-                            // quit game
-                            context.read<DatabaseService>().quitGame(userId);
-                            // pop dialogue
-                            context.read<Navigation>().pop();
-                          });
-                        },
-                        icon: Icon(
-                          Icons.clear,
-                          color: Colors.white,
-                        ),
-                        label:
-                            Text('Quit', style: TextStyle(color: Colors.white)))
-                  ],
-                ),
-                body: Center(
-                  child: Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: 250,
-                          child: PlayingGameMap(game: game),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 50, 0, 50),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                // notifications and sonar timer
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+              return PlayingGameScreen(
+                playersRemaining: playersRemaining,
+                game: game,
               );
             }
           }
         });
+  }
+}
+
+class PlayingGameScreen extends StatefulWidget {
+  const PlayingGameScreen({
+    Key key,
+    @required this.playersRemaining,
+    @required this.game,
+  }) : super(key: key);
+
+  final Iterable<Player> playersRemaining;
+  final Game game;
+
+  @override
+  _PlayingGameScreenState createState() => _PlayingGameScreenState();
+}
+
+class _PlayingGameScreenState extends State<PlayingGameScreen> {
+  double _sonarTimerValue;
+
+  @override
+  void initState() {
+    _startSonar();
+    super.initState();
+  }
+
+  void _startSonar() {
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      final _time = sonarTimer(startTime: widget.game.startTime);
+      setState(() {
+        _sonarTimerValue = _time;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: false,
+        title: Text('${widget.playersRemaining.length} players left',
+            style: TextStyle(color: Colors.white)),
+        actions: [
+          FlatButton.icon(
+              onPressed: () {
+                // quit game
+                // redirect to lobby
+                context.read<Navigation>().showConfirmationDialog(
+                    onConfirmed: () {
+                  final userId = context.read<AuthService>().currentUserId;
+                  // quit game
+                  context.read<DatabaseService>().quitGame(userId);
+                  // pop dialogue
+                  context.read<Navigation>().pop();
+                });
+              },
+              icon: Icon(
+                Icons.clear,
+                color: Colors.white,
+              ),
+              label: Text('Quit', style: TextStyle(color: Colors.white)))
+        ],
+      ),
+      body: Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 250,
+              child: PlayingGameMap(game: widget.game),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+              child: Text(
+                'Go hunt!',
+                style: TextStyle(fontSize: 10),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Column(
+                    children: [
+                      Text('Time until next sonar: $_sonarTimerValue',
+                          style: TextStyle(fontSize: 15)),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                        child: Text(
+                          '90s',
+                          style: TextStyle(fontSize: 35),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

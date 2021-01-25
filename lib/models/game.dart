@@ -15,6 +15,7 @@ class Game {
   final GamePhase phase;
 
   double distanceFromUser;
+  DateTime startTime;
 
   Game({
     this.id,
@@ -27,5 +28,6 @@ class Game {
     @required this.boundarySize,
     @required this.phase,
     this.distanceFromUser,
+    this.startTime,
   });
 }

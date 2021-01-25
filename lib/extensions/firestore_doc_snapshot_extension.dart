@@ -30,6 +30,7 @@ extension FirestoreDocumentSnapshotExt on DocumentSnapshot {
       boundaryPosition: Location.fromMap(
         data()['boundary_position'] as Map<String, dynamic>,
       ),
+      startTime: DateTime.parse(data()['start_time']?.toString()),
     );
   }
 }
