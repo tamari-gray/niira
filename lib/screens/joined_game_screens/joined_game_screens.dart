@@ -45,7 +45,7 @@ class _JoinedGameScreensState extends State<JoinedGameScreens> {
             );
           } else if (snapshot.data.phase == GamePhase.playing ||
               snapshot.data.phase == GamePhase.finished) {
-            return PlayingGameScreen(
+            return PlayingGameScreenData(
               game: snapshot.data,
             );
           } else {
