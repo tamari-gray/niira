@@ -15,7 +15,7 @@ class Game {
   final GamePhase phase;
 
   double distanceFromUser;
-  DateTime startTime;
+  String startTime;
 
   Game({
     this.id,

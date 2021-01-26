@@ -75,6 +75,13 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
   void _startSonar() {
     Timer.periodic(Duration(seconds: 1), (timer) {
       final _time = sonarTimer(startTime: widget.game.startTime);
+      if (_time == 0) {
+        // check if tagger
+        // if (tagger) {
+        // get
+        // }
+        print('show items or hiders on map');
+      }
       setState(() {
         _sonarTimerValue = _time;
       });
@@ -132,12 +139,12 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
                   padding: const EdgeInsets.all(15),
                   child: Column(
                     children: [
-                      Text('Time until next sonar: $_sonarTimerValue',
+                      Text('Time until next sonar: ',
                           style: TextStyle(fontSize: 15)),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                         child: Text(
-                          '90s',
+                          '$_sonarTimerValue s',
                           style: TextStyle(fontSize: 35),
                         ),
                       )
