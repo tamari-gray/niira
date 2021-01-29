@@ -41,6 +41,7 @@ class PlayingGameScreenData extends StatelessWidget {
             } else {
               return PlayingGameScreen(
                 playersRemaining: playersRemaining,
+                currentPlayer: currentPlayer,
                 game: game,
               );
             }
@@ -53,10 +54,12 @@ class PlayingGameScreen extends StatefulWidget {
   const PlayingGameScreen({
     Key key,
     @required this.playersRemaining,
+    @required this.currentPlayer,
     @required this.game,
   }) : super(key: key);
 
   final Iterable<Player> playersRemaining;
+  final Player currentPlayer;
   final Game game;
 
   @override
@@ -65,6 +68,7 @@ class PlayingGameScreen extends StatefulWidget {
 
 class _PlayingGameScreenState extends State<PlayingGameScreen> {
   double _sonarTimerValue;
+  Timer _timer;
 
   @override
   void initState() {
@@ -73,19 +77,29 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
   }
 
   void _startSonar() {
-    Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       final _time = sonarTimer(startTime: widget.game.startTime);
       if (_time == 0) {
         // check if tagger
-        // if (tagger) {
-        // get
-        // }
-        print('show items or hiders on map');
+        if (widget.currentPlayer.isTagger) {
+          // generate new items and update gameDoc
+
+          // map will listen to items doc,
+          // when updated, will check if tagger or not
+          // then show items or remaining players
+          print('hi');
+        } else {}
       }
       setState(() {
         _sonarTimerValue = _time;
       });
     });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   @override
@@ -139,7 +153,7 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
                   padding: const EdgeInsets.all(15),
                   child: Column(
                     children: [
-                      Text('Time until next sonar: ',
+                      Text('Time until next sonar:',
                           style: TextStyle(fontSize: 15)),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
