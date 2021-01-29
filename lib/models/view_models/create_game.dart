@@ -12,6 +12,8 @@ class CreateGameViewModel extends ChangeNotifier {
   String name;
   String password;
 
+  Game gameData;
+
   void updateBoundarySize(double size) {
     boundarySize = size;
     notifyListeners();
@@ -36,15 +38,20 @@ class CreateGameViewModel extends ChangeNotifier {
     password = null;
   }
 
-  Game createGameData(String userId, String username) => Game(
-        id: '',
-        name: name,
-        password: password,
-        adminName: username,
-        adminId: userId,
-        sonarIntervals: sonarIntervals,
-        boundaryPosition: boundaryPosition,
-        boundarySize: boundarySize,
-        phase: GamePhase.created,
-      );
+  Game createGameData(String userId, String username) {
+    final data = Game(
+      id: '',
+      name: name,
+      password: password,
+      adminName: username,
+      adminId: userId,
+      sonarIntervals: sonarIntervals,
+      boundaryPosition: boundaryPosition,
+      boundarySize: boundarySize,
+      phase: GamePhase.created,
+    );
+    notifyListeners();
+    gameData = data;
+    return data;
+  }
 }

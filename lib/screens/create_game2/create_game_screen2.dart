@@ -75,17 +75,19 @@ class _CreateGameScreen2State extends State<CreateGameScreen2> {
                       confirmText: 'Yes',
                       cancelText: 'No',
                       onConfirmed: () async {
-                        // create game data
-                        final game = vm.createGameData(_userId, _username);
+                        if (vm.gameData == null) {
+                          // create game data
+                          final game = vm.createGameData(_userId, _username);
 
-                        // create game in db
-                        // triggers navigation to JoinedGameScreens
-                        await context
-                            .read<DatabaseService>()
-                            .createGame(game, _userId);
+                          // create game in db
+                          // triggers navigation to JoinedGameScreens
+                          await context
+                              .read<DatabaseService>()
+                              .createGame(game, _userId);
 
-                        // pop navigation stack
-                        await navigation.popUntilLobby();
+                          // pop navigation stack
+                          await navigation.popUntilLobby();
+                        }
                       });
                 },
                 label: Text('Next'),
