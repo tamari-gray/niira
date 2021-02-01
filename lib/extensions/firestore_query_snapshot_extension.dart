@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/player.dart';
 import 'firestore_doc_snapshot_extension.dart';
@@ -11,5 +12,16 @@ extension QuerySnapshotExt on QuerySnapshot {
 
   List<Player> toListOfPlayers() {
     return docs.map((playerDoc) => playerDoc.toPlayer()).toList();
+  }
+
+  Set<Marker> toSetOfMarkers() {
+    return docs
+        .map((itemDoc) => Marker(
+            markerId: MarkerId(itemDoc.id),
+            position: LatLng(
+              itemDoc.data()['position'].latitude as double,
+              itemDoc.data()['position'].longitude as double,
+            )))
+        .toSet();
   }
 }

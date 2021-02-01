@@ -77,18 +77,24 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
   }
 
   void _startSonar() {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      final _time = sonarTimer(startTime: widget.game.startTime);
-      if (_time == 0) {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) async {
+      final _time = sonarTimer(
+        startTime: widget.game.startTime,
+        timerLength: widget.game.sonarIntervals,
+      );
+      if (_time == widget.game.sonarIntervals) {
         // check if tagger
         if (widget.currentPlayer.isTagger) {
           // generate new items and update gameDoc
+          await context.read<DatabaseService>().generateNewItems(
+                widget.game,
+                widget.playersRemaining.length.toDouble(),
+              );
 
           // map will listen to items doc,
           // when updated, will check if tagger or not
           // then show items or remaining players
-          print('hi');
-        } else {}
+        }
       }
       setState(() {
         _sonarTimerValue = _time;
@@ -108,8 +114,12 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: false,
-        title: Text('${widget.playersRemaining.length} players left',
-            style: TextStyle(color: Colors.white)),
+        title: widget.currentPlayer.isTagger
+            ? Text(' Go hunt! ${widget.playersRemaining.length} players left',
+                style: TextStyle(color: Colors.white))
+            : Text(
+                ' Go hide! ${widget.playersRemaining.length} other players left',
+                style: TextStyle(color: Colors.white)),
         actions: [
           FlatButton.icon(
               onPressed: () {
@@ -136,8 +146,9 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: 250,
-              child: PlayingGameMap(game: widget.game),
+              height: 350,
+              child: PlayingGameMap(
+                  game: widget.game, currentPlayer: widget.currentPlayer),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),

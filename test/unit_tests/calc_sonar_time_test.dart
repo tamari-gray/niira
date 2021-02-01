@@ -8,7 +8,7 @@ void main() {
 
     // calc time
     final _sonarTimerValue = await Future.delayed(Duration(seconds: 4), () {
-      return sonarTimer(startTime: _startTime);
+      return sonarTimer(startTime: _startTime, timerLength: 90);
     });
 
     // check that time is alg

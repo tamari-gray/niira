@@ -1,6 +1,11 @@
+import 'dart:collection';
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:niira/models/game.dart';
+import 'package:niira/models/location.dart';
 import 'package:niira/models/player.dart';
 import 'package:niira/extensions/game_extension.dart';
 import 'package:niira/extensions/player_extension.dart';
@@ -301,5 +306,65 @@ class FirestoreService implements DatabaseService {
     } catch (e) {
       print('error when trying to start game, $e ');
     }
+  }
+
+  LatLng randomItemPosition(Location boundaryCentre, double radius) {
+    var y0 = boundaryCentre.latitude;
+    var x0 = boundaryCentre.longitude;
+    var randomPoint = Random();
+
+    // radius to degrees
+    var radiusInDegrees = radius / 111000;
+
+    // calcliations
+    var u = randomPoint.nextDouble();
+    var v = randomPoint.nextDouble();
+    var w = radiusInDegrees * sqrt(u);
+    var t = 2 * pi * v;
+    var x = w * cos(t);
+    var y = w * sin(t);
+
+    var newX = x / cos(y0);
+    var foundLongitude = newX + x0;
+    var foundLatitude = y + y0;
+
+    print('new item coords: $foundLatitude, $foundLongitude');
+
+    return LatLng(foundLatitude, foundLongitude);
+  }
+
+  @override
+  Future<void> generateNewItems(Game game, double remainingPlayers) async {
+    // create hashset of markers
+    final newItemsPositions = <LatLng>[];
+
+    // loop through markers and give them random positions
+    for (var i = 0; i < remainingPlayers / 2; i++) {
+      newItemsPositions
+          .add(randomItemPosition(game.boundaryPosition, game.boundarySize));
+    }
+
+    // delete old items
+    await gameDoc(game.id).collection('items').get().then((snapshot) {
+      for (DocumentSnapshot ds in snapshot.docs) {
+        ds.reference.delete();
+      }
+    });
+
+    // put new squares in gamedoc
+    for (var item in newItemsPositions) {
+      await gameDoc(game.id).collection('items').add(<String, GeoPoint>{
+        'position': GeoPoint(item.latitude, item.longitude),
+      });
+    }
+    return;
+  }
+
+  @override
+  Stream<Set<Marker>> streamOfItems(String gameId) {
+    return _firestore
+        .collection('games/$gameId/items')
+        .snapshots()
+        .map((QuerySnapshot snapshot) => snapshot.toSetOfMarkers());
   }
 }
