@@ -78,17 +78,20 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
 
   void _startSonar() {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      final _time = sonarTimer(startTime: widget.game.startTime);
-      if (_time == 0) {
+      final _time = sonarTimer(
+        startTime: widget.game.startTime,
+        timerLength: widget.game.sonarIntervals,
+      );
+      if (_time == widget.game.sonarIntervals) {
         // check if tagger
         if (widget.currentPlayer.isTagger) {
           // generate new items and update gameDoc
+          context.read<DatabaseService>().generateNewItems(widget.game.id);
 
           // map will listen to items doc,
           // when updated, will check if tagger or not
           // then show items or remaining players
-          print('hi');
-        } else {}
+        }
       }
       setState(() {
         _sonarTimerValue = _time;

@@ -23,4 +23,5 @@ abstract class DatabaseService {
   Future<bool> checkIfPlayerIsTagger(String userId);
   Future<bool> checkIfPlayerIsLastTagger(String userId);
   Future<void> quitGame(String userId);
+  Future<void> generateNewItems(String gameId);
 }
