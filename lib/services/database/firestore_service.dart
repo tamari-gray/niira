@@ -339,7 +339,7 @@ class FirestoreService implements DatabaseService {
     final newItemsPositions = <LatLng>[];
 
     // loop through markers and give them random positions
-    for (var i = 0; i < remainingPlayers; i++) {
+    for (var i = 0; i < remainingPlayers / 2; i++) {
       newItemsPositions
           .add(randomItemPosition(game.boundaryPosition, game.boundarySize));
     }

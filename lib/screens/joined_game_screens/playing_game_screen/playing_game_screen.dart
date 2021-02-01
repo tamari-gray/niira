@@ -146,7 +146,7 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: 250,
+              height: 350,
               child: PlayingGameMap(
                   game: widget.game, currentPlayer: widget.currentPlayer),
             ),
