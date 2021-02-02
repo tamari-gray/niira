@@ -71,7 +71,7 @@ class PlayingGameMapState extends State<PlayingGameMap> {
                   if (widget.currentPlayer.isTagger) print(snapshot.data);
                   return GoogleMap(
                     myLocationButtonEnabled: false,
-                    zoomControlsEnabled: true,
+                    zoomControlsEnabled: false,
                     zoomGesturesEnabled: true,
                     initialCameraPosition: _userLocation.toShowUserLocation(
                         boundarySize: widget.game.boundarySize),
