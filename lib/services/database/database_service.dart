@@ -1,5 +1,6 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:niira/models/game.dart';
+import 'package:niira/models/location.dart';
 import 'package:niira/models/player.dart';
 import 'package:niira/models/user_data.dart';
 
@@ -26,4 +27,8 @@ abstract class DatabaseService {
   Future<void> quitGame(String userId);
   Future<void> generateNewItems(Game game, double remainingPlayers);
   Stream<Set<Marker>> streamOfItems(String gameId);
+  Stream<Set<Marker>> streamOfUnsafePlayers(String gameId);
+  Future<void> showTaggerMyLocation(
+      String gameId, String playerId, Location location);
+  Future<void> hideMyLocationFromTagger(String gameId, String playerId);
 }

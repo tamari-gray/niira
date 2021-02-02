@@ -6,9 +6,7 @@ import 'package:niira/loading.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/location.dart';
 import 'package:niira/extensions/location_extension.dart';
-import 'package:niira/extensions/camera_position.dart';
 import 'package:niira/models/player.dart';
-import 'package:niira/models/view_models/create_game.dart';
 import 'package:niira/screens/create_game2/show_location_btn.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/location_service.dart';
@@ -19,10 +17,12 @@ import 'package:provider/provider.dart';
 class PlayingGameMap extends StatefulWidget {
   final Game game;
   final Player currentPlayer;
+  final Iterable<Player> remainingPlayers;
 
   PlayingGameMap({
     @required this.game,
     @required this.currentPlayer,
+    @required this.remainingPlayers,
   });
 
   @override
@@ -60,10 +60,15 @@ class PlayingGameMapState extends State<PlayingGameMap> {
         : Stack(children: [
             // create the map!
             StreamBuilder<Set<Marker>>(
-                stream: context
-                    .watch<DatabaseService>()
-                    .streamOfItems(widget.game.id),
+                stream: widget.currentPlayer.isTagger
+                    ? context
+                        .watch<DatabaseService>()
+                        .streamOfUnsafePlayers(widget.game.id)
+                    : context
+                        .watch<DatabaseService>()
+                        .streamOfItems(widget.game.id),
                 builder: (context, snapshot) {
+                  if (widget.currentPlayer.isTagger) print(snapshot.data);
                   return GoogleMap(
                     myLocationButtonEnabled: false,
                     zoomControlsEnabled: false,
@@ -75,9 +80,7 @@ class PlayingGameMapState extends State<PlayingGameMap> {
                       _controller.complete(controller);
                     },
                     circles: _mapIcons,
-                    markers: !widget.currentPlayer.isTagger
-                        ? snapshot.data
-                        : <Marker>{},
+                    markers: snapshot.data,
                   );
                 }),
             // custom fab type button to show users location

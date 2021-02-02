@@ -24,4 +24,16 @@ extension QuerySnapshotExt on QuerySnapshot {
             )))
         .toSet();
   }
+
+  Set<Marker> toSetOfPlayerMarkers() {
+    return docs
+        .map((itemDoc) => Marker(
+            markerId: MarkerId(itemDoc.id),
+            infoWindow: InfoWindow(title: itemDoc.data()['username'] as String),
+            position: LatLng(
+              itemDoc.data()['position'].latitude as double,
+              itemDoc.data()['position'].longitude as double,
+            )))
+        .toSet();
+  }
 }

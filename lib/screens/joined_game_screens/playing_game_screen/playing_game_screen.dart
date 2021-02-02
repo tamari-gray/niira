@@ -9,6 +9,7 @@ import 'package:niira/screens/joined_game_screens/finished_game_screen.dart';
 import 'package:niira/screens/joined_game_screens/playing_game_screen/playing_game_map.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
+import 'package:niira/services/location_service.dart';
 import 'package:provider/provider.dart';
 import 'package:niira/utilities/calc_sonar_timer.dart';
 
@@ -94,6 +95,23 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
           // map will listen to items doc,
           // when updated, will check if tagger or not
           // then show items or remaining players
+        } else {
+          if (!widget.currentPlayer.hasItem) {
+            // show location to tagger
+            final _myLocation =
+                await context.read<LocationService>().getUsersCurrentLocation();
+            await context.read<DatabaseService>().showTaggerMyLocation(
+                  widget.game.id,
+                  widget.currentPlayer.id,
+                  _myLocation,
+                );
+          } else {
+            // hide location from tagger
+            await context.read<DatabaseService>().hideMyLocationFromTagger(
+                  widget.game.id,
+                  widget.currentPlayer.id,
+                );
+          }
         }
       }
       setState(() {
@@ -146,9 +164,12 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: 350,
+              height: 400,
               child: PlayingGameMap(
-                  game: widget.game, currentPlayer: widget.currentPlayer),
+                game: widget.game,
+                currentPlayer: widget.currentPlayer,
+                remainingPlayers: widget.playersRemaining,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
