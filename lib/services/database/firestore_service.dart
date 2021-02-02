@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -366,5 +365,33 @@ class FirestoreService implements DatabaseService {
         .collection('games/$gameId/items')
         .snapshots()
         .map((QuerySnapshot snapshot) => snapshot.toSetOfMarkers());
+  }
+
+  @override
+  Future<void> showTaggerMyLocation(
+      String gameId, String playerId, Location location) {
+    return joinedPlayerDoc(gameId: gameId, playerId: playerId)
+        .update(<String, dynamic>{
+      'location_safe': false,
+      'position': GeoPoint(location.latitude, location.longitude)
+    });
+  }
+
+  @override
+  Future<void> hideMyLocationFromTagger(String gameId, String playerId) {
+    return joinedPlayerDoc(gameId: gameId, playerId: playerId)
+        .update(<String, dynamic>{
+      'position': null,
+      'location_safe': true,
+    });
+  }
+
+  @override
+  Stream<Set<Marker>> streamOfUnsafePlayers(String gameId) {
+    return gameDoc(gameId)
+        .collection('players')
+        .where('location_safe', isEqualTo: false)
+        .snapshots()
+        .map((QuerySnapshot snapshot) => snapshot.toSetOfPlayerMarkers());
   }
 }
