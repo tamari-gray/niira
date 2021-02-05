@@ -48,6 +48,7 @@ class PlayingGameMapState extends State<PlayingGameMap> {
     setState(() {
       _userLocation = userLocationFromService;
       _mapIcons = userLocationFromService.toMapIcons(
+        boundaryPosition: widget.game.boundaryPosition.toLatLng(),
         boundarySize: widget.game.boundarySize,
       );
     });
@@ -68,7 +69,7 @@ class PlayingGameMapState extends State<PlayingGameMap> {
                         .watch<DatabaseService>()
                         .streamOfItems(widget.game.id),
                 builder: (context, snapshot) {
-                  if (widget.currentPlayer.isTagger) print(snapshot.data);
+                  // if (widget.currentPlayer.isTagger) print(snapshot.data);
                   return GoogleMap(
                     myLocationButtonEnabled: false,
                     zoomControlsEnabled: false,

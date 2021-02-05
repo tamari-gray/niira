@@ -21,6 +21,7 @@ dependencies:
   geolocator:
   google_maps_flutter:
   permission_handler:
+  geoflutterfire: 
 
 dev_dependencies:
   mockito: ^4.1.1

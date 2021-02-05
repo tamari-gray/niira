@@ -31,4 +31,6 @@ abstract class DatabaseService {
   Future<void> showTaggerMyLocation(
       String gameId, String playerId, Location location);
   Future<void> hideMyLocationFromTagger(String gameId, String playerId);
+  Future<bool> tryToPickUpItem(
+      String gameId, Player player, Location playerLocation);
 }

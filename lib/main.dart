@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/models/user_data.dart';
@@ -99,8 +100,8 @@ class _MyAppState extends State<MyApp> {
     _authService = widget._authService ??
         FirebaseAuthService(FirebaseAuth.instance, _navigation);
 
-    _databaseService =
-        widget._databaseService ?? FirestoreService(FirebaseFirestore.instance);
+    _databaseService = widget._databaseService ??
+        FirestoreService(FirebaseFirestore.instance, Geoflutterfire());
 
     // initialise services in app
     setState(() {

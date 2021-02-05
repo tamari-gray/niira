@@ -12,10 +12,12 @@ import 'package:niira/extensions/firestore_query_snapshot_extension.dart';
 import 'package:niira/extensions/firestore_doc_snapshot_extension.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/services/database/database_service.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 
 class FirestoreService implements DatabaseService {
   final FirebaseFirestore _firestore;
-  FirestoreService(this._firestore);
+  final Geoflutterfire _geoflutterfire;
+  FirestoreService(this._firestore, this._geoflutterfire);
 
   DocumentReference userDoc(String playerId) {
     return _firestore.doc('players/$playerId');
@@ -350,10 +352,20 @@ class FirestoreService implements DatabaseService {
       }
     });
 
+    // delete picked up items from player docs => make all players unsafe again
+    await gameDoc(game.id).collection('players').get().then((snapshot) {
+      for (DocumentSnapshot ds in snapshot.docs) {
+        ds.reference.update(<String, bool>{'has_item': false});
+      }
+    });
+
     // put new squares in gamedoc
     for (var item in newItemsPositions) {
-      await gameDoc(game.id).collection('items').add(<String, GeoPoint>{
-        'position': GeoPoint(item.latitude, item.longitude),
+      final _itemLocation = _geoflutterfire.point(
+          latitude: item.latitude, longitude: item.longitude);
+      await gameDoc(game.id).collection('items').add(<String, dynamic>{
+        'position': _itemLocation.data,
+        'picked_up': false
       });
     }
     return;
@@ -363,6 +375,7 @@ class FirestoreService implements DatabaseService {
   Stream<Set<Marker>> streamOfItems(String gameId) {
     return _firestore
         .collection('games/$gameId/items')
+        .where('picked_up', isEqualTo: false)
         .snapshots()
         .map((QuerySnapshot snapshot) => snapshot.toSetOfMarkers());
   }
@@ -370,10 +383,12 @@ class FirestoreService implements DatabaseService {
   @override
   Future<void> showTaggerMyLocation(
       String gameId, String playerId, Location location) {
+    final _myLocation = _geoflutterfire.point(
+        latitude: location.latitude, longitude: location.longitude);
     return joinedPlayerDoc(gameId: gameId, playerId: playerId)
         .update(<String, dynamic>{
       'location_safe': false,
-      'position': GeoPoint(location.latitude, location.longitude)
+      'position': _myLocation.data
     });
   }
 
@@ -393,5 +408,43 @@ class FirestoreService implements DatabaseService {
         .where('location_safe', isEqualTo: false)
         .snapshots()
         .map((QuerySnapshot snapshot) => snapshot.toSetOfPlayerMarkers());
+  }
+
+  @override
+  Future<bool> tryToPickUpItem(
+      String gameId, Player player, Location playerLocation) async {
+    // geoquery.first (only grab one item if 2 are in same place)
+    final center = _geoflutterfire.point(
+        latitude: playerLocation.latitude, longitude: playerLocation.longitude);
+
+    // get the collection reference or query
+    var collectionReference = gameDoc(gameId).collection('items');
+    // gameDoc(gameId).collection('items').where('picked_up', isEqualTo: true);
+
+    final radius = 0.005; // 5m
+    final field = 'position';
+
+    final stream = _geoflutterfire
+        .collection(collectionRef: collectionReference)
+        .within(center: center, radius: radius.toDouble(), field: field);
+
+    // get item id => set item.picked.up == true
+    final item = await stream.first;
+
+    // print('error? $item');
+
+    if (item.isNotEmpty && item[0].exists) {
+      await item[0].reference.update(<String, bool>{'picked_up': true});
+
+      // set player.has_item == true
+      await joinedPlayerDoc(gameId: gameId, playerId: player.id)
+          .update(<String, bool>{'has_item': true});
+
+      // return true if successfull
+      return true;
+    } else {
+      // return false if unsuccessfull
+      return false;
+    }
   }
 }
