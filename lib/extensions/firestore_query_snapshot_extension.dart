@@ -19,8 +19,8 @@ extension QuerySnapshotExt on QuerySnapshot {
         .map((itemDoc) => Marker(
             markerId: MarkerId(itemDoc.id),
             position: LatLng(
-              itemDoc.data()['position'].latitude as double,
-              itemDoc.data()['position'].longitude as double,
+              itemDoc.data()['position']['geopoint'].latitude as double,
+              itemDoc.data()['position']['geopoint'].longitude as double,
             )))
         .toSet();
   }
@@ -31,8 +31,8 @@ extension QuerySnapshotExt on QuerySnapshot {
             markerId: MarkerId(itemDoc.id),
             infoWindow: InfoWindow(title: itemDoc.data()['username'] as String),
             position: LatLng(
-              itemDoc.data()['position'].latitude as double,
-              itemDoc.data()['position'].longitude as double,
+              itemDoc.data()['position']['geopoint'].latitude as double,
+              itemDoc.data()['position']['geopoint'].longitude as double,
             )))
         .toSet();
   }

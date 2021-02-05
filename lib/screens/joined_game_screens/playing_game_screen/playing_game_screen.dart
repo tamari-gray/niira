@@ -7,11 +7,14 @@ import 'package:niira/models/player.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/joined_game_screens/finished_game_screen.dart';
 import 'package:niira/screens/joined_game_screens/playing_game_screen/playing_game_map.dart';
+import 'package:niira/screens/joined_game_screens/playing_game_screen/tagger_button.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/location_service.dart';
 import 'package:provider/provider.dart';
 import 'package:niira/utilities/calc_sonar_timer.dart';
+
+import 'hider_button.dart';
 
 class PlayingGameScreenData extends StatelessWidget {
   final Game game;
@@ -159,6 +162,15 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
               label: Text('Quit', style: TextStyle(color: Colors.white)))
         ],
       ),
+      floatingActionButton: widget.currentPlayer.isTagger
+          ? TaggerButton(
+              currentPlayer: widget.currentPlayer,
+              gameId: widget.game.id,
+            )
+          : HiderButton(
+              currentPlayer: widget.currentPlayer,
+              gameId: widget.game.id,
+            ),
       body: Container(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
