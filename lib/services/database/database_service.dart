@@ -1,3 +1,4 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/location.dart';
@@ -28,9 +29,13 @@ abstract class DatabaseService {
   Future<void> generateNewItems(Game game, double remainingPlayers);
   Stream<Set<Marker>> streamOfItems(String gameId);
   Stream<Set<Marker>> streamOfUnsafePlayers(String gameId);
-  Future<void> showTaggerMyLocation(
-      String gameId, String playerId, Location location);
+  Future<void> showTaggerMyLocation(String gameId, String playerId);
   Future<void> hideMyLocationFromTagger(String gameId, String playerId);
   Future<bool> tryToPickUpItem(
       String gameId, Player player, Location playerLocation);
+  Future<String> tryToTagPlayer(
+      String gameId, Player player, Location playerLocation);
+  Future<void> setHiderPosition(
+      String gameId, String playerId, Location location);
+  Future<void> finishGame(String gameId);
 }

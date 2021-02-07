@@ -8,6 +8,7 @@ class Player {
   final bool hasBeenTagged;
   final bool hasItem;
   final bool hasQuit;
+  final bool locationSafe;
 
   Player(
       {@required this.id,
@@ -15,5 +16,6 @@ class Player {
       @required this.isTagger,
       @required this.hasBeenTagged,
       @required this.hasItem,
+      @required this.locationSafe,
       @required this.hasQuit});
 }

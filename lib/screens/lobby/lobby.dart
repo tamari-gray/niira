@@ -43,7 +43,7 @@ class LobbyScreen extends StatelessWidget {
             return snapshot.hasData
                 ? ListOfCreatedGames(snapshot.data)
                 : Loading(
-                    message: 'Searching for games...',
+                    message: 'Getting your location...',
                   );
           }),
       floatingActionButton: FloatingActionButton.extended(

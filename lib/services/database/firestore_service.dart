@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator_platform_interface/src/models/position.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:niira/models/game.dart';
 import 'package:niira/models/location.dart';
@@ -170,6 +171,7 @@ class FirestoreService implements DatabaseService {
       hasBeenTagged: false,
       hasItem: false,
       hasQuit: false,
+      locationSafe: false,
     );
 
     try {
@@ -381,14 +383,10 @@ class FirestoreService implements DatabaseService {
   }
 
   @override
-  Future<void> showTaggerMyLocation(
-      String gameId, String playerId, Location location) {
-    final _myLocation = _geoflutterfire.point(
-        latitude: location.latitude, longitude: location.longitude);
+  Future<void> showTaggerMyLocation(String gameId, String playerId) {
     return joinedPlayerDoc(gameId: gameId, playerId: playerId)
         .update(<String, dynamic>{
       'location_safe': false,
-      'position': _myLocation.data
     });
   }
 
@@ -396,7 +394,6 @@ class FirestoreService implements DatabaseService {
   Future<void> hideMyLocationFromTagger(String gameId, String playerId) {
     return joinedPlayerDoc(gameId: gameId, playerId: playerId)
         .update(<String, dynamic>{
-      'position': null,
       'location_safe': true,
     });
   }
@@ -446,5 +443,72 @@ class FirestoreService implements DatabaseService {
       // return false if unsuccessfull
       return false;
     }
+  }
+
+  @override
+  Future<String> tryToTagPlayer(
+      String gameId, Player player, Location playerLocation) async {
+    // get all players current locations
+    final _center = _geoflutterfire.point(
+        latitude: playerLocation.latitude, longitude: playerLocation.longitude);
+
+    // get players that havent quit or been tagged
+    var _playersDocs = await gameDoc(gameId).collection('players');
+    // .where('has_been_tagged', isEqualTo: false)
+    // .where('has_quit', isEqualTo: false)
+    // .where('is_tagger', isEqualTo: false);
+
+    // geoquery
+    final radius = 0.005; // 5m
+    final field = 'position';
+
+    final stream =
+        await _geoflutterfire.collection(collectionRef: _playersDocs).within(
+              center: _center,
+              radius: radius.toDouble(),
+              field: field,
+              // strictMode: true,
+            );
+
+    final players = await stream.first;
+
+    // set tagged player to {player.hasBeenTagged: true}
+    if (players.isNotEmpty && players.first.exists) {
+      await players.first.reference
+          .update(<String, bool>{'has_been_tagged': true});
+    }
+
+    // check if last player
+    // => set game to game.finished
+    //
+    final _remainingPlayers = await gameDoc(gameId)
+        .collection('players')
+        .where('has_been_tagged', isEqualTo: false)
+        .where('is_tagger', isEqualTo: false)
+        .get();
+
+    if (_remainingPlayers.docs.isEmpty) {
+      return 'game_over';
+    } else {
+      if (players.isEmpty) {
+        return '';
+      } else {
+        return players.first.data()['username'].toString() ?? '';
+      }
+    }
+  }
+
+  @override
+  Future<void> setHiderPosition(
+      String gameId, String playerId, Location location) {
+    final _myLocation = _geoflutterfire.point(
+        latitude: location.latitude, longitude: location.longitude);
+    return joinedPlayerDoc(gameId: gameId, playerId: playerId)
+        .update(<String, dynamic>{'position': _myLocation.data});
+  }
+
+  @override
+  Future<void> finishGame(String gameId) async {
+    await gameDoc(gameId).update(<String, String>{'phase': 'finished'});
   }
 }

@@ -34,11 +34,9 @@ class _JoinedGameScreensState extends State<JoinedGameScreens> {
           if (snapshot.hasError) {
             context.watch<Navigation>().displayError(snapshot.error);
           }
-
           if (!snapshot.hasData) {
             return Scaffold(body: Loading(message: 'retrieving your game'));
           }
-
           if (snapshot.data.phase == GamePhase.created) {
             return WaitingForGameToStartScreen(
               gameId: snapshot.data.id,

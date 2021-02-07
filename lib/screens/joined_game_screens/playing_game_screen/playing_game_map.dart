@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/models/game.dart';
@@ -45,6 +46,7 @@ class PlayingGameMapState extends State<PlayingGameMap> {
   void _initMap() async {
     final userLocationFromService =
         await context.read<LocationService>().getUsersCurrentLocation();
+    print('userlocationFromService: ${userLocationFromService.latitude}');
     setState(() {
       _userLocation = userLocationFromService;
       _mapIcons = userLocationFromService.toMapIcons(
@@ -69,7 +71,6 @@ class PlayingGameMapState extends State<PlayingGameMap> {
                         .watch<DatabaseService>()
                         .streamOfItems(widget.game.id),
                 builder: (context, snapshot) {
-                  // if (widget.currentPlayer.isTagger) print(snapshot.data);
                   return GoogleMap(
                     myLocationButtonEnabled: false,
                     zoomControlsEnabled: false,

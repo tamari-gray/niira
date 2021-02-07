@@ -9,5 +9,6 @@ extension QueryDocumentSnapshotExt on QueryDocumentSnapshot {
         hasBeenTagged: data()['has_been_tagged'] as bool ?? false,
         hasItem: data()['has_item'] as bool ?? false,
         hasQuit: data()['has_quit'] as bool ?? false,
+        locationSafe: data()['location_safe'] as bool ?? false,
       );
 }

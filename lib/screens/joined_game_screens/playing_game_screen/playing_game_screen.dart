@@ -82,6 +82,15 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
 
   void _startSonar() {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) async {
+      // if hider, put location in databse
+      if (!widget.currentPlayer.isTagger) {
+        final _myLocation =
+            await context.read<LocationService>().getUsersCurrentLocation();
+        await context.read<DatabaseService>().setHiderPosition(
+            widget.game.id, widget.currentPlayer.id, _myLocation);
+      }
+
+      // on timer end
       final _time = sonarTimer(
         startTime: widget.game.startTime,
         timerLength: widget.game.sonarIntervals,
@@ -99,15 +108,12 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
           // when updated, will check if tagger or not
           // then show items or remaining players
         } else {
+          // if hider has an item, make them safe
           if (!widget.currentPlayer.hasItem) {
             // show location to tagger
-            final _myLocation =
-                await context.read<LocationService>().getUsersCurrentLocation();
-            await context.read<DatabaseService>().showTaggerMyLocation(
-                  widget.game.id,
-                  widget.currentPlayer.id,
-                  _myLocation,
-                );
+            await context
+                .read<DatabaseService>()
+                .showTaggerMyLocation(widget.game.id, widget.currentPlayer.id);
           } else {
             // hide location from tagger
             await context.read<DatabaseService>().hideMyLocationFromTagger(

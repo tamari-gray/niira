@@ -18,64 +18,60 @@ class TaggerButton extends StatefulWidget {
 }
 
 class _TaggerButtonState extends State<TaggerButton> {
-  bool pickingUpItem;
+  bool attemptingTag;
 
   @override
   void initState() {
-    pickingUpItem = false;
+    attemptingTag = false;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
-      key: Key('hider_pick_up_item_button'),
-      label: pickingUpItem
-          ? Icon(Icons.location_searching)
-          : widget.currentPlayer.hasItem
-              ? Text('You are safe')
-              : Text('Pick up item'),
+      key: Key('tagger_tag_player_button'),
+      label:
+          attemptingTag ? Icon(Icons.location_searching) : Text('Tag player'),
       onPressed: () async {
-        if (widget.currentPlayer.hasItem) {
-          return null;
-        } else {
-          if (!pickingUpItem) {
+        if (!attemptingTag) {
+          setState(() {
+            attemptingTag = true;
+          });
+          final _location =
+              await context.read<LocationService>().getUsersCurrentLocation();
+
+          final _taggedPlayerName = await context
+              .read<DatabaseService>()
+              .tryToTagPlayer(widget.gameId, widget.currentPlayer, _location);
+
+          if (_taggedPlayerName == 'game_over') {
+            await context.read<DatabaseService>().finishGame(widget.gameId);
+          } else {
             setState(() {
-              pickingUpItem = true;
-            });
-            final _location =
-                await context.read<LocationService>().getUsersCurrentLocation();
-
-            final pickedUpItem = await context
-                .read<DatabaseService>()
-                .tryToPickUpItem(
-                    widget.gameId, widget.currentPlayer, _location);
-
-            setState(() {
-              pickingUpItem = false;
+              attemptingTag = false;
             });
 
-            await _showHiderDialog(pickedUpItem, context);
+            await _showTaggerDialog(_taggedPlayerName, context);
           }
         }
       },
     );
   }
 
-  Future<void> _showHiderDialog(
-      bool itemPickUpSuccess, BuildContext context) async {
+  Future<void> _showTaggerDialog(
+      String taggedPlayerName, BuildContext context) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: itemPickUpSuccess ? Text('Success!') : Text('Oh no!'),
+          title: taggedPlayerName != '' ? Text('Success!') : Text('Oh no!'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                itemPickUpSuccess
-                    ? Text('Your location will be safe on the next sonar!')
-                    : Text('No items within 5m! try again'),
+                taggedPlayerName != ''
+                    ? Text('You tagged $taggedPlayerName! ')
+                    : Text('No players within 5m! try again'),
               ],
             ),
           ),
