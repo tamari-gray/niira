@@ -403,6 +403,9 @@ class FirestoreService implements DatabaseService {
     return gameDoc(gameId)
         .collection('players')
         .where('location_safe', isEqualTo: false)
+        .where('has_been_tagged', isEqualTo: false)
+        .where('is_tagger', isEqualTo: false)
+        .where('has_quit', isEqualTo: false)
         .snapshots()
         .map((QuerySnapshot snapshot) => snapshot.toSetOfPlayerMarkers());
   }
@@ -423,7 +426,11 @@ class FirestoreService implements DatabaseService {
 
     final stream = _geoflutterfire
         .collection(collectionRef: collectionReference)
-        .within(center: center, radius: radius.toDouble(), field: field);
+        .within(
+            center: center,
+            radius: radius.toDouble(),
+            field: field,
+            strictMode: true);
 
     // get item id => set item.picked.up == true
     final item = await stream.first;

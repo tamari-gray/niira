@@ -1,5 +1,7 @@
 import 'package:meta/meta.dart';
 
+import 'location.dart';
+
 // player is a user that has joined a game
 class Player {
   final String id;
@@ -9,6 +11,8 @@ class Player {
   final bool hasItem;
   final bool hasQuit;
   final bool locationSafe;
+
+  Location location;
 
   Player(
       {@required this.id,

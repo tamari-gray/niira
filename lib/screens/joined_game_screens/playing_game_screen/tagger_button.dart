@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:niira/models/location.dart';
 import 'package:niira/models/player.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/location_service.dart';
@@ -8,10 +9,14 @@ import 'package:provider/provider.dart';
 
 class TaggerButton extends StatefulWidget {
   final Player currentPlayer;
+  final Location playerLocation;
   final String gameId;
-  const TaggerButton(
-      {Key key, @required this.currentPlayer, @required this.gameId})
-      : super(key: key);
+  const TaggerButton({
+    Key key,
+    @required this.currentPlayer,
+    @required this.playerLocation,
+    @required this.gameId,
+  }) : super(key: key);
 
   @override
   _TaggerButtonState createState() => _TaggerButtonState();
@@ -37,12 +42,13 @@ class _TaggerButtonState extends State<TaggerButton> {
           setState(() {
             attemptingTag = true;
           });
-          final _location =
-              await context.read<LocationService>().getUsersCurrentLocation();
 
-          final _taggedPlayerName = await context
-              .read<DatabaseService>()
-              .tryToTagPlayer(widget.gameId, widget.currentPlayer, _location);
+          final _taggedPlayerName =
+              await context.read<DatabaseService>().tryToTagPlayer(
+                    widget.gameId,
+                    widget.currentPlayer,
+                    widget.playerLocation,
+                  );
 
           if (_taggedPlayerName == 'game_over') {
             await context.read<DatabaseService>().finishGame(widget.gameId);

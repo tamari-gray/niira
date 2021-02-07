@@ -18,11 +18,13 @@ import 'package:provider/provider.dart';
 class PlayingGameMap extends StatefulWidget {
   final Game game;
   final Player currentPlayer;
+  final Set<Circle> circles;
   final Iterable<Player> remainingPlayers;
 
   PlayingGameMap({
     @required this.game,
     @required this.currentPlayer,
+    @required this.circles,
     @required this.remainingPlayers,
   });
 
@@ -32,7 +34,6 @@ class PlayingGameMap extends StatefulWidget {
 
 class PlayingGameMapState extends State<PlayingGameMap> {
   final Completer<GoogleMapController> _controller = Completer();
-  Set<Circle> _mapIcons;
   Location _userLocation;
 
   @override
@@ -44,15 +45,10 @@ class PlayingGameMapState extends State<PlayingGameMap> {
   /// get users location from `LocationService`
   /// and set user + boundary icons on map
   void _initMap() async {
-    final userLocationFromService =
+    final initialLocation =
         await context.read<LocationService>().getUsersCurrentLocation();
-    print('userlocationFromService: ${userLocationFromService.latitude}');
     setState(() {
-      _userLocation = userLocationFromService;
-      _mapIcons = userLocationFromService.toMapIcons(
-        boundaryPosition: widget.game.boundaryPosition.toLatLng(),
-        boundarySize: widget.game.boundarySize,
-      );
+      _userLocation = initialLocation;
     });
   }
 
@@ -71,8 +67,10 @@ class PlayingGameMapState extends State<PlayingGameMap> {
                         .watch<DatabaseService>()
                         .streamOfItems(widget.game.id),
                 builder: (context, snapshot) {
+                  final _markers = snapshot.data;
                   return GoogleMap(
                     myLocationButtonEnabled: false,
+                    myLocationEnabled: true,
                     zoomControlsEnabled: false,
                     zoomGesturesEnabled: true,
                     initialCameraPosition: _userLocation.toShowUserLocation(
@@ -81,8 +79,8 @@ class PlayingGameMapState extends State<PlayingGameMap> {
                       controller.setMapStyle(createGameMapStyle);
                       _controller.complete(controller);
                     },
-                    circles: _mapIcons,
-                    markers: snapshot.data,
+                    circles: widget.circles,
+                    markers: _markers,
                   );
                 }),
             // custom fab type button to show users location

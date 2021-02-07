@@ -17,9 +17,9 @@ class LocationService {
   // get users currentLocation
   Future<Location> getUsersCurrentLocation() async {
     final currentPosition = await _geolocator.getCurrentPosition(
-        forceAndroidLocationManager: true,
-        desiredAccuracy: LocationAccuracy.bestForNavigation,
-        timeLimit: Duration(seconds: 10));
+      forceAndroidLocationManager: true,
+      desiredAccuracy: LocationAccuracy.bestForNavigation,
+    );
     return Location(
         latitude: currentPosition.latitude,
         longitude: currentPosition.longitude);
