@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/models/game.dart';
+import 'package:niira/models/location.dart';
 import 'package:niira/models/player.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/joined_game_screens/finished_game_screen.dart';
@@ -11,6 +13,7 @@ import 'package:niira/screens/joined_game_screens/playing_game_screen/tagger_but
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/location_service.dart';
+import 'package:niira/extensions/location_extension.dart';
 import 'package:provider/provider.dart';
 import 'package:niira/utilities/calc_sonar_timer.dart';
 
@@ -43,11 +46,24 @@ class PlayingGameScreenData extends StatelessWidget {
                 game.phase == GamePhase.finished) {
               return FinishedGameScreen(game: game, playerDoc: currentPlayer);
             } else {
-              return PlayingGameScreen(
-                playersRemaining: playersRemaining,
-                currentPlayer: currentPlayer,
-                game: game,
-              );
+              return StreamBuilder<Position>(
+                  stream:
+                      context.watch<LocationService>().listenToUsersLocation,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return PlayingGameScreen(
+                        playersRemaining: playersRemaining,
+                        currentPlayer: currentPlayer,
+                        game: game,
+                        playerLocation: Location(
+                          latitude: snapshot.data.latitude,
+                          longitude: snapshot.data.latitude,
+                        ),
+                      );
+                    } else {
+                      return Loading();
+                    }
+                  });
             }
           }
         });
@@ -60,10 +76,12 @@ class PlayingGameScreen extends StatefulWidget {
     @required this.playersRemaining,
     @required this.currentPlayer,
     @required this.game,
+    @required this.playerLocation,
   }) : super(key: key);
 
   final Iterable<Player> playersRemaining;
   final Player currentPlayer;
+  final Location playerLocation;
   final Game game;
 
   @override
@@ -82,6 +100,13 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
 
   void _startSonar() {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) async {
+      // if hider, put location in databse
+      if (!widget.currentPlayer.isTagger) {
+        await context.read<DatabaseService>().setHiderPosition(
+            widget.game.id, widget.currentPlayer.id, widget.playerLocation);
+      }
+
+      // on timer end
       final _time = sonarTimer(
         startTime: widget.game.startTime,
         timerLength: widget.game.sonarIntervals,
@@ -99,15 +124,12 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
           // when updated, will check if tagger or not
           // then show items or remaining players
         } else {
+          // if hider has an item, make them safe
           if (!widget.currentPlayer.hasItem) {
             // show location to tagger
-            final _myLocation =
-                await context.read<LocationService>().getUsersCurrentLocation();
-            await context.read<DatabaseService>().showTaggerMyLocation(
-                  widget.game.id,
-                  widget.currentPlayer.id,
-                  _myLocation,
-                );
+            await context
+                .read<DatabaseService>()
+                .showTaggerMyLocation(widget.game.id, widget.currentPlayer.id);
           } else {
             // hide location from tagger
             await context.read<DatabaseService>().hideMyLocationFromTagger(
@@ -162,15 +184,17 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
               label: Text('Quit', style: TextStyle(color: Colors.white)))
         ],
       ),
-      floatingActionButton: widget.currentPlayer.isTagger
-          ? TaggerButton(
-              currentPlayer: widget.currentPlayer,
-              gameId: widget.game.id,
-            )
-          : HiderButton(
-              currentPlayer: widget.currentPlayer,
-              gameId: widget.game.id,
-            ),
+      floatingActionButton: widget.playerLocation == null
+          ? Container()
+          : widget.currentPlayer.isTagger
+              ? TaggerButton(
+                  currentPlayer: widget.currentPlayer,
+                  gameId: widget.game.id,
+                  playerLocation: widget.playerLocation)
+              : HiderButton(
+                  currentPlayer: widget.currentPlayer,
+                  gameId: widget.game.id,
+                  playerLocation: widget.playerLocation),
       body: Container(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -178,17 +202,19 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
             Container(
               height: 400,
               child: PlayingGameMap(
-                game: widget.game,
-                currentPlayer: widget.currentPlayer,
-                remainingPlayers: widget.playersRemaining,
-              ),
+                  game: widget.game,
+                  currentPlayer: widget.currentPlayer,
+                  remainingPlayers: widget.playersRemaining,
+                  circles: widget.playerLocation.toMapIcons(
+                    boundarySize: widget.game.boundarySize,
+                    boundaryPosition: widget.game.boundaryPosition.toLatLng(),
+                  )),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-              child: Text(
-                'Go hunt!',
-                style: TextStyle(fontSize: 10),
-              ),
+              child: widget.currentPlayer.isTagger
+                  ? Text('Go hunt!', style: TextStyle(fontSize: 10))
+                  : Text('Go hide!', style: TextStyle(fontSize: 10)),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),

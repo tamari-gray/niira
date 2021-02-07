@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:niira/models/location.dart';
 import 'package:niira/models/player.dart';
 import 'package:niira/services/database/database_service.dart';
 import 'package:niira/services/location_service.dart';
@@ -8,10 +9,14 @@ import 'package:provider/provider.dart';
 
 class HiderButton extends StatefulWidget {
   final Player currentPlayer;
+  final Location playerLocation;
   final String gameId;
-  const HiderButton(
-      {Key key, @required this.currentPlayer, @required this.gameId})
-      : super(key: key);
+  const HiderButton({
+    Key key,
+    @required this.currentPlayer,
+    @required this.playerLocation,
+    @required this.gameId,
+  }) : super(key: key);
 
   @override
   _HiderButtonState createState() => _HiderButtonState();
@@ -43,13 +48,13 @@ class _HiderButtonState extends State<HiderButton> {
             setState(() {
               pickingUpItem = true;
             });
-            final _location =
-                await context.read<LocationService>().getUsersCurrentLocation();
 
-            final pickedUpItem = await context
-                .read<DatabaseService>()
-                .tryToPickUpItem(
-                    widget.gameId, widget.currentPlayer, _location);
+            final pickedUpItem =
+                await context.read<DatabaseService>().tryToPickUpItem(
+                      widget.gameId,
+                      widget.currentPlayer,
+                      widget.playerLocation,
+                    );
 
             setState(() {
               pickingUpItem = false;
