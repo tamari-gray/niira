@@ -51,6 +51,13 @@ class PlayingGameScreenData extends StatelessWidget {
                       context.watch<LocationService>().listenToUsersLocation,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
+                      context.read<DatabaseService>().setHiderPosition(
+                          game.id,
+                          currentPlayer.id,
+                          Location(
+                            latitude: snapshot.data.latitude,
+                            longitude: snapshot.data.latitude,
+                          ));
                       return PlayingGameScreen(
                         playersRemaining: playersRemaining,
                         currentPlayer: currentPlayer,
@@ -101,10 +108,10 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
   void _startSonar() {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) async {
       // if hider, put location in databse
-      if (!widget.currentPlayer.isTagger) {
-        await context.read<DatabaseService>().setHiderPosition(
-            widget.game.id, widget.currentPlayer.id, widget.playerLocation);
-      }
+      // if (!widget.currentPlayer.isTagger) {
+      //   await context.read<DatabaseService>().setHiderPosition(
+      //       widget.game.id, widget.currentPlayer.id, widget.playerLocation);
+      // }
 
       // on timer end
       final _time = sonarTimer(
@@ -205,6 +212,7 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
                   game: widget.game,
                   currentPlayer: widget.currentPlayer,
                   remainingPlayers: widget.playersRemaining,
+                  playerLocation: widget.playerLocation,
                   circles: widget.playerLocation.toMapIcons(
                     boundarySize: widget.game.boundarySize,
                     boundaryPosition: widget.game.boundaryPosition.toLatLng(),
