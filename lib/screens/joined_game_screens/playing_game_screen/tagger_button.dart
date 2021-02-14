@@ -35,8 +35,7 @@ class _TaggerButtonState extends State<TaggerButton> {
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
       key: Key('tagger_tag_player_button'),
-      label:
-          attemptingTag ? Icon(Icons.location_searching) : Text('Tag player'),
+      label: attemptingTag ? Text('Tagging player...') : Text('Tag player'),
       onPressed: () async {
         if (!attemptingTag) {
           setState(() {

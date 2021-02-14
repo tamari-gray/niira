@@ -35,7 +35,7 @@ class _HiderButtonState extends State<HiderButton> {
     return FloatingActionButton.extended(
       key: Key('hider_pick_up_item_button'),
       label: pickingUpItem
-          ? Icon(Icons.location_searching)
+          ? Text('picking up item...')
           : widget.currentPlayer.hasItem
               ? Text('You are safe')
               : Text('Pick up item'),
