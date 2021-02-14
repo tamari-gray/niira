@@ -26,11 +26,14 @@ class LocationService {
   }
 
   // listen to users location
-  Stream<Position> get listenToUsersLocation {
-    return _geolocator.getPositionStream(
-      desiredAccuracy: LocationAccuracy.best,
-      distanceFilter: 0,
-    );
+  Stream<Location> get listenToUsersLocation {
+    return _geolocator
+        .getPositionStream(
+          desiredAccuracy: LocationAccuracy.best,
+          distanceFilter: 0,
+        )
+        .map((pos) =>
+            Location(latitude: pos.latitude, longitude: pos.longitude));
   }
 
   // update distance between user and games and order from nearest to furthest

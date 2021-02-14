@@ -46,31 +46,17 @@ class PlayingGameScreenData extends StatelessWidget {
                 game.phase == GamePhase.finished) {
               return FinishedGameScreen(game: game, playerDoc: currentPlayer);
             } else {
-              return StreamBuilder<Position>(
-                  stream:
-                      context.watch<LocationService>().listenToUsersLocation,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      context.read<DatabaseService>().setHiderPosition(
-                          game.id,
-                          currentPlayer.id,
-                          Location(
-                            latitude: snapshot.data.latitude,
-                            longitude: snapshot.data.latitude,
-                          ));
-                      return PlayingGameScreen(
-                        playersRemaining: playersRemaining,
-                        currentPlayer: currentPlayer,
-                        game: game,
-                        playerLocation: Location(
-                          latitude: snapshot.data.latitude,
-                          longitude: snapshot.data.latitude,
-                        ),
-                      );
-                    } else {
-                      return Loading();
-                    }
-                  });
+              final _userLocation = context.watch<Location>();
+              if (_userLocation == null) {
+                return Loading();
+              } else {
+                return PlayingGameScreen(
+                  playersRemaining: playersRemaining,
+                  currentPlayer: currentPlayer,
+                  game: game,
+                  playerLocation: _userLocation,
+                );
+              }
             }
           }
         });
@@ -107,12 +93,13 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
 
   void _startSonar() {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) async {
-      // if hider, put location in databse
-      // if (!widget.currentPlayer.isTagger) {
-      //   await context.read<DatabaseService>().setHiderPosition(
-      //       widget.game.id, widget.currentPlayer.id, widget.playerLocation);
-      // }
-
+      if (!widget.currentPlayer.isTagger) {
+        await context.read<DatabaseService>().setHiderPosition(
+              widget.game.id,
+              widget.currentPlayer.id,
+              widget.playerLocation,
+            );
+      }
       // on timer end
       final _time = sonarTimer(
         startTime: widget.game.startTime,

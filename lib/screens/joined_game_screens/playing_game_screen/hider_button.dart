@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:niira/models/location.dart';
 import 'package:niira/models/player.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/location_service.dart';
 import 'package:provider/provider.dart';
 
 class HiderButton extends StatefulWidget {

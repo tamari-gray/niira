@@ -4,7 +4,6 @@ import 'package:niira/models/location.dart';
 import 'package:niira/screens/create_game1/create_game_screen1.dart';
 import 'package:niira/services/auth/auth_service.dart';
 import 'package:niira/navigation/navigation.dart';
-import 'package:niira/services/location_service.dart';
 import 'package:provider/provider.dart';
 
 import 'list_of_created_games.dart';
@@ -14,6 +13,7 @@ class LobbyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _userLocation = context.watch<Location>();
     return Scaffold(
       appBar: AppBar(
         title: Text('Lobby'),
@@ -37,15 +37,11 @@ class LobbyScreen extends StatelessWidget {
           )
         ],
       ),
-      body: FutureBuilder<Location>(
-          future: context.watch<LocationService>().getUsersCurrentLocation(),
-          builder: (context, snapshot) {
-            return snapshot.hasData
-                ? ListOfCreatedGames(snapshot.data)
-                : Loading(
-                    message: 'Getting your location...',
-                  );
-          }),
+      body: _userLocation != null
+          ? ListOfCreatedGames(_userLocation)
+          : Loading(
+              message: 'Getting your location...',
+            ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () =>
             context.read<Navigation>().navigateTo(CreateGameScreen1.routeName),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:niira/loading.dart';
+import 'package:niira/models/location.dart';
 import 'package:niira/models/user_data.dart';
 import 'package:niira/models/view_models/create_game.dart';
 import 'package:niira/navigation/navigation.dart';
@@ -148,14 +149,18 @@ class _MyAppState extends State<MyApp> {
             stream: _authService.streamOfAuthState,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                print(snapshot.error);
-                // context.watch<Navigation>().displayError(snapshot.error);
+                // print(snapshot.error);
+                context.watch<Navigation>().displayError(snapshot.error);
               }
               // check if user is signed in
               if (snapshot.data == null) {
                 return WelcomeScreen();
               } else {
-                return CheckIfJoinedGame(userId: snapshot.data);
+                return StreamProvider<Location>(
+                  create: (_) =>
+                      context.read<LocationService>().listenToUsersLocation,
+                  child: CheckIfJoinedGame(userId: snapshot.data),
+                );
               }
             },
           ),
@@ -165,6 +170,8 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
+/// gets user data from db,
+/// then checks if user has joined a game already to show appropriate screen
 class CheckIfJoinedGame extends StatelessWidget {
   final String userId;
   const CheckIfJoinedGame({Key key, @required this.userId}) : super(key: key);
@@ -177,6 +184,7 @@ class CheckIfJoinedGame extends StatelessWidget {
           if (snapshot.hasError) {
             context.read<Navigation>().displayError(snapshot.error);
           }
+
           if (snapshot.data != null) {
             return snapshot.data.currentGameId == ''
                 ? LobbyScreen()

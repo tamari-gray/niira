@@ -345,6 +345,7 @@ class FirestoreService implements DatabaseService {
     for (var i = 0; i < remainingPlayers / 2; i++) {
       newItemsPositions
           .add(randomItemPosition(game.boundaryPosition, game.boundarySize));
+      // .add(LatLng(-37.8654, 144.9814));
     }
 
     // delete old items
@@ -406,6 +407,7 @@ class FirestoreService implements DatabaseService {
         .where('has_been_tagged', isEqualTo: false)
         .where('is_tagger', isEqualTo: false)
         .where('has_quit', isEqualTo: false)
+        .where('position', isEqualTo: true)
         .snapshots()
         .map((QuerySnapshot snapshot) => snapshot.toSetOfPlayerMarkers());
   }
@@ -421,7 +423,7 @@ class FirestoreService implements DatabaseService {
     var collectionReference = gameDoc(gameId).collection('items');
     // gameDoc(gameId).collection('items').where('picked_up', isEqualTo: true);
 
-    final radius = 0.005; // 5m
+    final radius = 0.007; // 7m
     final field = 'position';
 
     final stream = _geoflutterfire
@@ -434,8 +436,6 @@ class FirestoreService implements DatabaseService {
 
     // get item id => set item.picked.up == true
     final item = await stream.first;
-
-    // print('error? $item');
 
     if (item.isNotEmpty && item[0].exists) {
       await item[0].reference.update(<String, bool>{'picked_up': true});
@@ -460,13 +460,15 @@ class FirestoreService implements DatabaseService {
         latitude: playerLocation.latitude, longitude: playerLocation.longitude);
 
     // get players that havent quit or been tagged
-    var _playersDocs = await gameDoc(gameId).collection('players');
-    // .where('has_been_tagged', isEqualTo: false)
-    // .where('has_quit', isEqualTo: false)
-    // .where('is_tagger', isEqualTo: false);
+    var _playersDocs = await gameDoc(gameId)
+        .collection('players')
+        .where('has_been_tagged', isEqualTo: false)
+        .where('has_quit', isEqualTo: false)
+        // .where('position', isEqualTo: true)
+        .where('is_tagger', isEqualTo: false);
 
     // geoquery
-    final radius = 0.005; // 5m
+    final radius = 0.007; // 7m
     final field = 'position';
 
     final stream =

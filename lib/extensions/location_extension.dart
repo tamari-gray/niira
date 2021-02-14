@@ -8,7 +8,7 @@ extension LocationExt on Location {
   CameraPosition toShowUserLocation({@required double boundarySize}) {
     return CameraPosition(
       target: toLatLng(),
-      zoom: 17,
+      zoom: 19,
     );
   }
 
@@ -28,7 +28,7 @@ extension LocationExt on Location {
         Circle(
           circleId: CircleId('player_position'),
           center: toLatLng(),
-          radius: 8,
+          radius: 2,
           strokeWidth: 2,
           strokeColor: Colors.white,
           fillColor: Color.fromRGBO(130, 250, 184, 1),

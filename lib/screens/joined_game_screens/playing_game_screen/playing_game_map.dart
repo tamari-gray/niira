@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/models/game.dart';
@@ -10,7 +9,6 @@ import 'package:niira/extensions/location_extension.dart';
 import 'package:niira/models/player.dart';
 import 'package:niira/screens/create_game2/show_location_btn.dart';
 import 'package:niira/services/database/database_service.dart';
-import 'package:niira/services/location_service.dart';
 import 'package:niira/utilities/map_styles/create_game_map.dart';
 import 'package:provider/provider.dart';
 
@@ -18,12 +16,14 @@ import 'package:provider/provider.dart';
 class PlayingGameMap extends StatefulWidget {
   final Game game;
   final Player currentPlayer;
+  final Location playerLocation;
   final Set<Circle> circles;
   final Iterable<Player> remainingPlayers;
 
   PlayingGameMap({
     @required this.game,
     @required this.currentPlayer,
+    @required this.playerLocation,
     @required this.circles,
     @required this.remainingPlayers,
   });
@@ -45,8 +45,7 @@ class PlayingGameMapState extends State<PlayingGameMap> {
   /// get users location from `LocationService`
   /// and set user + boundary icons on map
   void _initMap() async {
-    final initialLocation =
-        await context.read<LocationService>().getUsersCurrentLocation();
+    final initialLocation = widget.playerLocation;
     setState(() {
       _userLocation = initialLocation;
     });
@@ -70,7 +69,7 @@ class PlayingGameMapState extends State<PlayingGameMap> {
                   final _markers = snapshot.data;
                   return GoogleMap(
                     myLocationButtonEnabled: false,
-                    myLocationEnabled: true,
+                    myLocationEnabled: false,
                     zoomControlsEnabled: false,
                     zoomGesturesEnabled: true,
                     initialCameraPosition: _userLocation.toShowUserLocation(
