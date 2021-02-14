@@ -184,11 +184,13 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
               ? TaggerButton(
                   currentPlayer: widget.currentPlayer,
                   gameId: widget.game.id,
-                  playerLocation: widget.playerLocation)
+                  playerLocation: widget.playerLocation,
+                )
               : HiderButton(
                   currentPlayer: widget.currentPlayer,
                   gameId: widget.game.id,
-                  playerLocation: widget.playerLocation),
+                  playerLocation: widget.playerLocation,
+                ),
       body: Container(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -205,12 +207,26 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
                     boundaryPosition: widget.game.boundaryPosition.toLatLng(),
                   )),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-              child: widget.currentPlayer.isTagger
-                  ? Text('Go hunt!', style: TextStyle(fontSize: 10))
-                  : Text('Go hide!', style: TextStyle(fontSize: 10)),
-            ),
+            !widget.currentPlayer.isTagger ||
+                    widget.currentPlayer.locationSafe != null
+                ? !widget.currentPlayer.isTagger &&
+                        !widget.currentPlayer.locationSafe
+                    ? Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 5, 0, 0),
+                        child: Card(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              const ListTile(
+                                title: Text('The Tagger knows where you are!'),
+                                subtitle: Text('Be careful..'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    : Container()
+                : Container(),
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
               child: Card(

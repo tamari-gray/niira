@@ -14,7 +14,7 @@ class FirebaseAuthService implements AuthService {
 
   @override
   Stream<String> get streamOfAuthState =>
-      _firebaseAuth.authStateChanges().map((firebaseUser) => firebaseUser.uid);
+      _firebaseAuth.authStateChanges().map((firebaseUser) => firebaseUser?.uid);
 
   @override
   Future<String> createUserAccount(String email, String password) async {
