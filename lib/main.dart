@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:niira/loading.dart';
 import 'package:niira/models/location.dart';
 import 'package:niira/models/user_data.dart';
+import 'package:niira/models/user_id.dart';
 import 'package:niira/models/view_models/create_game.dart';
 import 'package:niira/navigation/navigation.dart';
 import 'package:niira/screens/create_account.dart';
@@ -146,25 +147,134 @@ class _MyAppState extends State<MyApp> {
             InputPasswordScreen.routeName: (context) => InputPasswordScreen(),
           },
           home: StreamBuilder<String>(
-            stream: _authService.streamOfAuthState,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                // print(snapshot.error);
-                context.watch<Navigation>().displayError(snapshot.error);
-              }
-              // check if user is signed in
-              if (snapshot.data == null) {
-                return WelcomeScreen();
-              } else {
-                return StreamProvider<Location>(
-                  create: (_) =>
-                      context.read<LocationService>().listenToUsersLocation,
-                  child: CheckIfJoinedGame(userId: snapshot.data),
-                );
-              }
-            },
+              stream: _authService.streamOfAuthState,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  print(snapshot.error);
+                  // context.watch<Navigation>().displayError(snapshot.error);
+                }
+                // check if user is signed in
+                if (snapshot.data == null) {
+                  return WelcomeScreen();
+                } else {
+                  // check if can ask for position with a seperate call then if have position
+                  // return the location stream
+                  return StreamProvider<Location>(
+                    create: (_) =>
+                        context.read<LocationService>().listenToUsersLocation,
+                    child: HandleLocation(userId: snapshot.data),
+                  );
+                }
+              }),
+        ),
+      );
+    }
+  }
+}
+
+class HandleLocation extends StatefulWidget {
+  const HandleLocation({Key key, @required this.userId}) : super(key: key);
+
+  final String userId;
+
+  @override
+  _HandleLocationState createState() => _HandleLocationState();
+}
+
+class _HandleLocationState extends State<HandleLocation> {
+  LocationPermission _locationPermission;
+
+  @override
+  void initState() {
+    super.initState();
+    _askForPermission();
+  }
+
+  void _askForPermission() async {
+    final _permission =
+        await context.read<LocationService>().checkForLocationPermission();
+    setState(() {
+      _locationPermission = _permission;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_locationPermission == null) {
+      return Loading(
+          message: 'location permission is null, waiting for miracle');
+    } else if (_locationPermission == LocationPermission.always ||
+        _locationPermission == LocationPermission.whileInUse) {
+      return CheckIfJoinedGame(userId: widget.userId);
+    } else if (_locationPermission == LocationPermission.deniedForever) {
+      return Scaffold(
+        body: Center(
+          child: Card(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const ListTile(
+                  title: Text(
+                      'Please enable location services for niira in your phones settings, then tap refresh'),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    TextButton(
+                      child: const Text('Refresh'),
+                      onPressed: () async {
+                        final _newPermission = await context
+                            .read<LocationService>()
+                            .requestPermission();
+                        setState(() {
+                          _locationPermission = _newPermission;
+                        });
+                      },
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
+      );
+    } else if (_locationPermission == LocationPermission.denied) {
+      return Scaffold(
+        body: Center(
+          child: Card(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const ListTile(
+                  title:
+                      Text('Please enable location services to play Niira :)'),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    TextButton(
+                      child: const Text('Enable'),
+                      onPressed: () async {
+                        final _newPermission = await context
+                            .read<LocationService>()
+                            .requestPermission();
+                        setState(() {
+                          _locationPermission = _newPermission;
+                        });
+                      },
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Loading(
+        message: 'getting user location, tam check handle location widget',
       );
     }
   }

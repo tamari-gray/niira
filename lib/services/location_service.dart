@@ -10,6 +10,9 @@ class LocationService {
   final GeolocatorPlatform _geolocator;
   LocationService(this._geolocator);
 
+  Future<LocationPermission> requestPermission() =>
+      _geolocator.requestPermission();
+
   // check if location services are enabled
   Future<LocationPermission> checkForLocationPermission() =>
       _geolocator.checkPermission();

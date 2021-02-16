@@ -207,7 +207,7 @@ class _PlayingGameScreenState extends State<PlayingGameScreen> {
                     boundaryPosition: widget.game.boundaryPosition.toLatLng(),
                   )),
             ),
-            !widget.currentPlayer.isTagger ||
+            !widget.currentPlayer.isTagger &&
                     widget.currentPlayer.locationSafe != null
                 ? !widget.currentPlayer.isTagger &&
                         !widget.currentPlayer.locationSafe

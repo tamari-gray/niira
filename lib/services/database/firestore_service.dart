@@ -420,19 +420,19 @@ class FirestoreService implements DatabaseService {
         latitude: playerLocation.latitude, longitude: playerLocation.longitude);
 
     // get the collection reference or query
-    var collectionReference = gameDoc(gameId).collection('items');
-    // gameDoc(gameId).collection('items').where('picked_up', isEqualTo: true);
+    var collectionReference =
+        gameDoc(gameId).collection('items').where('picked_up', isEqualTo: true);
 
     final radius = 0.007; // 7m
     final field = 'position';
 
-    final stream = _geoflutterfire
-        .collection(collectionRef: collectionReference)
-        .within(
-            center: center,
-            radius: radius.toDouble(),
-            field: field,
-            strictMode: true);
+    final stream =
+        _geoflutterfire.collection(collectionRef: collectionReference).within(
+              center: center,
+              radius: radius.toDouble(),
+              field: field,
+              strictMode: true,
+            );
 
     // get item id => set item.picked.up == true
     final item = await stream.first;
